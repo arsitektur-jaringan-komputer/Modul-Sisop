@@ -42,7 +42,7 @@
 ## 1.1 Shell
 Sistem operasi dibagi menjadi tiga komponen penting, yaitu Kernel, Shell, dan Program Utility.
 
-![Komponen Sistem Operasi](/gambar/component.png)
+![Komponen Sistem Operasi](gambar/component.png)
 
 - __Kernel__ adalah inti dari komputer. Komponen ini memungkinkan terjadinya komunikasi antara software dan hardware. Jika kernel adalah bagian terdalam dari sebuah sistem operasi, maka __shell__ adalah bagian terluarnya.
 - __Shell__ adalah program penerjemah perintah yang menjembatani user dengan kernel. Umumnya, shell menyediakan __prompt__ sebagai user interface tempat user menginputkan perintah-perintah yang diinginkan, baik berupa perintah internal maupun eksternal. Setelah menerima input dari user dan menjalankan program/perintah berdasarkan input tersebut, shell akan mengeluarkan output. Shell dapat diakses melalui __Terminal__.
@@ -166,7 +166,7 @@ $ chmod +x hello.sh
 ```
 Eksekusi file script dengan cara ./nama_file.sh atau bash nama_file.sh.
 
-![hello world](/gambar/1.4.png)
+![hello world](gambar/1.4.png)
 
 ## 1.5 Variabel
 - Beberapa hal yang perlu diperhatikan dalam mendefinisikan variabel:
@@ -225,13 +225,13 @@ echo "Variabel array ke-1:" ${mahasiswa[2]}
 ```
 Output:
 
-![variabel](/gambar/bash1-5.png)
+![variabel](gambar/bash1-5.png)
 
 Catatan:
 
 Syntax array diatas hanya dapat dieksekusi oleh bash, sehingga harus dieksekusi dengan cara bash nama_file.sh atau bash ./nama_file.sh. Jika menggunakan ./nama_file.sh saja akan muncul error:
 
-![error](/gambar/error1-5.png)
+![error](gambar/error1-5.png)
 
 ### 1.5.1 Special Variable
 Beberapa special variable yang sering dipakai:
@@ -260,7 +260,7 @@ echo "PID : $$"
 ```
 Output:
 
-![special](/gambar/special.png)
+![special](gambar/special.png)
 
 ## 1.6 Input Output
 - read digunakan untuk mengambil input dari keyboard dengan syntax sebagai berikut:
@@ -293,7 +293,7 @@ echo -e "\nHai $nama!\nSelamat datang di mata kuliah $matakuliah ! ;)"
 ```
 Output:
 
-![input](/gambar/inp.png)
+![input](gambar/inp.png)
 
 Selain echo, bash juga menyediakan perintah builtin printf untuk menampilkan output dengan format tertentu, mirip bahasa C. Contoh:
 ```bash
@@ -308,7 +308,7 @@ printf "%d decimal dalam float = %.2f\n" $angka $angka
 ```
 Output:
 
-![printf](/gambar/printf.png)
+![printf](gambar/printf.png)
 
 ## 1.7 Quoting
 Shell Unix/Linux memiliki beberapa karakter spesial yang disebut dengan **metakarakter**. Karakter tersebut punya makna khusus jika digunakan di dalam shell script. Beberapa macam metakarakter:
@@ -346,7 +346,7 @@ echo "Dimana kita? " $dmn
 ```
 
 Output:   
-![hasil-quote](/gambar/hasil-quote.png)
+![hasil-quote](gambar/hasil-quote.png)
 
 Lebih banyak dapat dilihat sendiri di `man bash`
 
@@ -410,7 +410,7 @@ echo "b = $b"
 
 Output:
 
-![hasil-181](/gambar/hasil-181.png)
+![hasil-181](gambar/hasil-181.png)
 
 ### 1.8.2 Operator Relasional
 
@@ -528,7 +528,7 @@ case "$jawaban" in
 esac
 ```
 Output:   
-![hasil-case](/gambar/hasil-case.png)
+![hasil-case](gambar/hasil-case.png)
 
 ## 1.10 Loop
 **Loop** digunakan untuk mengeksekusi serangkaian perintah berulang kali. Ada beberapa macam shell loops:
@@ -663,7 +663,7 @@ do
 done
 ```
 Output:   
-![hasil-select-loop](/gambar/hasil-select-loop.png)
+![hasil-select-loop](gambar/hasil-select-loop.png)
 
 ### 1.10.5 Nesting Loops
 Semua jenis loop di atas mendukung konsep nesting, artinya kita dapat menempatkan satu loop ke dalam loop lain, baik loop yang sejenis maupun berbeda jenis
@@ -726,7 +726,7 @@ ask_name
 reply
 ```
 Output:   
-![hasil-fungsi](/gambar/hasil-fungsi.png)
+![hasil-fungsi](gambar/hasil-fungsi.png)
 
 ### 1.11.1 Nested Functions
 Sama halnya dengan loop, function juga bisa menerapkan konsep nested. Dimana kita bisa memanggil sebuah fungsi di dalam fungsi.
@@ -747,7 +747,7 @@ reply() {
 ask_name
 ```
 Output:   
-![hasil-fungsi](/gambar/hasil-fungsi.png)
+![hasil-fungsi](gambar/hasil-fungsi.png)
 
 # 2. Cron
 Cron adalah sebuah service daemon yang memungkinkan user Linux dan Unix untuk menjalankan perintah atau _script_ pada waktu tertentu secara otomatis. Perintah-perintah dan/atau script-script yang dijalankan cron disebut cron jobs.
@@ -761,17 +761,17 @@ Penjelasan :
 ## 2.1 Membuat atau mengubah cron jobs
 1. Ketikkan `crontab -e`
 2. Ketikkan perintah crontab sesuai aturan parameter crontab   
-![parameter crontab](https://github.com/afrchmdi/sisop-modul-1/blob/master/gambar/syntax-crontab.png "parameter crontab")   
+![parameter crontab](gambar/syntax-crontab.png "parameter crontab")   
 3. Untuk melihat daftar cron jobs ketikkan `crontab -l`
 
 Contoh perintah yang dijalankan crontab   
-![contoh crontab](https://github.com/afrchmdi/sisop-modul-1/blob/master/gambar/contoh-crontab.png "contoh crontab")   
+![contoh crontab](gambar/contoh-crontab.png "contoh crontab")   
 Penjelasan :
 * setiap jam 00.00 memasukkan hasil `ls /home/tamtama` ke file `/home/tamtama/list_files`
 * setiap minggu menjalankan file `script.sh` pada folder `/home/tamtama`
 
 Untuk belajar lebih lanjut perintah-perintah crontab bisa mengakses website [crontab guru](https://crontab.guru/).   
-![web crontab guru](https://github.com/afrchmdi/sisop-modul-1/blob/master/gambar/crontab-guru.png "web crontab guru")
+![web crontab guru](gambar/crontab-guru.png "web crontab guru")
 
 # 3. AWK
 __awk__ merupakan sebuah program yang bisa digunakan untuk mengambil catatan/record tertentu dalam sebuah file dan melakukan sebuah/beberapa operasi terhadap catatan/record tersebut.
