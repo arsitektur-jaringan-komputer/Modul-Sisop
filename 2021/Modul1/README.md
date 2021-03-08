@@ -859,7 +859,3 @@ Pada contoh di atas, rule kedua hanya memiliki action untuk melakukan perhitunga
 
 
 ## Latihan
-1. Buatlah sebuah program bash script untuk menentukan apakah bilangan yang diinputkan sebagai argumen merupakan angka prima atau bukan. Input berupa integer dan jumlah input argumen bisa lebih dari satu.
-2. Buatlah sebuah task scheduling menggunakan crontab untuk membuat log berisikan list dari directory /home/\<user>/Downloads/ dengan format nama sesuai command `date` di simpan di /home/\<user>/log setiap jam kecuali jam 15.00-18.00.
-3. Lakukan download dengan command `wget https://archive.ics.uci.edu/ml/machine-learning-databases/00436/Container_Crane_Controller_Data_Set.csv` untuk mendapatkan dataset. 
-Buatlah sebuah program awk yang dapat menampilkan total penjumlahan dari kolom 'speed' dan 'angle' hanya untuk record data yang memiliki nilai kolom 'power' = 0,5 berdasarkan dataset tersebut!

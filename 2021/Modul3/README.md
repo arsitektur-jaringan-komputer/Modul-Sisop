@@ -9,7 +9,7 @@
   - [Objectives](#objectives)
   - [1. Thread](#1-thread)
     - [1.1 Thread](#11-thread)
-    - [1.2 Multiprocess vs Multithread](#12-multiprocess-vs-multithread)
+    - [1.2 Multiprocess Vs Multithread](#12-multiprocess-vs-multithread)
     - [1.3 Join Thread](#13-join-thread)
     - [1.4 Mutual Exclusion](#14-mutual-exclusion)
   - [2. IPC (Interprocess Communication)](#2-ipc-interprocess-communication)
@@ -22,9 +22,6 @@
   - [Appendix](#appendix)
     - [Libraries documentation (and functions)](#libraries-documentation-and-functions)
   - [Soal Latihan](#soal-latihan)
-      - [Latihan 1](#latihan-1)
-      - [Latihan 2](#latihan-2)
-      - [Latihan 3](#latihan-3)
     - [References](#references)
 
 
@@ -692,18 +689,6 @@ $ man fcntl
 
 ## Soal Latihan 
 
-#### Latihan 1
-Buatlah sebuah program multithreading untuk menghitung perkalian matriks (isi dari matriks-nya didefinisikan di dalam kodingan).
-(Contoh : matriks A dengan dimensi 3x2 dan matriks B dengan dimensi 2x3, outputnya adalah hasil dari perkalian matriks A * B)
-
-#### Latihan 2
-Buatlah sebuah program menggunakan socket dimana terdiri dari client dan server. Saat client mengetikkan "tambah" maka suatu angka yang ada pada server bertambah 1 dan server otomatis mengirimkan pesan ke client yang berisi "Penambahan berhasil". Perintah yang lainnya pada client adalah "cek", maka server akan mengirimkan pesan yang berisi jumlah terkini angka tersebut. Program ini dapat berjalan tanpa henti.
-
-#### Latihan 3  
-Buatlah sebuah program untuk menampilkan file diurutan ketiga dari sebuah direktori. Dengan ketentuan :  
-- menggunakan pipe.
-- menggunakan command ls, head, tail.
-<!-- diganti soal pipe -->
 
 ### References 
 https://notes.shichao.io/apue/  

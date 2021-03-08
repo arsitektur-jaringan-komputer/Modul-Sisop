@@ -823,10 +823,6 @@ fusermount -u [direktori tujuan]
 
 ## Soal Latihan
 
-1. Buat sebuah file system yang mengarah ke /home/[user]/Downloads, file sistem tersebut memiliki sifat mirroring, sehingga nama file yang ada pada folder tersebut akan ditampilkan terbalik. Sebagai contoh ```contohfile.txt``` menjadi ```txt.elifhotnoc```. File system ini hanya memiliki akses read.
-
-2. Buat sebuah file system yang mengarah ke /home/[user]/Documents. File system ini memiliki fitur auto backup, dimana ketika file pada folder tersebut dimodifikasi, file tersebut dengan versi sebelum mengalami perubahan akan disimpan dengan nama ```<namafile>.<time:date>.<ekstensi>``` di dalam direktori ```backup```. Jika folder backup belum ada, maka secara otomatis akan membuat direktori ```backup``` sebelum dipindahkan dan file tidak bisa di read-write-execute selama berada di direktori ```backup```.
-
   
   
 
