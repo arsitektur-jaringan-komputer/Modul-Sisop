@@ -7,36 +7,44 @@
 
 ## Daftar Isi
 
-1. [Shell Scripting](#1-shell-scripting)
-    - [1.1 Shell](#11-shell)
-    - [1.2 Pemrograman Shell](#12-pemrograman-shell)
-    - [1.3 Perintah Dasar Shell](#13-perintah-dasar-shell)
-    - [1.4 Simple Shell Script](#14-simple-shell-script)
-    - [1.5 Variabel](#15-variabel)
-        - [1.5.1 Special Variable](#151-special-variable)
-    - [1.6 Input Output](#16-input-output)
-    - [1.7 Quoting](#17-quoting)
-    - [1.8 Operator Dasar](#18-operator-dasar)
-        - [1.8.1 Operator Aritmatika](#181-operator-aritmatika)
-        - [1.8.2 Operator Relasional](#182-operator-relasional)
-    - [1.9 Conditional Statement](#19-conditional-statements)
-        - [1.9.1 If...Else](#191-ifelse)
-        - [1.9.2 Case](#192-case)
-    - [1.10 Loop](#110-loop)
-        - [1.10.1 While Loop](#1101-while-loop)
-        - [1.10.2 For Loop](#1102-for-loop)
-        - [1.10.3 Until Loop](#1103-until-loop)
-        - [1.10.4 Select Loop](#1104-select-loop)
-        - [1.10.5 Nesting Loop](#1105-nesting-loop)
-    - [1.11 Function](#111-function)
-        - [1.11.1 Nested Function](#1111-nested-function)
-2. [Cron](#2-cron)
-    - [2.1 Membuat atau mengubah cron jobs](#21-membuat-atau-mengubah-cron-jobs)
-3. [AWK](#3-awk)
-    - [3.1 Menjalankan Program AWK](#31-menjalankan-program-awk)
-    - [3.2 Special Rules](#32-special-rules)
-4. [Referensi](#referensi)
-5. [Latihan](#latihan)
+- [Shell Scripting, Cron, dan AWK](#shell-scripting-cron-dan-awk)
+  - [Prasyarat](#prasyarat)
+  - [Daftar Isi](#daftar-isi)
+- [1. Shell Scripting](#1-shell-scripting)
+  - [1.1 Shell](#11-shell)
+  - [1.2 Pemrograman Shell](#12-pemrograman-shell)
+  - [1.3 Perintah Dasar Shell](#13-perintah-dasar-shell)
+  - [1.4 Simple Shell Script](#14-simple-shell-script)
+  - [1.5 Variabel](#15-variabel)
+    - [1.5.1 Special Variable](#151-special-variable)
+  - [1.6 Input Output](#16-input-output)
+  - [1.7 Quoting](#17-quoting)
+  - [1.8 Operator Dasar](#18-operator-dasar)
+    - [1.8.1 Operator Aritmatika](#181-operator-aritmatika)
+    - [1.8.2 Operator Relasional](#182-operator-relasional)
+  - [1.9 Conditional Statements](#19-conditional-statements)
+    - [1.9.1 If...Else](#191-ifelse)
+    - [1.9.2 Case](#192-case)
+  - [1.10 Loop](#110-loop)
+    - [1.10.1 While loop](#1101-while-loop)
+    - [1.10.2 For loop](#1102-for-loop)
+    - [1.10.3 Until loop](#1103-until-loop)
+    - [1.10.4 Select loop](#1104-select-loop)
+    - [1.10.5 Nesting Loops](#1105-nesting-loops)
+  - [1.11 Function](#111-function)
+    - [1.11.1 Nested Functions](#1111-nested-functions)
+- [2. Cron](#2-cron)
+  - [2.1 Membuat atau mengubah cron jobs](#21-membuat-atau-mengubah-cron-jobs)
+- [3. AWK](#3-awk)
+  - [3.1 Menjalankan Program AWK](#31-menjalankan-program-awk)
+    - [Cara Kerja AWK](#cara-kerja-awk)
+  - [3.2 Special Rules](#32-special-rules)
+- [Extras](#extras)
+  - [Ranger](#ranger)
+    - [How to Install](#how-to-install)
+    - [How to Use](#how-to-use)
+  - [Referensi](#referensi)
+  - [Latihan](#latihan)
 
 # 1. Shell Scripting
 ## 1.1 Shell
@@ -104,7 +112,7 @@ chmod is /bin/chmod
 
 Selain itu, terdapat beberapa karakter yang cukup penting untuk digunakan dalam shell:
 
-- __Redirection__ (mengirim output ke file atau menerima input dari file) menggunakan operator redirect >, >>, <, contoh:
+- __Redirection__ (mengirim output ke file atau menerima input dari file) menggunakan operator redirect >, >>, <, 2> contoh:
 
 ```bash
 ls /home/Documents > test.txt
@@ -115,6 +123,9 @@ ls /home/Documents >> test.txt
 
 sort < test.txt
 #file test.txt dijadikan input oleh perintah sort
+
+bash script.sh 2> error.log
+#Jika terdapat error saat menjalankan script.sh, pesan error akan masuk ke error.log
 ```
 
 - __Pipe__ (output suatu perintah menjadi input perintah lain) menggunakan operator |, contoh:
@@ -848,6 +859,24 @@ Ada berapa "732"?
 ```
 Pada contoh di atas, rule kedua hanya memiliki action untuk melakukan perhitungan berapa jumlah baris yang mengandung "732", namun tidak ada action untuk menampilkan (print).
 
+# Extras
+## Ranger
+![ranger](gambar/ranger.png)
+Ranger merupakan file manager di terminal yang menggunakan key-key dari VI. Ranger menyediakan user interface yang minimalis dan bagus dengan menampilkan hierarki dari directory. Ranger sendiri bisa secara otomatis mencari program yang sesuai untuk mengeksekusi suatu file berdasarkan tipe-nya.
+
+### How to Install
+Cara menginstal Ranger sendiri cukup sederhana. Dengan menggunakan PyPI dengan command `pip install ranger-fm` kita sudah bisa memiliki Ranger di PC kita.
+
+### How to Use
+- Buka terminal
+- Ketik `ranger`
+- Maka interface untuk Ranger akan langsung terbuka
+- Gunakan key `h` untuk pergi ke directory sebelumnya
+- Gunakan key `l` untuk pergi ke directory selanjutnya dan membuka file
+- Gunakan key `j` untuk mengarahkan cursor ke bawah
+- Gunakan key `k` untuk mengarahkan cursor ke atas
+- Gunakan key `q` untuk keluar
+
 ## Referensi
 * [https://www.tutorialspoint.com/unix/shell_scripting.htm](https://www.tutorialspoint.com/unix/shell_scripting.htm)
 * [https://pemula.linux.or.id/programming/bash-shell.html](https://pemula.linux.or.id/programming/bash-shell.html)
@@ -856,6 +885,7 @@ Pada contoh di atas, rule kedua hanya memiliki action untuk melakukan perhitunga
 * [https://vpswp.blogspot.com/2015/06/definisi-dan-6-contoh-fungsi-perintah-awk-linux.html](https://vpswp.blogspot.com/2015/06/definisi-dan-6-contoh-fungsi-perintah-awk-linux.html)
 * [https://www.codepolitan.com/belajar-bash-mencoba-bash-untuk-pertama-kali-57bbca3c28e54-17341](https://www.codepolitan.com/belajar-bash-mencoba-bash-untuk-pertama-kali-57bbca3c28e54-17341)
 * [https://pemula.linux.or.id/programming/bash-shell.html](https://pemula.linux.or.id/programming/bash-shell.html)
+* [https://github.com/ranger/ranger](https://github.com/ranger/ranger)
 
 
 ## Latihan
