@@ -117,7 +117,7 @@ chmod is /bin/chmod
 
 Selain itu, terdapat beberapa karakter yang cukup penting untuk digunakan dalam shell:
 
-- __Redirection__ (mengirim output ke file atau menerima input dari file) menggunakan operator redirect >, >>, <, 2> contoh:
+- __Redirection__ (mengirim output ke file atau menerima input dari file) menggunakan operator redirect >, >>, <, 2>> contoh:
 
 ```bash
 ls /home/Documents > test.txt
@@ -129,7 +129,7 @@ ls /home/Documents >> test.txt
 sort < test.txt
 #file test.txt dijadikan input oleh perintah sort
 
-bash script.sh 2> error.log
+bash script.sh 2>> error.log
 #Jika terdapat error saat menjalankan script.sh, pesan error akan masuk ke error.log
 ```
 
