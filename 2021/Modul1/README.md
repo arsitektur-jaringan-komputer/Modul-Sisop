@@ -17,6 +17,7 @@
   - [1.4 Simple Shell Script](#14-simple-shell-script)
   - [1.5 Variabel](#15-variabel)
     - [1.5.1 Special Variable](#151-special-variable)
+    - [1.5.2 Local Variable](#152-local-variable)
   - [1.6 Input Output](#16-input-output)
   - [1.7 Quoting](#17-quoting)
   - [1.8 Operator Dasar](#18-operator-dasar)
@@ -88,7 +89,11 @@ Pada modul ini jenis shell yang digunakan adalah Bash (_Bourne Again SHell_) kar
 $ echo $SHELL
 ```
 
-Shell memiliki perintah internal (built-in shell) dan perintah eksternal. Untuk mengecek apakah sebuah perintah termasuk internal atau eksternal, gunakan perintah type
+Shell memiliki perintah internal (built-in shell) dan perintah eksternal. Untuk lebih jelasnya :
+- Perintah internal (built-in shell) : Perintah yang dibangun di dalam shell. Eksekusi tidak harus mencari perintah dari variabel PATH yang di ada di shell
+- Perintah eksternal : Perintah yang tidak ada di dalam shell. Ketika perintah dijalankan, shell akan mencari perintah tersebut dalam variable PATH seperti `/usr/bin` dan `/bin`.
+
+Untuk mengecek apakah sebuah perintah termasuk internal atau eksternal, gunakan perintah type
 
 ```bash
 $ type cd
@@ -272,6 +277,33 @@ echo "PID : $$"
 Output:
 
 ![special](gambar/special.png)
+
+### 1.5.2 Local Variable
+Ketika menggunakan bash, variabel akan otomatis menjadi variabel global jika di-assign secara langsung seperti `bulan=6`. Tetapi kita bisa membuat variabel lokal untuk fungsi di bash dengan menggunakan keyword `local`. Variabel lokal yang terbuat tidak akan menjadi variabel global.
+
+Contoh:
+
+```bash
+#!/bin/bash
+
+fac_func() {
+    angka=2
+    local tmp=10
+    echo "Global Variable di Dalam Fungsi : $angka"
+    echo "Local Variable di Dalam Fungsi : $tmp"
+}
+
+fac_func
+
+echo "Global Variable di Luar Fungsi : $angka"
+echo "Local Variable di Luar Fungsi : $tmp"
+```
+
+Output:
+
+![local-variable](gambar/local-variable.png)
+
+Dari gambar terlihat bahwa ketika kita mencoba melakukan print local variable ke terminal tidak bisa keluar.
 
 ## 1.6 Input Output
 - read digunakan untuk mengambil input dari keyboard dengan syntax sebagai berikut:
@@ -862,10 +894,13 @@ Pada contoh di atas, rule kedua hanya memiliki action untuk melakukan perhitunga
 # Extras
 ## Ranger
 ![ranger](gambar/ranger.png)
+
 Ranger merupakan file manager di terminal yang menggunakan key-key dari VI. Ranger menyediakan user interface yang minimalis dan bagus dengan menampilkan hierarki dari directory. Ranger sendiri bisa secara otomatis mencari program yang sesuai untuk mengeksekusi suatu file berdasarkan tipe-nya.
 
 ### How to Install
-Cara menginstal Ranger sendiri cukup sederhana. Dengan menggunakan PyPI dengan command `pip install ranger-fm` kita sudah bisa memiliki Ranger di PC kita.
+Cara menginstal Ranger sendiri cukup sederhana:
+- Dengan perintah `sudo apt-get install ranger` 
+- Dengan menggunakan PyPI, menggunakan command `pip install ranger-fm`.
 
 ### How to Use
 - Buka terminal
@@ -876,6 +911,7 @@ Cara menginstal Ranger sendiri cukup sederhana. Dengan menggunakan PyPI dengan c
 - Gunakan key `j` untuk mengarahkan cursor ke bawah
 - Gunakan key `k` untuk mengarahkan cursor ke atas
 - Gunakan key `q` untuk keluar
+- Gunakan key `!` untuk mengeksekusi command shell, contoh `! touch my_text.txt`
 
 ## Referensi
 * [https://www.tutorialspoint.com/unix/shell_scripting.htm](https://www.tutorialspoint.com/unix/shell_scripting.htm)
