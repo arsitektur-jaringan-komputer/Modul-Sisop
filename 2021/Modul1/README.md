@@ -243,12 +243,6 @@ Output:
 
 ![variabel](gambar/bash1-5.png)
 
-Catatan:
-
-Syntax array diatas hanya dapat dieksekusi oleh bash, sehingga harus dieksekusi dengan cara bash nama_file.sh atau bash ./nama_file.sh. Jika menggunakan ./nama_file.sh saja akan muncul error:
-
-![error](gambar/error1-5.png)
-
 ### 1.5.1 Special Variable
 Beberapa special variable yang sering dipakai:
 
