@@ -922,6 +922,17 @@ Cara menginstal Ranger sendiri cukup sederhana:
 * [https://www.codepolitan.com/belajar-bash-mencoba-bash-untuk-pertama-kali-57bbca3c28e54-17341](https://www.codepolitan.com/belajar-bash-mencoba-bash-untuk-pertama-kali-57bbca3c28e54-17341)
 * [https://pemula.linux.or.id/programming/bash-shell.html](https://pemula.linux.or.id/programming/bash-shell.html)
 * [https://github.com/ranger/ranger](https://github.com/ranger/ranger)
-
+* [https://www.geeksforgeeks.org/internal-and-external-commands-in-linux/#:~:text=The%20UNIX%20system%20is%20command,are%20built%20into%20the%20shell.&text=External%20Commands%20%3A%20Commands%20which%20aren't%20built%20into%20the%20shell](https://www.geeksforgeeks.org/internal-and-external-commands-in-linux/#:~:text=The%20UNIX%20system%20is%20command,are%20built%20into%20the%20shell.&text=External%20Commands%20%3A%20Commands%20which%20aren't%20built%20into%20the%20shell)
+* [https://tldp.org/LDP/abs/html/localvar.html](https://tldp.org/LDP/abs/html/localvar.html)
 
 ## Latihan
+1. Buatlah sebuah program bash script yang dapat mengolah bilangan-bilangan yang diinputkan sebagai argumen! Bila jumlah argumen yang diinputkan ganjil, tampilkan jumlah bilangan-bilangan tersebut. Bila genap, tampilkan "Anda belum beruntung, coba lagi."
+Contoh :
+```bash
+$ bash script.sh 4 1 1
+Output: 6
+$ bash script.sh 3 3
+Output: Anda belum beruntung, coba lagi.
+```
+2. Membuat task scheduling menggunakan crontab untuk membuat log yang berisi size dari direktori /home/\<user>/Downloads dalam human readable format. Task berjalan setiap 30 menit pada pukul 8 sampai 17. File log disimpan pada direktori /home/\<user>/log/ dengan format nama sesuai command `date`.
+![soal-2](gambar/soal-2.png)
