@@ -929,4 +929,5 @@ $ bash script.sh 3 3
 Output: Anda belum beruntung, coba lagi.
 ```
 2. Membuat task scheduling menggunakan crontab untuk membuat log yang berisi size dari direktori /home/\<user>/Downloads dalam human readable format. Task berjalan setiap 30 menit pada pukul 8 sampai 17. File log disimpan pada direktori /home/\<user>/log/ dengan format nama sesuai command `date`.
+
 ![soal-2](gambar/soal-2.png)
