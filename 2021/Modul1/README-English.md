@@ -116,7 +116,7 @@ chmod is /bin/chmod
 
 Other than that, there are a few characters that are important to use in a shell:
 
-- __Redirection__ (Sends output to a file or read inputs from a file) uses redirect operator >, >>, <, 2>> contoh:
+- __Redirection__ (Sends output to a file or read inputs from a file) uses redirect operator >, >>, <, 2>> example:
 
 ```bash
 ls /home/Documents > test.txt
@@ -132,12 +132,12 @@ bash script.sh 2>> error.log
 #If there are errors when running script.sh, the error message will be written to error.log
 ```
 
-- __Pipe__ (output of one command will become the input of the other command) uses pipe operator |, contoh:
+- __Pipe__ (output of one command will become the input of the other command) uses pipe operator |, example:
 ```bash
 ls -l | sort -s
 #ouput of ls -l command became the input of sort -s command (sort descendingly)
 ```
-- __Wildcard__ uses wildcard characters *, ?, [ ], contoh:
+- __Wildcard__ uses wildcard characters *, ?, [ ], example:
 ```bash
 ls a*
 #output all files that begins with the letter a
