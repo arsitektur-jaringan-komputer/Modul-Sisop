@@ -32,6 +32,10 @@ Menggunakan:
         * [1. Pengertian Daemon](#1-pengertian-daemon)
         * [2. Langkah Pembuatan Daemon](#2-langkah-pembuatan-daemon)
         * [3. Implementasi Daemon](#3-implementasi-daemon)
+    * [Extras](#extras)
+        * [Directory Listing](#directory-listing-in-c)
+        * [File Permission](#file-permission-in-c)
+        * [File Ownership](#file-ownership-in-c)
     * [Soal Latihan](#soal-latihan)
 
 # Proses
@@ -499,23 +503,28 @@ Dengan bahasa C, kita bisa melihat ada file apa saja yang terdapat dalam suatu d
 #include <dirent.h>
 
 
-int
-main (void)
+int main (void)
 {
-  DIR *dp;
-  struct dirent *ep;
+    DIR *dp;
+    struct dirent *ep;
+    char path[100];
 
-  dp = opendir ("./");
-  if (dp != NULL)
+    printf("Enter path to list files: ");
+    scanf("%s", path);
+
+    dp = opendir(path);
+
+    if (dp != NULL)
     {
-      while (ep = readdir (dp))
-        puts (ep->d_name);
-      (void) closedir (dp);
-    }
-  else
-    perror ("Couldn't open the directory");
+      while ((ep = readdir (dp))) {
+          puts (ep->d_name);
+      }
 
-  return 0;
+      (void) closedir (dp);
+    } else perror ("Couldn't open the directory");
+
+    return 0;
+}
 ```
 
 Kita juga bisa melakukan traverse secara rekursif terhadap suatu directory. Contoh :
@@ -564,7 +573,7 @@ void listFilesRecursively(char *basePath)
     }
 
     closedir(dir);
-}}
+}
 ```
 
 ## File Permission in C
@@ -576,17 +585,21 @@ Kita bisa melihat permission dari suatu file atau directory di bahasa C dengan l
 
 int main()
 {
-    const char filename[] = "gettysburg.txt";
     struct stat fs;
+    char filename[100];
     int r;
 
-    printf("Obtaining permission mode for '%s':\n",filename);
+    printf("Enter path to list files: ");
+    scanf("%s", filename);
+
     r = stat(filename,&fs);
     if( r==-1 )
     {
         fprintf(stderr,"File error\n");
         exit(1);
     }
+
+    printf("Obtaining permission mode for '%s':\n",filename);
 
     /* file permissions are kept in the st_mode member */
     /* The S_ISREG() macro tests for regular files */
@@ -632,17 +645,34 @@ Untuk variabel dengan prefix `S_...` memiliki suatu aturan seperti file permissi
 ## File Ownership in C
 Kita juga bisa melihat owner dan group dari suatu file dengan bahasa C. Hal ini bisa dilakukan dengan bantuan library `sys/stat.h`, `pwd.h`, dan `grp.h`. Untuk mendapatkan informasi itu, perlu dilakukan 2 langkah yaitu mencari UID dan GID dari suatu file lalu mencari nama dari user dan group dalam user database atau group database. Berikut adalah contoh cara melakukan hal tersebut :
 ```c
+#include <stdio.h>
+#include <stdlib.h>
 #include <pwd.h>
 #include <grp.h>
 #include <sys/stat.h>
 
-struct stat info;
-stat(filename, &info);  // Error check omitted
-struct passwd *pw = getpwuid(info.st_uid);
-struct group  *gr = getgrgid(info.st_gid);
+int main()
+{
+    struct stat info;
+    char path[100];
+    int r;
 
-// If pw != 0, pw->pw_name contains the user name
-// If gr != 0, gr->gr_name contains the group name
+    printf("Enter path to list files: ");
+    scanf("%s", path);
+
+    r = stat(path, &info);
+    if( r==-1 )
+    {
+        fprintf(stderr,"File error\n");
+        exit(1);
+    }
+
+    struct passwd *pw = getpwuid(info.st_uid);
+    struct group  *gr = getgrgid(info.st_gid);
+
+    if (pw != 0) puts(pw->pw_name);
+    if (gr != 0) puts(gr->gr_name);
+}
 ```
 
 # Soal Latihan
