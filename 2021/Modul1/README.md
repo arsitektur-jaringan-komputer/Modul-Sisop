@@ -7,36 +7,45 @@
 
 ## Daftar Isi
 
-1. [Shell Scripting](#1-shell-scripting)
-    - [1.1 Shell](#11-shell)
-    - [1.2 Pemrograman Shell](#12-pemrograman-shell)
-    - [1.3 Perintah Dasar Shell](#13-perintah-dasar-shell)
-    - [1.4 Simple Shell Script](#14-simple-shell-script)
-    - [1.5 Variabel](#15-variabel)
-        - [1.5.1 Special Variable](#151-special-variable)
-    - [1.6 Input Output](#16-input-output)
-    - [1.7 Quoting](#17-quoting)
-    - [1.8 Operator Dasar](#18-operator-dasar)
-        - [1.8.1 Operator Aritmatika](#181-operator-aritmatika)
-        - [1.8.2 Operator Relasional](#182-operator-relasional)
-    - [1.9 Conditional Statement](#19-conditional-statements)
-        - [1.9.1 If...Else](#191-ifelse)
-        - [1.9.2 Case](#192-case)
-    - [1.10 Loop](#110-loop)
-        - [1.10.1 While Loop](#1101-while-loop)
-        - [1.10.2 For Loop](#1102-for-loop)
-        - [1.10.3 Until Loop](#1103-until-loop)
-        - [1.10.4 Select Loop](#1104-select-loop)
-        - [1.10.5 Nesting Loop](#1105-nesting-loop)
-    - [1.11 Function](#111-function)
-        - [1.11.1 Nested Function](#1111-nested-function)
-2. [Cron](#2-cron)
-    - [2.1 Membuat atau mengubah cron jobs](#21-membuat-atau-mengubah-cron-jobs)
-3. [AWK](#3-awk)
-    - [3.1 Menjalankan Program AWK](#31-menjalankan-program-awk)
-    - [3.2 Special Rules](#32-special-rules)
-4. [Referensi](#referensi)
-5. [Latihan](#latihan)
+- [Shell Scripting, Cron, dan AWK](#shell-scripting-cron-dan-awk)
+  - [Prasyarat](#prasyarat)
+  - [Daftar Isi](#daftar-isi)
+- [1. Shell Scripting](#1-shell-scripting)
+  - [1.1 Shell](#11-shell)
+  - [1.2 Pemrograman Shell](#12-pemrograman-shell)
+  - [1.3 Perintah Dasar Shell](#13-perintah-dasar-shell)
+  - [1.4 Simple Shell Script](#14-simple-shell-script)
+  - [1.5 Variabel](#15-variabel)
+    - [1.5.1 Special Variable](#151-special-variable)
+    - [1.5.2 Local Variable](#152-local-variable)
+  - [1.6 Input Output](#16-input-output)
+  - [1.7 Quoting](#17-quoting)
+  - [1.8 Operator Dasar](#18-operator-dasar)
+    - [1.8.1 Operator Aritmatika](#181-operator-aritmatika)
+    - [1.8.2 Operator Relasional](#182-operator-relasional)
+  - [1.9 Conditional Statements](#19-conditional-statements)
+    - [1.9.1 If...Else](#191-ifelse)
+    - [1.9.2 Case](#192-case)
+  - [1.10 Loop](#110-loop)
+    - [1.10.1 While loop](#1101-while-loop)
+    - [1.10.2 For loop](#1102-for-loop)
+    - [1.10.3 Until loop](#1103-until-loop)
+    - [1.10.4 Select loop](#1104-select-loop)
+    - [1.10.5 Nesting Loops](#1105-nesting-loops)
+  - [1.11 Function](#111-function)
+    - [1.11.1 Nested Functions](#1111-nested-functions)
+- [2. Cron](#2-cron)
+  - [2.1 Membuat atau mengubah cron jobs](#21-membuat-atau-mengubah-cron-jobs)
+- [3. AWK](#3-awk)
+  - [3.1 Menjalankan Program AWK](#31-menjalankan-program-awk)
+    - [Cara Kerja AWK](#cara-kerja-awk)
+  - [3.2 Special Rules](#32-special-rules)
+- [Extras](#extras)
+  - [Ranger](#ranger)
+    - [How to Install](#how-to-install)
+    - [How to Use](#how-to-use)
+  - [Referensi](#referensi)
+  - [Latihan](#latihan)
 
 # 1. Shell Scripting
 ## 1.1 Shell
@@ -46,7 +55,7 @@ Sistem operasi dibagi menjadi tiga komponen penting, yaitu Kernel, Shell, dan Pr
 
 - __Kernel__ adalah inti dari komputer. Komponen ini memungkinkan terjadinya komunikasi antara software dan hardware. Jika kernel adalah bagian terdalam dari sebuah sistem operasi, maka __shell__ adalah bagian terluarnya.
 - __Shell__ adalah program penerjemah perintah yang menjembatani user dengan kernel. Umumnya, shell menyediakan __prompt__ sebagai user interface tempat user menginputkan perintah-perintah yang diinginkan, baik berupa perintah internal maupun eksternal. Setelah menerima input dari user dan menjalankan program/perintah berdasarkan input tersebut, shell akan mengeluarkan output. Shell dapat diakses melalui __Terminal__.
-- __Program Utility__ adalah system software yang menjalankan tugas-tugas maintenance. Program utility ini dibuat secara khsus untuk melakukan fungsi tertentu pada suatu area komputasi secara spesifik, seperti memformat harddisk, atau melakukan pengecekan konektifitas jaringan dll.
+- __Program Utility__ adalah system software yang menjalankan tugas-tugas maintenance. Program utility ini dibuat secara khusus untuk melakukan fungsi tertentu pada suatu area komputasi secara spesifik, seperti memformat harddisk, atau melakukan pengecekan konektivitas jaringan dll.
 
 ` Catatan: Coba buka terminal di Linux, maka kamu akan menemukan prompt shell (biasanya $). Disitu, kamu dapat mengetik input berupa perintah, kemudian mengeksekusinya dengan menekan tombol "Enter". Output akan ditampilkan di terminal. `
 
@@ -80,7 +89,11 @@ Pada modul ini jenis shell yang digunakan adalah Bash (_Bourne Again SHell_) kar
 $ echo $SHELL
 ```
 
-Shell memiliki perintah internal (built-in shell) dan perintah eksternal. Untuk mengecek apakah sebuah perintah termasuk internal atau eksternal, gunakan perintah type
+Shell memiliki perintah internal (built-in shell) dan perintah eksternal. Untuk lebih jelasnya :
+- Perintah internal (built-in shell) : Perintah yang dibangun di dalam shell. Eksekusi tidak harus mencari perintah dari variabel PATH yang di ada di shell
+- Perintah eksternal : Perintah yang tidak ada di dalam shell. Ketika perintah dijalankan, shell akan mencari perintah tersebut dalam variable PATH seperti `/usr/bin` dan `/bin`.
+
+Untuk mengecek apakah sebuah perintah termasuk internal atau eksternal, gunakan perintah type
 
 ```bash
 $ type cd
@@ -104,7 +117,7 @@ chmod is /bin/chmod
 
 Selain itu, terdapat beberapa karakter yang cukup penting untuk digunakan dalam shell:
 
-- __Redirection__ (mengirim output ke file atau menerima input dari file) menggunakan operator redirect >, >>, <, contoh:
+- __Redirection__ (mengirim output ke file atau menerima input dari file) menggunakan operator redirect >, >>, <, 2>> contoh:
 
 ```bash
 ls /home/Documents > test.txt
@@ -115,6 +128,9 @@ ls /home/Documents >> test.txt
 
 sort < test.txt
 #file test.txt dijadikan input oleh perintah sort
+
+bash script.sh 2>> error.log
+#Jika terdapat error saat menjalankan script.sh, pesan error akan masuk ke error.log
 ```
 
 - __Pipe__ (output suatu perintah menjadi input perintah lain) menggunakan operator |, contoh:
@@ -227,12 +243,6 @@ Output:
 
 ![variabel](gambar/bash1-5.png)
 
-Catatan:
-
-Syntax array diatas hanya dapat dieksekusi oleh bash, sehingga harus dieksekusi dengan cara bash nama_file.sh atau bash ./nama_file.sh. Jika menggunakan ./nama_file.sh saja akan muncul error:
-
-![error](gambar/error1-5.png)
-
 ### 1.5.1 Special Variable
 Beberapa special variable yang sering dipakai:
 
@@ -261,6 +271,33 @@ echo "PID : $$"
 Output:
 
 ![special](gambar/special.png)
+
+### 1.5.2 Local Variable
+Ketika menggunakan bash, variabel akan otomatis menjadi variabel global jika di-assign secara langsung seperti `bulan=6`. Tetapi kita bisa membuat variabel lokal untuk fungsi di bash dengan menggunakan keyword `local`. Variabel lokal yang terbuat tidak akan menjadi variabel global.
+
+Contoh:
+
+```bash
+#!/bin/bash
+
+fac_func() {
+    angka=2
+    local tmp=10
+    echo "Global Variable di Dalam Fungsi : $angka"
+    echo "Local Variable di Dalam Fungsi : $tmp"
+}
+
+fac_func
+
+echo "Global Variable di Luar Fungsi : $angka"
+echo "Local Variable di Luar Fungsi : $tmp"
+```
+
+Output:
+
+![local-variable](gambar/local-variable.png)
+
+Dari gambar terlihat bahwa ketika kita mencoba melakukan print local variable ke terminal tidak bisa keluar.
 
 ## 1.6 Input Output
 - read digunakan untuk mengambil input dari keyboard dengan syntax sebagai berikut:
@@ -848,6 +885,28 @@ Ada berapa "732"?
 ```
 Pada contoh di atas, rule kedua hanya memiliki action untuk melakukan perhitungan berapa jumlah baris yang mengandung "732", namun tidak ada action untuk menampilkan (print).
 
+# Extras
+## Ranger
+![ranger](gambar/ranger.png)
+
+Ranger merupakan file manager di terminal yang menggunakan key-key dari VI. Ranger menyediakan user interface yang minimalis dan bagus dengan menampilkan hierarki dari directory. Ranger sendiri bisa secara otomatis mencari program yang sesuai untuk mengeksekusi suatu file berdasarkan tipe-nya.
+
+### How to Install
+Cara menginstal Ranger sendiri cukup sederhana:
+- Dengan perintah `sudo apt-get install ranger` 
+- Dengan menggunakan PyPI, menggunakan command `pip install ranger-fm`.
+
+### How to Use
+- Buka terminal
+- Ketik `ranger`
+- Maka interface untuk Ranger akan langsung terbuka
+- Gunakan key `h` untuk pergi ke directory sebelumnya
+- Gunakan key `l` untuk pergi ke directory selanjutnya dan membuka file
+- Gunakan key `j` untuk mengarahkan cursor ke bawah
+- Gunakan key `k` untuk mengarahkan cursor ke atas
+- Gunakan key `q` untuk keluar
+- Gunakan key `!` atau `s` untuk mengeksekusi command shell, contoh `! touch my_text.txt`, lalu tambahakan `-w` sebelum command untuk melihat output dari command tersebut
+
 ## Referensi
 * [https://www.tutorialspoint.com/unix/shell_scripting.htm](https://www.tutorialspoint.com/unix/shell_scripting.htm)
 * [https://pemula.linux.or.id/programming/bash-shell.html](https://pemula.linux.or.id/programming/bash-shell.html)
@@ -856,6 +915,21 @@ Pada contoh di atas, rule kedua hanya memiliki action untuk melakukan perhitunga
 * [https://vpswp.blogspot.com/2015/06/definisi-dan-6-contoh-fungsi-perintah-awk-linux.html](https://vpswp.blogspot.com/2015/06/definisi-dan-6-contoh-fungsi-perintah-awk-linux.html)
 * [https://www.codepolitan.com/belajar-bash-mencoba-bash-untuk-pertama-kali-57bbca3c28e54-17341](https://www.codepolitan.com/belajar-bash-mencoba-bash-untuk-pertama-kali-57bbca3c28e54-17341)
 * [https://pemula.linux.or.id/programming/bash-shell.html](https://pemula.linux.or.id/programming/bash-shell.html)
-
+* [https://github.com/ranger/ranger](https://github.com/ranger/ranger)
+* [https://www.geeksforgeeks.org/internal-and-external-commands-in-linux/#:~:text=The%20UNIX%20system%20is%20command,are%20built%20into%20the%20shell.&text=External%20Commands%20%3A%20Commands%20which%20aren't%20built%20into%20the%20shell](https://www.geeksforgeeks.org/internal-and-external-commands-in-linux/#:~:text=The%20UNIX%20system%20is%20command,are%20built%20into%20the%20shell.&text=External%20Commands%20%3A%20Commands%20which%20aren't%20built%20into%20the%20shell)
+* [https://tldp.org/LDP/abs/html/localvar.html](https://tldp.org/LDP/abs/html/localvar.html)
 
 ## Latihan
+1. Buatlah sebuah program bash script yang dapat mengolah bilangan-bilangan yang diinputkan sebagai argumen! Bila jumlah argumen yang diinputkan ganjil, tampilkan jumlah bilangan-bilangan tersebut. Bila genap, tampilkan "Anda belum beruntung, coba lagi."
+Contoh :
+```bash
+$ bash script.sh 4 1 1
+Output: 6
+$ bash script.sh 3 3
+Output: Anda belum beruntung, coba lagi.
+```
+2. Membuat task scheduling menggunakan crontab untuk membuat log yang berisi size dari direktori /home/\<user>/Downloads dalam human readable format. Task berjalan setiap 15 menit pada pukul 8 sampai 17. File log disimpan pada direktori /home/\<user>/log/ dengan format nama sesuai command `date`.
+
+![soal-2](gambar/soal-2.png)
+
+3. Lakukan download dengan command `wget https://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data` untuk mendapatkan dataset. Buatlah sebuah program awk yang dapat menampilkan hasil __perkalian__ dari kolom '__petal length in cm__' dan '__petal width in cm__' dengan format __2 angka di belakang koma__ hanya untuk record dengan kolom '__class__' yang __mengandung string ‘Iris-setosa’__ dan memiliki nilai __‘sepal length in cm’__ lebih dari __5.4__ berdasarkan dataset tersebut! Tampilkan hasil dengan format “Luas petal pada baris n adalah y.yy” dimana “n” adalah baris ke berapa record tersebut dan “y.yy” adalah hasil perkaliannya. Informasi atribut dapat dilihat di https://archive.ics.uci.edu/ml/datasets/iris/
