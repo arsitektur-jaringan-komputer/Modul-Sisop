@@ -55,8 +55,7 @@ Merupakan identifier dari suatu proses yang menampilkan user yang menjalankan su
 Angka unik dari suatu proses yang sedang berjalan untuk mengidentifikasi suatu proses. Pada program C, dapat memanggil fungsi ```pid_t getpid(void);```
 
 ### 2.3 Parent PID (PPID)
-Setiap proses memiliki identifier tersendiri dan juga setelah proses tersebut membuat proses lainnya. Proses yang terbentuk ini memiliki identifier berupa ID dari pembuatnya (parent). Pada program C, dapat memanggil fungsi ```
-pid_t getppid(void);```.
+Setiap proses memiliki identifier tersendiri dan juga setelah proses tersebut membuat proses lainnya. Proses yang terbentuk ini memiliki identifier berupa ID dari pembuatnya (parent). Pada program C, dapat memanggil fungsi ```pid_t getppid(void); ```.
 
 ## 3. Melihat Proses Berjalan
 
@@ -99,16 +98,16 @@ Secara default ketika menggunakan perintah shell ```kill <pid>```, akan mengguna
 [Daftar Isi](#daftar-isi)
 
 ### **fork**
-```fork``` adalah fungsi _system call_ di C untuk melakukan _spawning process_. Setelah memanggil fungsi itu, akan terdapat proses baru yang merupakan _child process_ dan mengembalikan nilai 0 untuk _child process_ dan nilai _PID_ untuk _parent process_. 
+`fork` adalah fungsi _system call_ di C untuk melakukan _spawning process_. Setelah memanggil fungsi itu, akan terdapat proses baru yang merupakan _child process_ dan mengembalikan nilai 0 untuk _child process_ dan nilai _PID_ untuk _parent process_.
 
-Coba program dibawah ini dan compile terlebih dahulu dengan ```gcc coba.c -o coba```
+Coba program dibawah ini dan compile terlebih dahulu dengan `gcc coba.c -o coba`
 
-Kemudian execute program dengan ```./coba```
+Kemudian execute program dengan `./coba`
 
 ```c
-#include <stdio.h> 
-#include <sys/types.h> 
-#include <unistd.h> 
+#include <stdio.h>
+#include <sys/types.h>
+#include <unistd.h>
 
 int main(){
   pid_t child_id;
@@ -116,7 +115,7 @@ int main(){
   child_id = fork();
 
   printf("Ini akan kepanggil 2 kali\n");
-  
+
   if(child_id != 0){
     printf("\nParent process.\nPID: %d, Child's PID: %d\n", (int)getpid(), (int)child_id);
   }else {
@@ -176,7 +175,7 @@ Visualisasi:
 
 ### **exec**
 
-```exec``` adalah fungsi untuk menjalankan program baru dan menggantikan program yang sedang berjalan. Fungsi ```exec``` memiliki banyak variasi seperti ```execvp```, ```execlp```, dan ```execv```.
+`exec` adalah fungsi untuk menjalankan program baru dan menggantikan program yang sedang berjalan. Fungsi `exec` memiliki banyak variasi seperti `execvp`, `execlp`, dan `execv`.
 
 Contoh yang akan digunakan adalah ```execv```.
 
@@ -185,10 +184,10 @@ Contoh yang akan digunakan adalah ```execv```.
 #include <unistd.h>
 
 int main () {
-  
+
   // argv[n] = { {your-program-name}, {argument[1]}, {argument[2]},.....,{argument[n-2]}, NULL }
   char *argv[4] = {"list", "-l", "/home/", NULL};
-  
+
   execv("/bin/ls", argv);
 
   printf("This line will not be executed\n");
@@ -211,19 +210,19 @@ int main() {
   pid_t child_id;
 
   child_id = fork();
-  
+
   if (child_id < 0) {
     exit(EXIT_FAILURE); // Jika gagal membuat proses baru, program akan berhenti
   }
 
   if (child_id == 0) {
     // this is child
-    
+
     char *argv[] = {"cp", "/var/log/apt/history.log", "/home/[user]/", NULL};
     execv("/bin/cp", argv);
   } else {
     // this is parent
-    
+
     char *argv[] = {"cp", "/var/log/dpkg.log", "/home/[user]/", NULL};
     execv("/bin/cp", argv);
   }
@@ -256,7 +255,7 @@ Jika ingin melakukan banyak task secara bersamaan tanpa mementingkan urutan kerj
 
 ### **wait** x **fork** x **exec**
 
-Kita dapat menjalankan dua proses dalam satu program. Contoh penggunaannya adalah membuat folder dan mengisi folder tersebut dengan suatu file. Pertama, buat folder terlebih dahulu. Kemudian, buat file dengan perintah shell ```touch``` pada folder tersebut. Namun, pada kenyataannya untuk melakukan dua hal bersamaan perlu adanya jeda beberapa saat. 
+Kita dapat menjalankan dua proses dalam satu program. Contoh penggunaannya adalah membuat folder dan mengisi folder tersebut dengan suatu file. Pertama, buat folder terlebih dahulu. Kemudian, buat file dengan perintah shell ```touch``` pada folder tersebut. Namun, pada kenyataannya untuk melakukan dua hal bersamaan perlu adanya jeda beberapa saat.
 
 Untuk membuat file yang berada dalam suatu folder, pertama-tama folder harus ada terlebih dahulu. Untuk _delay_ suatu proses dapat menggunakan _system call_ ```wait```.
 
@@ -271,14 +270,14 @@ int main() {
   int status;
 
   child_id = fork();
-  
+
   if (child_id < 0) {
     exit(EXIT_FAILURE); // Jika gagal membuat proses baru, program akan berhenti
   }
 
   if (child_id == 0) {
     // this is child
-    
+
     char *argv[] = {"mkdir", "-p", "folderku", NULL};
     execv("/bin/mkdir", argv);
   } else {
@@ -412,6 +411,8 @@ close(STDOUT_FILENO);
 close(STDERR_FILENO);
 ```
 
+File descriptor sendiri merupakan sebuah angka yang merepresentasikan sabuah file yang dibuka di sebuah sistem operasi. File descriptor mendeskripsikan sumber data dan bagaimana data itu diakses.
+
 ### 2.6 Membuat Loop Utama
 Di loop utama ini lah tempat kita menuliskan inti dari program kita. Jangan lupa beri perintah `sleep()` agar loop berjalan pada suatu interval.
 
@@ -488,6 +489,162 @@ Untuk memeriksa process apa saja yang sedang berlangsung kita dapat menggunakan 
 ### 3.4 Mematikan Daemon process yang sedang berjalan
 Untuk mematikan daemon process kita akan menggunakan perintah `kill`. Pertama kita harus menemukan PID dari Daemon process yang akan dimatikan. Kita dapat menemukan PID tersebut pada langkah sebelumnya. Lalu jalankan `sudo kill -9 pid` untuk mematikan process-nya.
 
+# Extras
+
+## Directory Listing in C
+Dengan bahasa C, kita bisa melihat ada file apa saja yang terdapat dalam suatu directory. Tentu saja hal ini membutuhkan suatu library khusus bernama `dirent.h`. Berikut contoh directory listing di bahasa C :
+```c
+#include <stdio.h>
+#include <sys/types.h>
+#include <dirent.h>
+
+
+int
+main (void)
+{
+  DIR *dp;
+  struct dirent *ep;
+
+  dp = opendir ("./");
+  if (dp != NULL)
+    {
+      while (ep = readdir (dp))
+        puts (ep->d_name);
+      (void) closedir (dp);
+    }
+  else
+    perror ("Couldn't open the directory");
+
+  return 0;
+```
+
+Kita juga bisa melakukan traverse secara rekursif terhadap suatu directory. Contoh :
+```c
+#include <stdio.h>
+#include <string.h>
+#include <dirent.h>
+
+void listFilesRecursively(char *path);
+
+
+int main()
+{
+    char path[100];
+
+    printf("Enter path to list files: ");
+    scanf("%s", path);
+
+    listFilesRecursively(path);
+
+    return 0;
+}
+
+void listFilesRecursively(char *basePath)
+{
+    char path[1000];
+    struct dirent *dp;
+    DIR *dir = opendir(basePath);
+
+    if (!dir)
+        return;
+
+    while ((dp = readdir(dir)) != NULL)
+    {
+        if (strcmp(dp->d_name, ".") != 0 && strcmp(dp->d_name, "..") != 0)
+        {
+            printf("%s\n", dp->d_name);
+
+            // Construct new path from our base path
+            strcpy(path, basePath);
+            strcat(path, "/");
+            strcat(path, dp->d_name);
+
+            listFilesRecursively(path);
+        }
+    }
+
+    closedir(dir);
+}}
+```
+
+## File Permission in C
+Kita bisa melihat permission dari suatu file atau directory di bahasa C dengan library yang bernama `sys/stat.h`. Berikut adalah contoh dari checking permission file dengan bahasa C :
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/stat.h>
+
+int main()
+{
+    const char filename[] = "gettysburg.txt";
+    struct stat fs;
+    int r;
+
+    printf("Obtaining permission mode for '%s':\n",filename);
+    r = stat(filename,&fs);
+    if( r==-1 )
+    {
+        fprintf(stderr,"File error\n");
+        exit(1);
+    }
+
+    /* file permissions are kept in the st_mode member */
+    /* The S_ISREG() macro tests for regular files */
+    if( S_ISREG(fs.st_mode) )
+        puts("Regular file");
+    else
+        puts("Not a regular file");
+
+    printf("Owner permissions: ");
+    if( fs.st_mode & S_IRUSR )
+        printf("read ");
+    if( fs.st_mode & S_IWUSR )
+        printf("write ");
+    if( fs.st_mode & S_IXUSR )
+        printf("execute");
+    putchar('\n');
+
+    printf("Group permissions: ");
+    if( fs.st_mode & S_IRGRP )
+        printf("read ");
+    if( fs.st_mode & S_IWGRP )
+        printf("write ");
+    if( fs.st_mode & S_IXGRP )
+        printf("execute");
+    putchar('\n');
+
+    printf("Others permissions: ");
+    if( fs.st_mode & S_IROTH )
+        printf("read ");
+    if( fs.st_mode & S_IWOTH )
+        printf("write ");
+    if( fs.st_mode & S_IXOTH )
+        printf("execute");
+    putchar('\n');
+  
+    return(0);
+}
+```
+Untuk variabel dengan prefix `S_...` memiliki suatu aturan seperti file permission di dalam linux. Berikut adalah gambar yang menunjukkan cara penggunaannya :
+
+![file-permission](img/file-permission.png)
+
+## File Ownership in C
+Kita juga bisa melihat owner dan group dari suatu file dengan bahasa C. Hal ini bisa dilakukan dengan bantuan library `sys/stat.h`, `pwd.h`, dan `grp.h`. Untuk mendapatkan informasi itu, perlu dilakukan 2 langkah yaitu mencari UID dan GID dari suatu file lalu mencari nama dari user dan group dalam user database atau group database. Berikut adalah contoh cara melakukan hal tersebut :
+```c
+#include <pwd.h>
+#include <grp.h>
+#include <sys/stat.h>
+
+struct stat info;
+stat(filename, &info);  // Error check omitted
+struct passwd *pw = getpwuid(info.st_uid);
+struct group  *gr = getgrgid(info.st_gid);
+
+// If pw != 0, pw->pw_name contains the user name
+// If gr != 0, gr->gr_name contains the group name
+```
+
 # Soal Latihan
 
 [Daftar Isi](#daftar-isi)
@@ -497,3 +654,9 @@ Untuk mematikan daemon process kita akan menggunakan perintah `kill`. Pertama ki
 * https://www.geeksforgeeks.org/exec-family-of-functions-in-c/
 * http://www.netzmafia.de/skripten/unix/linux-daemon-howto.html
 * https://www.computerhope.com/unix/uumask.htm
+* http://www.gnu.org/savannah-checkouts/gnu/libc/manual/html_node/Simple-Directory-Lister.html
+* https://codeforwin.org/2018/03/c-program-to-list-all-files-in-a-directory-recursively.html
+* https://c-for-dummies.com/blog/?p=4101
+* https://pubs.opengroup.org/onlinepubs/009695399/functions/getgrgid.html
+* https://pubs.opengroup.org/onlinepubs/009695399/functions/getgrgid.html
+* https://pubs.opengroup.org/onlinepubs/009695399/functions/getpwuid.html
