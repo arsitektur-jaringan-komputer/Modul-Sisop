@@ -102,7 +102,7 @@ Secara default ketika menggunakan perintah shell ```kill <pid>```, akan mengguna
 [Daftar Isi](#daftar-isi)
 
 ### **fork**
-`fork` adalah fungsi _system call_ di C untuk melakukan _spawning process_. Setelah memanggil fungsi itu, akan terdapat proses baru yang merupakan _child process_ dan mengembalikan nilai 0 untuk _child process_ dan nilai _PID_ untuk _parent process_.
+`fork` adalah fungsi _system call_ di C untuk melakukan _spawning process_. Setelah memanggil fungsi itu, akan terdapat proses baru yang merupakan _child process_, fungsi akan mengembalikan nilai 0 di dalam _child process_, dan akan mengembalikan nilai _PID_ dari _child process_ di dalam _parent process_
 
 Coba program dibawah ini dan compile terlebih dahulu dengan `gcc coba.c -o coba`
 
