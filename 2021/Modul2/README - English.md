@@ -1,3 +1,102 @@
+# sisop-modul-2
+
+# Daemon dan Proses
+
+Menggunakan:
+* Linux
+* Bahasa C (compile dengan _gcc_)
+
+# Daftar Isi
+
+* Proses dan Daemon
+    * [Daftar Isi](#daftar-isi)
+    * [Proses](#proses)
+        * [1. Pengertian](#1-pengertian)
+        * [2. Macam-Macam PID](#2-macam-macam-pid)
+            * [2.1 User ID (UID)](#21-user-id-uid)
+            * [2.2 Process ID (PID)](#22-process-id-pid)
+            * [2.3 Parent PID (PPID)](#23-parent-pid-ppid)
+        * [3. Melihat Proses Berjalan](#3-melihat-proses-berjalan)
+        * [4. Menghentikan Proses](#4-menghentikan-proses)
+        * [5. Membuat Proses](#5-membuat-proses)
+            * [fork](#fork)
+            * [exec](#exec)
+            * [Menjalankan Program Secara Bersamaan](#menjalankan-program-secara-bersamaan)
+            * [wait x fork x exec](#wait-x-fork-x-exec)
+            * [system](#system)
+        * [6. Jenis-Jenis Proses](#6-jenis-jenis-proses)
+            * [Zombie Process](#zombie-process)
+            * [Orphan Process](#orphan-process)
+            * [Daemon Process](#daemon-process)
+    * [Daemon](#daemon)
+        * [1. Pengertian Daemon](#1-pengertian-daemon)
+        * [2. Langkah Pembuatan Daemon](#2-langkah-pembuatan-daemon)
+        * [3. Implementasi Daemon](#3-implementasi-daemon)
+    * [Extras](#extras)
+        * [Directory Listing](#directory-listing-in-c)
+        * [File Permission](#file-permission-in-c)
+        * [File Ownership](#file-ownership-in-c)
+    * [Soal Latihan](#soal-latihan)
+
+# Proses
+
+## 1. Pengertian
+
+[Daftar Isi](#daftar-isi)
+
+Proses adalah kondisi dimana OS menjalankan (eksekusi) suatu program. Ketika suatu program tersebut dieksekusi oleh OS, proses tersebut memiliki PID (Process ID) yang merupakan identifier dari suatu proses. Pada UNIX, untuk melihat proses yang dieksekusi oleh OS dengan memanggil perintah shell ```ps```. Untuk melihat lebih lanjut mengenai perintah ```ps``` dapat membuka ```man ps```.
+
+Dalam penggunaannya, suatu proses dapat membentuk proses lainnya yang disebut _spawning process_. Proses yang memanggil proses lainnya disebut **_parent process_** dan yang terpanggil disebut **_child process_**.
+
+## 2. Macam-Macam PID
+
+[Daftar Isi](#daftar-isi)
+
+### 2.1 User ID (UID)
+Merupakan identifier dari suatu proses yang menampilkan user yang menjalankan suatu program. Pada program C, dapat memanggil fungsi ``` uid_t getuid(void);```
+
+### 2.2 Process ID (PID)
+Angka unik dari suatu proses yang sedang berjalan untuk mengidentifikasi suatu proses. Pada program C, dapat memanggil fungsi ```pid_t getpid(void);```
+
+### 2.3 Parent PID (PPID)
+Setiap proses memiliki identifier tersendiri dan juga setelah proses tersebut membuat proses lainnya. Proses yang terbentuk ini memiliki identifier berupa ID dari pembuatnya (parent). Pada program C, dapat memanggil fungsi ```pid_t getppid(void); ```.
+
+## 3. Melihat Proses Berjalan
+
+[Daftar Isi](#daftar-isi)
+
+Untuk melihat proces yang sedang berjalan di OS, dapat menggunakan ```ps -ef``` untuk melihat secara detailnya.
+
+![show ps](img/showps.png)
+
+Penjelasan:
+  * **UID**: user yang menjalankan program
+  * **PID**: process IDnya
+  * **PPID**: parent PID, kalau tidak ada parent akan bernilai 0
+  * **C**: CPU Util. (%)
+  * **STIME**: waktu proses dijalankan
+  * **TTY**: terminal yang menjalankan proses. Jika tidak ada berarti background
+  * **TIME**: lamanya proses berjalan
+  * **CMD**: perintah yang menjalankan proses tersebut
+
+## 4. Menghentikan Proses
+
+[Daftar Isi](#daftar-isi)
+
+Untuk menghentikan (_terminate_) proses yang berjalan, jalankan perintah shell ```kill [options] <pid>```. Biasanya untuk menghentikan paksa suatu proses dapat menggunakan perintah ```kill -9 <pid>```. Angka _9_ adalah kode Signal untuk terminate suatu process.
+
+### Macam-Macam Signal
+
+| Signal name | Signal value  | Effect       |
+| ------------|:-------------:| -------------|
+| SIGHUP      | 1             | Hangup         |
+| SIGINT      | 2             | Interrupt from keyboard  |
+| SIGKILL     | 9             | Kill signal   |
+| SIGTERM     | 15            | Termination signal
+| SIGSTOP     | 17,19,23      | Stop the process
+
+Secara default ketika menggunakan perintah shell ```kill <pid>```, akan menggunakan ```SIGSTOP``` yang mana akan menghentikan proses namun masih dapat dilanjutkan kembali.
+
 
 ## 5. Making a Process
 
@@ -42,7 +141,9 @@ Child process.
 PID: 13102, Parent's PID: 1
 ```
 
+
 Visualization:
+
 ```c
 +-------------------------+
 |   Parent Process        |
@@ -105,6 +206,7 @@ int main () {
 
 By combining ```fork``` and ```exec``, we can run 2 or more _tasks_ concurrently. An example is backing up different logs at the same time.
 
+
 ```c
 #include <stdlib.h>
 #include <sys/types.h>
@@ -154,7 +256,6 @@ Visualization:
     V                              V
 ```
 
-
 If you want to do multiple tasks simultaneously disregarding the order, you can use `fork` and `exec`.
 
 
@@ -163,6 +264,7 @@ If you want to do multiple tasks simultaneously disregarding the order, you can 
 We can run two processes in one program. An example of its use is to create a folder and fill the folder with a file. First, create a folder. Then, create a file with the shell command `touch` in that folder. However, in reality, to do two things simultaneously requires a moment's pause.
 
 To create files that are in a folder, the folder itself must first exist. To _delay_ a process can use the `wait` _system call_.
+
 
 ```c
 #include <stdlib.h>
@@ -204,7 +306,6 @@ File examplebash.sh:
 #!/bin/bash
 
 echo "Shell script ran"
-
 ```
 
 File system.c:
@@ -225,3 +326,372 @@ Shell script ran
 ```
 
 
+## 6. Jenis-Jenis Proses
+
+[Daftar Isi](#daftar-isi)
+
+### **Zombie Process**
+
+Zombie Process terjadi karena adaanya child process yang di exit namun parrent processnya tidak tahu bahwa child process tersebut telah di terminate, misalnya disebabkan karena putusnya network. Sehingga parent process tidak merelease process yang masih digunakan oleh child process tersebut walaupun process tersebut sudah mati.
+
+### **Orphan Process**
+
+Orphan Process adalah sebuah proses yang ada dalam komputer dimana parent process telah selesai atau berhenti bekerja namun proses anak sendiri tetap berjalan.
+
+### **Daemon Process**
+
+Daemon Process adalah sebuah proses yang bekerja pada background karena proses ini tidak memiliki terminal pengontrol. Dalam sistem operasi Windows biasanya lebih dikenal dengan sebutan service. Daemon adalah sebuah proses yang didesain supaya proses tersebut tidak mendapatkan intervensi dari user.
+
+---
+
+# Daemon
+
+[Daftar Isi](#daftar-isi)
+
+## 1. Pengertian Daemon
+Daemon adalah suatu program yang berjalan di background secara terus menerus tanpa adanya interaksi secara langsung dengan user yang sedang aktif.
+
+<!-- Sebuah daemon dapat berhenti karena beberapa hal. -->
+## 2. Langkah Pembuatan Daemon
+Ada beberapa langkah untuk membuat sebuah daemon:
+### 2.1 Melakukan Fork pada Parent Process dan mematikan Parent Process
+Langkah pertama adalah membuat sebuah parent process dan memunculkan child process dengan melakukan `fork()`. Kemudian bunuh parent process agar sistem operasi mengira bahwa proses telah selesai.
+
+```c
+pid_t pid;        // Variabel untuk menyimpan PID
+
+pid = fork();     // Menyimpan PID dari Child Process
+
+/* Keluar saat fork gagal
+ * (nilai variabel pid < 0) */
+if (pid < 0) {
+  exit(EXIT_FAILURE);
+}
+
+/* Keluar saat fork berhasil
+ * (nilai variabel pid adalah PID dari child process) */
+if (pid > 0) {
+  exit(EXIT_SUCCESS);
+}
+```
+
+### 2.2 Mengubah Mode File dengan `umask`
+Setiap file dan directory memiliki _permission_ atau izin yang mengatur siapa saja yang boleh melakukan _read, write,_ dan _execute_ pada file atau directory tersebut.
+
+Dengan menggunakan `umask` kita dapat mengatur _permission_ dari suatu file pada saat file itu dibuat. Di sini kita mengatur nilai `umask(0)` agar kita mendapatkan akses full terhadap file yang dibuat oleh daemon.
+
+```c
+umask(0);
+```
+
+### 2.3 Membuat Unique Session ID (SID)
+Sebuah Child Process harus memiliki SID agar dapat berjalan. Tanpa adanya SID, Child Process yang Parent-nya sudah di-`kill` akan menjadi Orphan Process.
+
+Untuk mendapatkan SID kita dapat menggunakan perintah `setsid()`. Perintah tersebut memiliki _return type_ yang sama dengan perintah `fork()`.
+
+```c
+sid = setsid();
+if (sid < 0) {
+  exit(EXIT_FAILURE);
+}
+```
+
+### 2.4 Mengubah Working Directory
+Working directory harus diubah ke suatu directory yang pasti ada. Untuk amannya, kita akan mengubahnya ke root (/) directory karena itu adalah directory yang dijamin ada pada semua distro linux.
+
+Untuk mengubah Working Directory, kita dapat menggunakan perintah `chdir()`.
+
+```c
+if ((chdir("/")) < 0) {
+  exit(EXIT_FAILURE);
+}
+```
+
+### 2.5 Menutup File Descriptor Standar
+Sebuah daemon tidak boleh menggunakan terminal. Oleh sebab itu kita harus _menutup_ file descriptor standar (STDIN, STDOUT, STDERR).
+
+```c
+close(STDIN_FILENO);
+close(STDOUT_FILENO);
+close(STDERR_FILENO);
+```
+
+File descriptor sendiri merupakan sebuah angka yang merepresentasikan sabuah file yang dibuka di sebuah sistem operasi. File descriptor mendeskripsikan sumber data dan bagaimana data itu diakses.
+
+### 2.6 Membuat Loop Utama
+Di loop utama ini lah tempat kita menuliskan inti dari program kita. Jangan lupa beri perintah `sleep()` agar loop berjalan pada suatu interval.
+
+```c
+while (1) {
+  // Tulis program kalian di sini
+
+  sleep(30);
+}
+```
+
+## 3. Daemon Implementation
+The code below is the result of following the steps of making daemon process (Daemon Template)
+
+```c
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <fcntl.h>
+#include <errno.h>
+#include <unistd.h>
+#include <syslog.h>
+#include <string.h>
+
+int main() {
+  pid_t pid, sid;        // Variables to store PID
+
+  pid = fork();     // Storing PID of child process
+
+  /* Exit the program if fork failed
+  * (nilai variabel pid < 0) */
+  if (pid < 0) {
+    exit(EXIT_FAILURE);
+  }
+
+  /* Exit the program if fork succeeded
+  * (the value of pid is equal to the child process) */
+  if (pid > 0) {
+    exit(EXIT_SUCCESS);
+  }
+
+  umask(0);
+
+  sid = setsid();
+  if (sid < 0) {
+    exit(EXIT_FAILURE);
+  }
+
+  if ((chdir("/")) < 0) {
+    exit(EXIT_FAILURE);
+  }
+
+  close(STDIN_FILENO);
+  close(STDOUT_FILENO);
+  close(STDERR_FILENO);
+
+  while (1) {
+    // Write your program here
+
+    sleep(30);
+  }
+}
+```
+### 3.1 Compiling daemon program
+To the daemon process, first we need to compile the C file that we have made with the command `gcc [program_name.c] -o [output_file_name]`.
+
+### 3.2 Running daemon program
+After completing the last step, the executable file will appear. It can be run by exectuting `./output_file_name`
+
+### 3.3 Check if the daemon process is running
+To check what processes are running, we can use the `ps -aux` command. To find the daemon process that we ran, we can use the `grep` command. We can combine both command to be `ps -aux | grep "output_file_name"`. If there is an output, that means the daemon process is running.
+
+### 3.4 Terminating daemon process
+To terminate daemon processes, we can use the `kill` command. First we need to fild the pid of the daemon process that we want to terminate. We can find the pid by using the last step. Then we can run `sudo kill -9 pid` to shut the process down. The "pid" is replaced by the pid of your daemon process.
+
+# Extras
+
+## Directory Listing in C
+With C, we can check what are the contents of a directory. To achieve this, we need to use a spesific library called `dirent.h`.
+Here are the example of directory listing in C:
+```c
+#include <stdio.h>
+#include <sys/types.h>
+#include <dirent.h>
+
+
+int main (void)
+{
+    DIR *dp;
+    struct dirent *ep;
+    char path[100];
+
+    printf("Enter path to list files: ");
+    scanf("%s", path);
+
+    dp = opendir(path);
+
+    if (dp != NULL)
+    {
+      while ((ep = readdir (dp))) {
+          puts (ep->d_name);
+      }
+
+      (void) closedir (dp);
+    } else perror ("Couldn't open the directory");
+
+    return 0;
+}
+```
+
+We can also traverse recursively to a directory. For example :
+```c
+#include <stdio.h>
+#include <string.h>
+#include <dirent.h>
+
+void listFilesRecursively(char *path);
+
+
+int main()
+{
+    char path[100];
+
+    printf("Enter path to list files: ");
+    scanf("%s", path);
+
+    listFilesRecursively(path);
+
+    return 0;
+}
+
+void listFilesRecursively(char *basePath)
+{
+    char path[1000];
+    struct dirent *dp;
+    DIR *dir = opendir(basePath);
+
+    if (!dir)
+        return;
+
+    while ((dp = readdir(dir)) != NULL)
+    {
+        if (strcmp(dp->d_name, ".") != 0 && strcmp(dp->d_name, "..") != 0)
+        {
+            printf("%s\n", dp->d_name);
+
+            // Construct new path from our base path
+            strcpy(path, basePath);
+            strcat(path, "/");
+            strcat(path, dp->d_name);
+
+            listFilesRecursively(path);
+        }
+    }
+
+    closedir(dir);
+}
+```
+
+## File Permission in C
+Kita bisa melihat permission dari suatu file atau directory di bahasa C dengan library yang bernama `sys/stat.h`. Berikut adalah contoh dari checking permission file dengan bahasa C :
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/stat.h>
+
+int main()
+{
+    struct stat fs;
+    char filename[100];
+    int r;
+
+    printf("Enter path to list files: ");
+    scanf("%s", filename);
+
+    r = stat(filename,&fs);
+    if( r==-1 )
+    {
+        fprintf(stderr,"File error\n");
+        exit(1);
+    }
+
+    printf("Obtaining permission mode for '%s':\n",filename);
+
+    /* file permissions are kept in the st_mode member */
+    /* The S_ISREG() macro tests for regular files */
+    if( S_ISREG(fs.st_mode) )
+        puts("Regular file");
+    else
+        puts("Not a regular file");
+
+    printf("Owner permissions: ");
+    if( fs.st_mode & S_IRUSR )
+        printf("read ");
+    if( fs.st_mode & S_IWUSR )
+        printf("write ");
+    if( fs.st_mode & S_IXUSR )
+        printf("execute");
+    putchar('\n');
+
+    printf("Group permissions: ");
+    if( fs.st_mode & S_IRGRP )
+        printf("read ");
+    if( fs.st_mode & S_IWGRP )
+        printf("write ");
+    if( fs.st_mode & S_IXGRP )
+        printf("execute");
+    putchar('\n');
+
+    printf("Others permissions: ");
+    if( fs.st_mode & S_IROTH )
+        printf("read ");
+    if( fs.st_mode & S_IWOTH )
+        printf("write ");
+    if( fs.st_mode & S_IXOTH )
+        printf("execute");
+    putchar('\n');
+  
+    return(0);
+}
+```
+Variables that use the prefix `S_...` has some sort of a rule like file permission in linux. Here is an image showing how to use them :
+
+![file-permission](img/file-permission.png)
+
+## File Ownership in C
+We can also see the owner and group of a file in C. This thing can be done with the library `sys/stat.h`, `pwd.h`, and `grp.h`. To get that information, 2 steps are needed, which is UID and GID of a file. Then we can find the name of the user and group from the user database or group database. Here is how to use it :
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <pwd.h>
+#include <grp.h>
+#include <sys/stat.h>
+
+int main()
+{
+    struct stat info;
+    char path[100];
+    int r;
+
+    printf("Enter path to list files: ");
+    scanf("%s", path);
+
+    r = stat(path, &info);
+    if( r==-1 )
+    {
+        fprintf(stderr,"File error\n");
+        exit(1);
+    }
+
+    struct passwd *pw = getpwuid(info.st_uid);
+    struct group  *gr = getgrgid(info.st_gid);
+
+    if (pw != 0) puts(pw->pw_name);
+    if (gr != 0) puts(gr->gr_name);
+}
+```
+
+# Excercise
+
+[List Of Content](#list-of-content)
+1. Modify the code [soal1.c](soal1.c) such that the output can be sorted from 0 to 100, without deleting existing function and using **wait**.
+2. Make a program that copies a folder and all its content in */home/{USER}/Downloads* to a folder with this name format *tanggal-bulan-tahun_jam:menit:detik* (contoh: 26-03-2021_16:22:09). **Use fork, exec, dan wait**.
+3. Make a daemon that runs every 10 seconds to backup the content of *error.txt* file that is saved in a file named *error.log.{no}* (example: error.log.1 , error.log.2, … ) then delete the content of *error.txt* such that the file is empty again. **You cannot use exec and system**
+
+## References
+* https://notes.shichao.io/apue/ch8/
+* https://www.geeksforgeeks.org/exec-family-of-functions-in-c/
+* http://www.netzmafia.de/skripten/unix/linux-daemon-howto.html
+* https://www.computerhope.com/unix/uumask.htm
+* http://www.gnu.org/savannah-checkouts/gnu/libc/manual/html_node/Simple-Directory-Lister.html
+* https://codeforwin.org/2018/03/c-program-to-list-all-files-in-a-directory-recursively.html
+* https://c-for-dummies.com/blog/?p=4101
+* https://pubs.opengroup.org/onlinepubs/009695399/functions/getgrgid.html
+* https://pubs.opengroup.org/onlinepubs/009695399/functions/getgrgid.html
+* https://pubs.opengroup.org/onlinepubs/009695399/functions/getpwuid.html
