@@ -578,7 +578,7 @@ void listFilesRecursively(char *basePath)
 ```
 
 ## File Permission in C
-Kita bisa melihat permission dari suatu file atau directory di bahasa C dengan library yang bernama `sys/stat.h`. Berikut adalah contoh dari checking permission file dengan bahasa C :
+We can see permissions of a file or directory in C language with a library called `sys/stat.h`. Here are some example of file permission checking with C :
 ```c
 #include <stdio.h>
 #include <stdlib.h>
