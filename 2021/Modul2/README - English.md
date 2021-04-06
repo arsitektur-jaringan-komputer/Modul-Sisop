@@ -97,16 +97,14 @@ To stop (_terminate_) a running process, run the shell command `` kill [options]
 
 By default when using the `` kill <pid> `` shell command, it will use ``SIGSTOP`` which will terminate the process but still can be resumed.
 
-## 5. Membuat Proses
+## 5. Making a Process
 
 [List of Content](#list-of-content)
 
 ### **fork**
-`fork` adalah fungsi _system call_ di C untuk melakukan _spawning process_. Setelah memanggil fungsi itu, akan terdapat proses baru yang merupakan _child process_ dan mengembalikan nilai 0 untuk _child process_ dan nilai _PID_ untuk _parent process_.
+`fork` is a _system call_ function in C to perform _spawning process_. After calling the function, there will be a new process which is the _child process_, the function will return a value of 0 in the _child process_ but return the _PID_ of the newly spawned _child process_ in the _parent process_
 
-Coba program dibawah ini dan compile terlebih dahulu dengan `gcc coba.c -o coba`
-
-Kemudian execute program dengan `./coba`
+Try the program below by compiling it with `gcc try.c -o try` and executing it with `./try`
 
 ```c
 #include <stdio.h>
@@ -118,7 +116,7 @@ int main(){
 
   child_id = fork();
 
-  printf("Ini akan kepanggil 2 kali\n");
+  printf("This will be called twice\n");
 
   if(child_id != 0){
     printf("\nParent process.\nPID: %d, Child's PID: %d\n", (int)getpid(), (int)child_id);
@@ -130,19 +128,21 @@ int main(){
 }
 ```
 
-Hasilnya akan menjadi:
+Result:
 ```c
-Ini akan kepanggil 2 kali
+This will be called twice
 
 Parent process.
 PID: 13101, Child's PID: 13102
-Ini akan kepanggil 2 kali
+This will be called twice
 
 Child process.
 PID: 13102, Parent's PID: 1
 ```
 
-Visualisasi:
+
+Visualization:
+
 ```c
 +-------------------------+
 |   Parent Process        |
@@ -179,9 +179,9 @@ Visualisasi:
 
 ### **exec**
 
-`exec` adalah fungsi untuk menjalankan program baru dan menggantikan program yang sedang berjalan. Fungsi `exec` memiliki banyak variasi seperti `execvp`, `execlp`, dan `execv`.
+`exec` is a function to run a new program and replaces the currently running program. There are variations of the `exec` function such as `execvp`, `execlp`, dan `execv`.
 
-Contoh yang akan digunakan adalah ```execv```.
+The example below will use `execv`
 
 ```c
 #include <stdio.h>
@@ -201,9 +201,10 @@ int main () {
 }
 ```
 
-### **Menjalankan Program Secara Bersamaan**
+### **Running programs concurrently**
 
-Dengan menggabungkan ```fork``` dan ```exec```, kita dapat melakukan dua atau lebih _tasks_ secara bersamaan. Contohnya adalah membackup log yang berbeda secara bersamaan.
+By combining ```fork``` and ```exec``, we can run 2 or more _tasks_ concurrently. An example is backing up different logs at the same time.
+
 
 ```c
 #include <stdlib.h>
@@ -216,7 +217,7 @@ int main() {
   child_id = fork();
 
   if (child_id < 0) {
-    exit(EXIT_FAILURE); // Jika gagal membuat proses baru, program akan berhenti
+    exit(EXIT_FAILURE); // If it fails to create a new process, the program will stop 
   }
 
   if (child_id == 0) {
@@ -233,7 +234,7 @@ int main() {
 }
 ```
 
-Visualisasi:
+Visualization:
 ```c
 +--------+
 | pid=7  |
@@ -254,14 +255,15 @@ Visualisasi:
     V                              V
 ```
 
+If you want to do multiple tasks simultaneously disregarding the order, you can use `fork` and `exec`.
 
-Jika ingin melakukan banyak task secara bersamaan tanpa mementingkan urutan kerjanya, dapat menggunakan ```fork``` dan ```exec```.
 
 ### **wait** x **fork** x **exec**
 
-Kita dapat menjalankan dua proses dalam satu program. Contoh penggunaannya adalah membuat folder dan mengisi folder tersebut dengan suatu file. Pertama, buat folder terlebih dahulu. Kemudian, buat file dengan perintah shell ```touch``` pada folder tersebut. Namun, pada kenyataannya untuk melakukan dua hal bersamaan perlu adanya jeda beberapa saat.
+We can run two processes in one program. An example of its use is to create a folder and fill the folder with a file. First, create a folder. Then, create a file with the shell command `touch` in that folder. However, in reality, to do two things simultaneously requires a moment's pause.
 
-Untuk membuat file yang berada dalam suatu folder, pertama-tama folder harus ada terlebih dahulu. Untuk _delay_ suatu proses dapat menggunakan _system call_ ```wait```.
+To create files that are in a folder, the folder itself must first exist. To _delay_ a process can use the `wait` _system call_.
+
 
 ```c
 #include <stdlib.h>
@@ -276,7 +278,7 @@ int main() {
   child_id = fork();
 
   if (child_id < 0) {
-    exit(EXIT_FAILURE); // Jika gagal membuat proses baru, program akan berhenti
+    exit(EXIT_FAILURE); // If it fails to create a new process, the program will stop
   }
 
   if (child_id == 0) {
@@ -292,19 +294,17 @@ int main() {
   }
 }
 ```
-
-Pada contoh di atas, fungsi ```wait``` adalah menunggu _child process_ selesai melakukan tugasnya, yaitu membuat folder. Setelah _terminated_, _parent process_ akan kembali menjalankan prosesnya membuat ```fileku``` dalam folder ```folderku```.
+In the example above, the `wait` function is to wait for _child process_ to finish doing its job, which is to create a folder. After _terminated_, the _parent process_ will resume running the process of creating `my files` in the` my folders` folder.
 
 ### **system**
 
-```system``` adalah fungsi untuk melakukan pemanggilan perintah shell secara langsung dari program C. Contohnya ketika ingin memanggil suatu script dalam program C. ```system(ls)``` akan menghasilkan output yang sama ketika memanggilnya di shell script dengan ```ls```.
+`system` is a function to call shell commands directly from a C program. For example, when you want to call a script in a C program.` system (ls)` will produce the same output when calling it in a shell script with `ls`.
 
-File inibash.sh:
+File examplebash.sh:
 ```sh
 #!/bin/bash
 
-echo "Shell script dipanggil"
-
+echo "Shell script ran"
 ```
 
 File system.c:
@@ -313,7 +313,7 @@ File system.c:
 
 int main() {
   int return_value;
-  return_value = system("bash inibash.sh");
+  return_value = system("bash examplebash.sh");
   return return_value;
 }
 
@@ -321,7 +321,7 @@ int main() {
 
 Output:
 ```
-Shell script dipanggil
+Shell script ran
 ```
 
 
