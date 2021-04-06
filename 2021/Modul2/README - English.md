@@ -18,10 +18,10 @@ In this module we will be using:
             * [2.3 Parent PID (PPID)](#23-parent-pid-ppid)
         * [3. See the Running Process](#3-see-the-running-process)
         * [4. Stop the Process](#4-stop-the-process)
-        * [5. Membuat Proses](#5-membuat-proses)
+        * [5. Making a Process](#5-making-a-process)
             * [fork](#fork)
             * [exec](#exec)
-            * [Menjalankan Program Secara Bersamaan](#menjalankan-program-secara-bersamaan)
+            * [Running Programs Concurrently](#running-programs-concurrently)
             * [wait x fork x exec](#wait-x-fork-x-exec)
             * [system](#system)
         * [6. Jenis-Jenis Proses](#6-jenis-jenis-proses)
@@ -31,12 +31,12 @@ In this module we will be using:
     * [Daemon](#daemon)
         * [1. Pengertian Daemon](#1-pengertian-daemon)
         * [2. Langkah Pembuatan Daemon](#2-langkah-pembuatan-daemon)
-        * [3. Implementasi Daemon](#3-implementasi-daemon)
+        * [3. Daemon Implementation](#3-daemon-implementation)
     * [Extras](#extras)
-        * [Directory Listing](#directory-listing-in-c)
-        * [File Permission](#file-permission-in-c)
-        * [File Ownership](#file-ownership-in-c)
-    * [Soal Latihan](#soal-latihan)
+        * [Directory Listing in C](#directory-listing-in-c)
+        * [File Permission in C](#file-permission-in-c)
+        * [File Ownership in C](#file-ownership-in-c)
+    * [Exercise](#exercise)
 
 # Process
 
@@ -676,7 +676,7 @@ int main()
 }
 ```
 
-# Excercise
+# Exercise
 
 [List Of Content](#list-of-content)
 1. Modify the code [soal1.c](soal1.c) such that the output can be sorted from 0 to 100, without deleting existing function and using **wait**.
