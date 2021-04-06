@@ -1,27 +1,27 @@
-# sisop-modul-2
+# Module 2 Operating System
 
-# Daemon dan Proses
+# Daemon and Process
 
-Menggunakan:
+In this module we will be using:
 * Linux
-* Bahasa C (compile dengan _gcc_)
+* C Programming language (compile with _gcc_)
 
-# Daftar Isi
+# List of Content
 
-* Proses dan Daemon
-    * [Daftar Isi](#daftar-isi)
-    * [Proses](#proses)
-        * [1. Pengertian](#1-pengertian)
-        * [2. Macam-Macam PID](#2-macam-macam-pid)
+* Process and Daemon
+    * [List of Content](#list-of-content)
+    * [Process](#process)
+        * [1. Definition](#1-definition)
+        * [2. Types of PID](#2-types-of-pid)
             * [2.1 User ID (UID)](#21-user-id-uid)
             * [2.2 Process ID (PID)](#22-process-id-pid)
             * [2.3 Parent PID (PPID)](#23-parent-pid-ppid)
-        * [3. Melihat Proses Berjalan](#3-melihat-proses-berjalan)
-        * [4. Menghentikan Proses](#4-menghentikan-proses)
-        * [5. Membuat Proses](#5-membuat-proses)
+        * [3. See the Running Process](#3-see-the-running-process)
+        * [4. Stop the Process](#4-stop-the-process)
+        * [5. Making a Process](#5-making-a-process)
             * [fork](#fork)
             * [exec](#exec)
-            * [Menjalankan Program Secara Bersamaan](#menjalankan-program-secara-bersamaan)
+            * [Running Programs Concurrently](#running-programs-concurrently)
             * [wait x fork x exec](#wait-x-fork-x-exec)
             * [system](#system)
         * [6. Jenis-Jenis Proses](#6-jenis-jenis-proses)
@@ -31,61 +31,61 @@ Menggunakan:
     * [Daemon](#daemon)
         * [1. Pengertian Daemon](#1-pengertian-daemon)
         * [2. Langkah Pembuatan Daemon](#2-langkah-pembuatan-daemon)
-        * [3. Implementasi Daemon](#3-implementasi-daemon)
+        * [3. Daemon Implementation](#3-daemon-implementation)
     * [Extras](#extras)
-        * [Directory Listing](#directory-listing-in-c)
-        * [File Permission](#file-permission-in-c)
-        * [File Ownership](#file-ownership-in-c)
-    * [Soal Latihan](#soal-latihan)
+        * [Directory Listing in C](#directory-listing-in-c)
+        * [File Permission in C](#file-permission-in-c)
+        * [File Ownership in C](#file-ownership-in-c)
+    * [Exercise](#exercise)
 
-# Proses
+# Process
 
-## 1. Pengertian
+## 1. Definition
 
-[Daftar Isi](#daftar-isi)
+[List of Content](#list-of-content)
 
-Proses adalah kondisi dimana OS menjalankan (eksekusi) suatu program. Ketika suatu program tersebut dieksekusi oleh OS, proses tersebut memiliki PID (Process ID) yang merupakan identifier dari suatu proses. Pada UNIX, untuk melihat proses yang dieksekusi oleh OS dengan memanggil perintah shell ```ps```. Untuk melihat lebih lanjut mengenai perintah ```ps``` dapat membuka ```man ps```.
+Process is a condition in which the OS runs (executes) a program. When a program is executed by the OS, the process has a PID (Process ID) which is the identifier of a process. On UNIX, to see the processes executed by the OS is by calling the shell command ```` ps ```` . To see more about the  ````ps```` command open ``` man ps```.
 
-Dalam penggunaannya, suatu proses dapat membentuk proses lainnya yang disebut _spawning process_. Proses yang memanggil proses lainnya disebut **_parent process_** dan yang terpanggil disebut **_child process_**.
+In its use, a process can form another process called **_spawning process_**. The process that calls another process is called **_parent process_** and the one that is called is **_child process_**.
 
-## 2. Macam-Macam PID
+## 2. Types of PID
 
-[Daftar Isi](#daftar-isi)
+[List of Content](#list-of-content)
 
 ### 2.1 User ID (UID)
-Merupakan identifier dari suatu proses yang menampilkan user yang menjalankan suatu program. Pada program C, dapat memanggil fungsi ``` uid_t getuid(void);```
+Is an identifier of a process that displays the user running a program. In C programs, you can call the function ```uid_t getuid(void);```
 
 ### 2.2 Process ID (PID)
-Angka unik dari suatu proses yang sedang berjalan untuk mengidentifikasi suatu proses. Pada program C, dapat memanggil fungsi ```pid_t getpid(void);```
+Unique number of an ongoing process to identify a process. In a C program, you can call the function ```pid_t getpid(void);```
 
 ### 2.3 Parent PID (PPID)
-Setiap proses memiliki identifier tersendiri dan juga setelah proses tersebut membuat proses lainnya. Proses yang terbentuk ini memiliki identifier berupa ID dari pembuatnya (parent). Pada program C, dapat memanggil fungsi ```pid_t getppid(void); ```.
+Each process has its own identifier and also after that process creates other processes. The process that is formed has an identifier in the form of the ID of the parent. In a C program, you can call the function ```pid_t getppid(void); ```.
 
-## 3. Melihat Proses Berjalan
+## 3. See the Running Process
 
-[Daftar Isi](#daftar-isi)
+[List of Content](#list-of-content)
 
-Untuk melihat proces yang sedang berjalan di OS, dapat menggunakan ```ps -ef``` untuk melihat secara detailnya.
+To see the processes currently running on the OS, you can use ```ps -ef``` to see the details.
 
 ![show ps](img/showps.png)
 
-Penjelasan:
-  * **UID**: user yang menjalankan program
-  * **PID**: process IDnya
-  * **PPID**: parent PID, kalau tidak ada parent akan bernilai 0
+Explanation:
+  * **UID**: the user who runs the program
+  * **PID**: process ID
+  * **PPID**: parent PID, if there is no parent, it will be 0
   * **C**: CPU Util. (%)
-  * **STIME**: waktu proses dijalankan
-  * **TTY**: terminal yang menjalankan proses. Jika tidak ada berarti background
-  * **TIME**: lamanya proses berjalan
-  * **CMD**: perintah yang menjalankan proses tersebut
+  * **STIME**: Time when the process started
+  * **TTY**: Terminal associated with the process. If there is none, it means it's a background process
+  * **TIME**: the length of the process running
+  * **CMD**: command that executes the process
 
-## 4. Menghentikan Proses
+## 4. Stop the Process
 
-[Daftar Isi](#daftar-isi)
+[List of Content](#list-of-content)
 
-Untuk menghentikan (_terminate_) proses yang berjalan, jalankan perintah shell ```kill [options] <pid>```. Biasanya untuk menghentikan paksa suatu proses dapat menggunakan perintah ```kill -9 <pid>```. Angka _9_ adalah kode Signal untuk terminate suatu process.
+To stop (_terminate_) a running process, run the shell command `` kill [options] <pid> ``. Usually to force stop a process you can use the command `` kill -9 <pid> ``. The number _9_ is the Signal code to terminate a process.
 
-### Macam-Macam Signal
+### Types of Signal
 
 | Signal name | Signal value  | Effect       |
 | ------------|:-------------:| -------------|
@@ -95,12 +95,11 @@ Untuk menghentikan (_terminate_) proses yang berjalan, jalankan perintah shell `
 | SIGTERM     | 15            | Termination signal
 | SIGSTOP     | 17,19,23      | Stop the process
 
-Secara default ketika menggunakan perintah shell ```kill <pid>```, akan menggunakan ```SIGSTOP``` yang mana akan menghentikan proses namun masih dapat dilanjutkan kembali.
-
+By default when using the `` kill <pid> `` shell command, it will use ``SIGSTOP`` which will terminate the process but still can be resumed.
 
 ## 5. Making a Process
 
-[Table of contents](#table-of-contents)
+[List of Content](#list-of-content)
 
 ### **fork**
 `fork` is a _system call_ function in C to perform _spawning process_. After calling the function, there will be a new process which is the _child process_, the function will return a value of 0 in the _child process_ but return the _PID_ of the newly spawned _child process_ in the _parent process_
@@ -328,7 +327,7 @@ Shell script ran
 
 ## 6. Jenis-Jenis Proses
 
-[Daftar Isi](#daftar-isi)
+[List of Content](#list-of-content)
 
 ### **Zombie Process**
 
@@ -346,7 +345,7 @@ Daemon Process adalah sebuah proses yang bekerja pada background karena proses i
 
 # Daemon
 
-[Daftar Isi](#daftar-isi)
+[List of Content](#list-of-content)
 
 ## 1. Pengertian Daemon
 Daemon adalah suatu program yang berjalan di background secara terus menerus tanpa adanya interaksi secara langsung dengan user yang sedang aktif.
@@ -677,7 +676,7 @@ int main()
 }
 ```
 
-# Excercise
+# Exercise
 
 [List Of Content](#list-of-content)
 1. Modify the code [soal1.c](soal1.c) such that the output can be sorted from 0 to 100, without deleting existing function and using **wait**.
