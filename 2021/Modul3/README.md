@@ -19,6 +19,9 @@
     - [2.4 Message Queues](#24-message-queues)
     - [2.5 Semaphores](#25-semaphores)
     - [2.6 Shared Memory](#26-shared-memory)
+  - [3. Asynchronous Programming](#3-asynchronous-programming)
+    - [3.1 Select](#31-select)
+    - [2.2 Poll](#22-poll)
   - [Appendix](#appendix)
     - [Libraries documentation (and functions)](#libraries-documentation-and-functions)
   - [Soal Latihan](#soal-latihan)
@@ -679,6 +682,39 @@ Program 1 : 10
 Program 1 : 30
 ```
 
+## 3. Asynchronous Programming
+
+Kita sudah mengenal bagaimana cara menggunakan thread dan memproses perintah secara terpisah-pisah. Di tingkatan selanjutnya, kita akan belajar bagaimana suatu proses menerima suatu perintah tanpa terhalangi oleh proses yang lain. Disinilah kita akan belajar tentang Asynchronous Programming dimana kita tidak perlu menunggu sesuatu terlalu lama dan kita membiarkan tugas lainnya dikerjakan oleh core processor yang lain dan kita akan diberitahu saat proses tersebut selesai. Berikut adalah beberapa perintah yang bisa digunakan untuk menerapkan Asynchronous Programming di C.
+
+### 3.1 Select
+
+Select memberikan kita kemampuan untuk memonitor jumlah socket yang cukup besar, dan tiap socket tidak terblok oleh socket yang lain. Mungkin kita bisa mengakali menggunakan thread, hanya saja jika jumlah socket sangat besar seperti 1024, memiliki 1024 thread bukanlah solusi yang tepat dan penggunaan select akan lebih memudahkan pekerjaan.
+
+Penggunaan select()
+
+```c
+int select(int nfds, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, struct timeval *timeout);
+
+struct timeval {
+    long int tv_sec;    /* Value in seconds */
+    long int tv_usec;   /* Value in milli-seconds */
+};
+```
+
+Penjelasan untuk parameter yang digunakan :
+- nfds  :   Jumlah file descriptor tertinggi + 1, bisa menggunakan `FD_SETSIZE` yang berisi angka 1024
+- readfds : File descriptor untuk pembacaan
+- writefds : File descriptor untuk penulisan
+- exceptfds :   File descriptor untuk exception
+- timeout   :   Timeout jika aplikasi menginginkan ada timeout
+
+Contoh penggunaan dapat dilihat pada [file server](select-server.c) dan [file client](select-client.c) yang ada pada modul. Lakukan seperti di [Subbab 2.3 Sockets](#23-sockets) untuk testing.
+
+### 2.2 Poll
+
+
+
+
 ## Appendix
 ### Libraries documentation (and functions)
 ```
@@ -691,9 +727,10 @@ $ man fcntl
 
 
 ### References 
-https://notes.shichao.io/apue/  
-https://www.gta.ufrj.br/ensino/eel878/sockets/index.html  
-http://advancedlinuxprogramming.com/alp-folder/alp-ch05-ipc.pdf  
-https://www.geeksforgeeks.org/socket-programming-cc/  
-https://www.geeksforgeeks.org/pipe-system-call/  
-
+- https://notes.shichao.io/apue/  
+- https://www.gta.ufrj.br/ensino/eel878/sockets/index.html  
+- http://advancedlinuxprogramming.com/alp-folder/alp-ch05-ipc.pdf  
+- https://www.geeksforgeeks.org/socket-programming-cc/  
+- https://www.geeksforgeeks.org/pipe-system-call/  
+- https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Asynchronous/Concepts
+- http://codingbison.com/c/c-sockets-select.html
