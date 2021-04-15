@@ -20,8 +20,9 @@
     - [2.5 Semaphores](#25-semaphores)
     - [2.6 Shared Memory](#26-shared-memory)
   - [3. Asynchronous Programming](#3-asynchronous-programming)
-    - [3.1 Select](#31-select)
-    - [2.2 Poll](#22-poll)
+    - [3.1 select](#31-select)
+    - [3.2 poll](#32-poll)
+    - [3.3 epoll](#33-epoll)
   - [Appendix](#appendix)
     - [Libraries documentation (and functions)](#libraries-documentation-and-functions)
   - [Soal Latihan](#soal-latihan)
@@ -684,14 +685,13 @@ Program 1 : 30
 
 ## 3. Asynchronous Programming
 
-Kita sudah mengenal bagaimana cara menggunakan thread dan memproses perintah secara terpisah-pisah. Di tingkatan selanjutnya, kita akan belajar bagaimana suatu proses menerima suatu perintah tanpa terhalangi oleh proses yang lain. Disinilah kita akan belajar tentang Asynchronous Programming dimana kita tidak perlu menunggu sesuatu terlalu lama dan kita membiarkan tugas lainnya dikerjakan oleh core processor yang lain dan kita akan diberitahu saat proses tersebut selesai. Berikut adalah beberapa perintah yang bisa digunakan untuk menerapkan Asynchronous Programming di C.
+Kita sudah mengenal bagaimana cara menggunakan thread dan memproses perintah secara terpisah-pisah dan bersamaan. Di tingkatan selanjutnya, kita akan belajar bagaimana suatu proses menerima suatu perintah tanpa terblok oleh proses yang lain. Disinilah kita akan belajar tentang Asynchronous Programming dimana kita tidak perlu menunggu sesuatu terlalu lama dan kita membiarkan tugas lainnya dikerjakan oleh core processor yang lain. Berikut adalah beberapa perintah yang bisa digunakan untuk menerapkan Asynchronous Programming di C.
 
-### 3.1 Select
+### 3.1 select
 
 Select memberikan kita kemampuan untuk memonitor jumlah socket yang cukup besar, dan tiap socket tidak terblok oleh socket yang lain. Mungkin kita bisa mengakali menggunakan thread, hanya saja jika jumlah socket sangat besar seperti 1024, memiliki 1024 thread bukanlah solusi yang tepat dan penggunaan select akan lebih memudahkan pekerjaan.
 
-Penggunaan select()
-
+Fungsi select()
 ```c
 int select(int nfds, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, struct timeval *timeout);
 
@@ -710,10 +710,10 @@ Penjelasan untuk parameter yang digunakan :
 
 Contoh penggunaan dapat dilihat pada [file server](select-server.c) dan [file client](select-client.c) yang ada pada modul. Lakukan seperti di [Subbab 2.3 Sockets](#23-sockets) untuk testing.
 
-### 2.2 Poll
+### 3.2 poll
 `poll()` sendiri melakukan sesuatu yang sama dengan `select()` yaitu menunggu salah satu dari file descriptor untuk siap melakukan operasi. Tetapi `poll()` sendiri diciptakan untuk mengatasi permasalahan pending yang dimiliki oleh `select()`
 
-Penggunaan `poll()`
+Fungsi `poll()`
 ```c
 #include <poll.h> 
 
@@ -732,8 +732,33 @@ Penjelasan Parameter :
 - timeout   :    Timeout untuk program
 - events & revents : Bisa membaca sumber yang ada di referensi karena cukup banyak dan beragam
 
-Contoh penggunaan dapat dilihat pada [file server](select-server.c) dan [file client](select-client.c) yang ada pada modul. Lakukan seperti di [Subbab 2.3 Sockets](#23-sockets) untuk testing.
+Contoh penggunaan dapat dilihat pada [file server](poll-server.c) dan [file client](poll-client.c) yang ada pada modul. Lakukan seperti di [Subbab 2.3 Sockets](#23-sockets) untuk testing.
 
+### 3.3 epoll
+`epoll` adalah varian dari `poll()` yang bisa memperbesar skala dengan baik untuk jumlah file descriptor yang besar. 3 system call disediakan untuk set up dan mengkontrol epoll set : `epoll_create()`, `epoll_ctl()`, `epoll_wait()`.
+
+Fungsi-fungsi untuk `epoll`
+```c
+int epoll_create(int size); // creates an epoll() instance
+
+int epoll_ctl(int epfd, int op, int fd, struct epoll_event *event); // performs control operations on the epoll() instance referred to by the file descriptor epfd.
+
+int epoll_wait(int epfd, struct epoll_event *events,int maxevents, int timeout); // waits for events on the epoll() instance referred to by the file descriptor epfd
+
+typedef union epoll_data {
+    void        *ptr;
+    int          fd;
+    uint32_t     u32;
+    uint64_t     u64;
+} epoll_data_t;
+
+struct epoll_event {
+    uint32_t     events;      /* Epoll events */
+    epoll_data_t data;        /* User data variable */
+};
+```
+
+Contoh penggunaan dapat dilihat pada [file server](epoll-server.c) dan [file client](epoll-client.c) yang ada pada modul. Lakukan seperti di [Subbab 2.3 Sockets](#23-sockets) untuk testing.
 
 ## Appendix
 ### Libraries documentation (and functions)
@@ -755,3 +780,6 @@ $ man fcntl
 - https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Asynchronous/Concepts
 - http://codingbison.com/c/c-sockets-select.html
 - https://www.tutorialspoint.com/unix_system_calls/poll.htm
+- https://pubs.opengroup.org/onlinepubs/009696799/functions/poll.html
+- https://linux.die.net/man/4/epoll
+- https://programmer.ink/think/epoll-for-linux-programming.html

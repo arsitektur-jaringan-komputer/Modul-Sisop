@@ -47,7 +47,7 @@ int create_tcp_server_socket() {
 int main () {
     fd_set read_fd_set;
     struct sockaddr_in new_addr;
-    int server_fd, new_fd, ret_val, i, timeout_msecs = 100;
+    int server_fd, new_fd, ret_val, i, timeout_msecs = 500;
     socklen_t addrlen;
     char buf[DATA_BUFFER];
     struct pollfd all_connections[MAX_CONNECTIONS];
@@ -72,7 +72,7 @@ int main () {
 
         /* poll() woke up. Identify the fd that has events */
         if (ret_val > 0 ) {
-            /* Check if the fd with event is the server fd */
+            /* Check if new events is input */
             if (all_connections[0].revents & POLLIN) { 
                 /* accept the new connection */
                 printf("Returned fd is %d (server's fd)\n", server_fd);
