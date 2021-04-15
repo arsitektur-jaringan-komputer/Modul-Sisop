@@ -711,8 +711,28 @@ Penjelasan untuk parameter yang digunakan :
 Contoh penggunaan dapat dilihat pada [file server](select-server.c) dan [file client](select-client.c) yang ada pada modul. Lakukan seperti di [Subbab 2.3 Sockets](#23-sockets) untuk testing.
 
 ### 2.2 Poll
+`poll()` sendiri melakukan sesuatu yang sama dengan `select()` yaitu menunggu salah satu dari file descriptor untuk siap melakukan operasi. Tetapi `poll()` sendiri diciptakan untuk mengatasi permasalahan pending yang dimiliki oleh `select()`
 
+Penggunaan `poll()`
+```c
+#include <poll.h> 
 
+int poll(struct pollfd *fds, int nfds, int timeout);
+
+struct pollfd {
+    int   fd;         /* file descriptor */
+    short events;     /* requested events */
+    short revents;    /* returned events */
+};
+```
+
+Penjelasan Parameter :
+- fds   :   Array dari file descriptor
+- nfds  :   Jumlah file descriptor
+- timeout   :    Timeout untuk program
+- events & revents : Bisa membaca sumber yang ada di referensi karena cukup banyak dan beragam
+
+Contoh penggunaan dapat dilihat pada [file server](select-server.c) dan [file client](select-client.c) yang ada pada modul. Lakukan seperti di [Subbab 2.3 Sockets](#23-sockets) untuk testing.
 
 
 ## Appendix
@@ -734,3 +754,4 @@ $ man fcntl
 - https://www.geeksforgeeks.org/pipe-system-call/  
 - https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Asynchronous/Concepts
 - http://codingbison.com/c/c-sockets-select.html
+- https://www.tutorialspoint.com/unix_system_calls/poll.htm
