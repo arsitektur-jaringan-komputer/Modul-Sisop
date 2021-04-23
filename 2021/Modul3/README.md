@@ -769,7 +769,15 @@ $ man fcntl
 ```
 
 ## Soal Latihan 
+1. Buatlah program C yang bisa menghitung faktorial secara parallel lalu menampilkan hasilnya secara berurutan.  
+Contoh: ./faktorial 5 3 4  
+3! = 6  
+4! = 24  
+5! = 120  
 
+2. Buatlah sebuah program untuk menampilkan file pada urutan ketiga dari sebuah direktori, dengan menggunakan pipe dan command ls, head, tail.
+
+3. Buatlah sebuah program menggunakan socket dimana terdiri dari client dan server. Saat client mengetikkan "tambah" maka suatu angka yang ada pada server bertambah 1 dan server otomatis mengirimkan pesan ke client yang berisi "Penambahan berhasil" dan ketika mengetikan perintah “kurang” maka suatu angka yang ada pada server berkurang 1 dan server otomatis mengirimkan pesan ke client yang berisi "Pengurangan berhasil". Perintah yang lainnya pada client adalah "cek", maka server akan mengirimkan pesan yang berisi jumlah terkini angka tersebut, selain perintah tersebut server akan mengirimkan pesan “command tidak sesuai”. Program ini dapat berjalan tanpa henti. (Nilai awal angka pada server adalah 5).
 
 ### References 
 - https://notes.shichao.io/apue/  
