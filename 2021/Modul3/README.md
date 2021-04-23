@@ -770,10 +770,17 @@ $ man fcntl
 
 ## Soal Latihan 
 1. Buatlah program C yang bisa menghitung faktorial secara parallel lalu menampilkan hasilnya secara berurutan.  
-Contoh: ./faktorial 5 3 4  
+Contoh: 
+```bash
+## input
+./faktorial 5 3 4
+```
+```bash
+### output
 3! = 6  
 4! = 24  
-5! = 120  
+5! = 120
+```
 
 2. Buatlah sebuah program untuk menampilkan file pada urutan ketiga dari sebuah direktori, dengan menggunakan pipe dan command ls, head, tail.
 
