@@ -188,9 +188,9 @@ Nomor | Multiprocess | Multithread
 
 
 ### 1.3 Join Thread
-Join thread adalah fungsi untuk melakukan penggabungan dengan thread lain yang telah berhenti (*terminated*). Bila thread yang ingin di-join belum dihentikan, maka fungsi ini akan menunggu hingga thread yang diinginkan berstatus **`Terminated`**. Fungsi `pthread_join()` ini dapat dikatakan sebagai fungsi `wait()` pada proses, karena program (*task*) utama akan menunggu thread yang di-join-kan pada program utama tersebut. Kita tidak mengetahui program utama atau thread yang lebih dahulu menyelesaikan pekerjaannya.
+Join thread is a function to join other threads that have stopped (*terminated*). If the thread that you want to join has not been stopped, this function will wait until the desired thread has a status of **`Terminated`**. The `pthread_join ()` function can be said to be the `wait ()` function of the process, because the main program (*task*) will wait for the thread to be joined in the main program. We do not know wether the main program or thread that completed the work first.
 
-Contoh program C Join_Thread [thread_join.c](thread_join.c):
+Example C program Join_Thread [thread_join.c](thread_join.c):
 
 ```c
 #include <stdio.h>
@@ -201,20 +201,22 @@ void *print_message_function( void *ptr );
 
 int main()
 {
-    pthread_t thread1, thread2;//inisialisasi awal
+    pthread_t thread1, thread2;//initial initialization
+
     const char *message1 = "Thread 1";
     const char *message2 = "Thread 2";
     int  iret1, iret2;
 
-    iret1 = pthread_create( &thread1, NULL, print_message_function, (void*) message1); //membuat thread pertama
-    if(iret1) //jika eror
+    iret1 = pthread_create( &thread1, NULL, print_message_function, (void*) message1); //making the first thread
+    if(iret1) //if error
     {
         fprintf(stderr,"Error - pthread_create() return code: %d\n",iret1);
         exit(EXIT_FAILURE);
     }
 
-    iret2 = pthread_create( &thread2, NULL, print_message_function, (void*) message2);//membuat thread kedua
-    if(iret2)//jika gagal
+
+    iret2 = pthread_create( &thread2, NULL, print_message_function, (void*) message2);//making the second thread
+    if(iret2)//if it fails
     {
         fprintf(stderr,"Error - pthread_create() return code: %d\n",iret2);
         exit(EXIT_FAILURE);
@@ -242,30 +244,32 @@ void *print_message_function( void *ptr )
 
 ```
 
-Keterangan :
-- Pada program di atas, jika kita *comment* baris `pthread_join`, maka hasil yang didapat tidak akan memunculkan tulisan **Thread 1** dan **Thread 2**.
-- Jika pemanggilan fungsi `pthread_join` di-uncomment, maka program yang kita buat akan memunculkan tulisan **Thread 1** dan **Thread 2**.
+Explanation :
+- In the above program, if we *comment* the line `pthread_join`, the result will not show the words **Thread 1** and **Thread 2**.
+- If the `pthread_join` function call is uncommented, then the program we create will display the words **Thread 1** and **Thread 2**.
 
-**Kesimpulan** :
-Pada program pertama tidak menjalankan fungsi `print_message_function` karena sebelum kedua thread dijadwalkan, program utama (kemungkinan) telah selesai dieksekusi sehingga tidak menjalankan fungsi bawaan pada thread. Pada percobaan kedua, fungsi `pthread_join()` digunakan untuk membuat program utama menunggu thread yang *join* hingga target thread selesai dieksekusi, dengan fungsi ini program utama di-suspend hingga target thread selesai dieksekusi.
-- Fungsi untuk terminasi thread
+**Conclusion** :
+The first program does not run the `print_message_function` function because before the second thread is scheduled, the main program (possibly) has finished executing so it doesn't run the default function on the thread. In the second experiment, the `pthread_join ()` function is used to make the main program wait for the thread to *join* until the target thread has finished executing, with this function the main program is suspended until the target thread has finished executing.
+- Function for thread termination
+
   ```c
   #include <pthread.h>
   void pthread_exit(void *rval_ptr);
   ```
-  Argumen `rval_ptr` adalah pointer yang digunakan yang dapat diakses oleh fungsi `pthread_join()` agar dapat mengetahui status thread tersebut
+  The `rval_ptr` argument is a pointer that can be accessed by the `pthread_join ()` function in order to know the status of the thread
 
-- Fungsi untuk melakukan join thread 
+- Function to join thread
   ```c
   int pthread_join(pthread_t thread, void **rval_ptr);
-  /* Jika berhasil mengembalikan nilai 0, jika error mengembalikan nilai 1 */
+  /* If successful returns value 0, if error returns value 1 */
   ```
-  Fungsi akan menunda pekerjaan sampai status pointer `rval_ptr` dari fungsi `pthread_exit()` mengembalikan nilainya.
+ The function will pause the job until the `rval_ptr` pointer state of the` pthread_exit () `function returns its value.
 
 ### 1.4 Mutual Exclusion
-Disebut juga sebagai **Mutex**, yaitu suatu cara yang menjamin jika ada pekerjaan yang menggunakan variabel atau berkas digunakan juga oleh pekerjaan yang lain, maka pekerjaan lain tersebut akan mengeluarkan nilai dari pekerjaan sebelumnya.
+Also known as ** Mutex **, which is a way to ensure that if a job that uses variables or files is also used by another job, the other job will output the value of the previous job.
 
-Contoh program Simple Mutual_Exclusion [threadmutex.c](threadmutex.c):
+Example of Simple Mutual_Exclusion program [threadmutex.c](threadmutex.c):
+
 ```c
 #include<stdio.h>
 #include<string.h>
@@ -275,35 +279,36 @@ Contoh program Simple Mutual_Exclusion [threadmutex.c](threadmutex.c):
  
 pthread_t tid1, tid2;
 int status;
-int nomor;
+
+int number;
  
-void* tulis(void *arg)
+void* write(void *arg)
 {
     status = 0;
  
-    printf("Masukan nomor : ");
-    scanf("%d", &nomor);
+    printf("Input number : ");
+    scanf("%d", &number);
  
     status = 1;
  
     return NULL;
 }
 
-void* baca(void *arg)
+void* read(void *arg)
 {
     while(status != 1)
     {
 
     }
 
-    printf("Nomor %d\n", nomor);
+    printf("Number %d\n", number);
+
 }
  
 int main(void)
 {
-
-    pthread_create(&(tid1), NULL, tulis, NULL);
-    pthread_create(&(tid2), NULL, baca, NULL);
+    pthread_create(&(tid1), NULL, write, NULL);
+    pthread_create(&(tid2), NULL, read, NULL);
  
     pthread_join(tid1, NULL);
     pthread_join(tid2, NULL);
@@ -313,24 +318,25 @@ int main(void)
 
 ```
 
-Keterangan :
-- Terdapat 2 buah thread yang berjalan dengan fungsi yang berbeda.
-- Sumber daya (variabel) yang digunakan kedua thread untuk mengeksekusi pekerjaannya **sama**.
-- Variabel `status` adalah contoh simple untuk mengendalikan jalannya thread.
 
-**Kesimpulan** :
-Karena kita tidak mengetahui *thread* mana yang lebih dahulu mengeksekusi sebuah variable atau sumber daya pada program, kegunaan dari **Mutex** adalah untuk menjaga sumber daya suatu thread agar tidak digunakan oleh thread lain sebelum ia menyelesaikan pekerjaannya.
+Explanation :
+- There are 2 threads running with different functions.
+- The resources (variables) that both threads use to execute their jobs **are the same**.
+- The `status` variable is a simple example of controlling the running of a thread.
 
+**Conclusion** :
+Since we don't know which *thread* executes a variable or resource in the program first, the purpose of **Mutex** is to keep the resources of a thread from being used by other threads before it finishes its work.
 
 ## 2. IPC (Interprocess Communication)
 ### 2.1 IPC
-IPC (*Interprocess Communication*) adalah cara atau mekanisme pertukaran data antara satu proses dengan proses lain, baik pada komputer yang sama atau komputer jarak jauh yang terhubung melalui suatu jaringan.
+IPC (*Interprocess Communication*) is a method to exchange data between one process and another, either on the same computer or remote computers connected through a network.
 
 ### 2.2 Pipes
-Pipe merupakan komunikasi sequensial antar proses yang saling terelasi. Kelemahannya, hanya dapat digunakan untuk proses yang saling berhubungan dan secara sequensial.
-Terdapat dua jenis pipe:
-- unnamed pipe : Komunikasi antara parent dan child proses.
-- named pipe : Biasa disebut sebagai FIFO, digunakan untuk komunikasi yang berjalan secara independen. **Hanya bisa digunakan jika kedua proses menggunakan *filesystem* yang sama.**
+Pipes are a sequential method of communication between interrelated processes. The weakness of pipes is that they are only for interconnected, sequential processes.
+There are two types of pipes:
+- unnamed pipe: Communication between parent and child processes.
+- named pipes: Commonly referred to as FIFO, used for communication that runs independently. **Can only be used if both processes are using the same *filesystem***
+
 ```
 $ ls | less
 ```
@@ -394,7 +400,9 @@ hello, world #1
 hello, world #2
 hello, world #3
 ```  
-Pipe dengan fork  
+
+Pipe with fork  
+
 Diagram :  
 ![alt](img/pipe-fork.png)  
 
@@ -499,7 +507,7 @@ int main()
 
 
 ### 2.3 Sockets
-*Socket* merupakan sebuah *end-point* dalam sebuah proses yang saling berkomunikasi. Biasanya *socket* digunakan untuk komunikasi antar proses pada komputer yang berbeda, namun dapat juga digunakan dalam komputer yang sama.
+*Socket* is an *end-point* in a process that communicates with each other. Usually *socket* is used for communication betwwen processes on different computers, but can also be used in the same computer 
 
 Diagram :   
 ![alt](img/socket.png "implementasi socket C")
@@ -604,15 +612,16 @@ int main(int argc, char const *argv[]) {
     return 0;
 }
 ```
-Jalankan proses server dulu, kemudian jalankan clientnya. Dan amati apa yang terjadi.
+
+Run the server process then run the client. Observe.
 
 ### 2.4 Message Queues
-Merupakan komunikasi antar proses dimana proses tersebut menciptakan internal linked-list pada alamat kernel Sistem Operasi. Pesannya disebut sebagai *queue* sedangkan pengenalnya disebut *queue* ID. *Queue* ID berguna sebagai *key* untuk menandai pesan mana yang akan dikirim dan tujuan pengiriman pesannya.
+Is a communication between processes where the process creates an internal linked-list at the address of the Operating System kernel. The message is referred to as *queue* while the identifier is called *queue* ID. *Queue* ID is used as a *key* to indicate which message will be sent and the destination of the message.
 
 ### 2.5 Semaphores
-Semaphore berbeda dengan jenis-jenis IPC yang lain. Pada pengaplikasiannya, semaphore merupakan sebuah counter yang digunakan untuk controlling resource oleh beberapa proses secara bersamaan.
-- Jika suatu counter block memory memiliki nilai positif, semaphore dapat menggunakan resource untuk prosesnya, dan mengurangi nilai counter block dengan 1 untuk menandai bahwa suatu block memory tengah digunakan.
-- Sebaliknya, jika semaphore bernilai 0, proses akan masuk pada mode sleep sampai semaphore bernilai lebih besar dari 0.
+Semaphores are different from other types of IPC. In its application, semaphore is a counter that is used for controlling resources by several processes simultaneously.
+- If a memory block counter has a positive value, the semaphore can consume resources for the process, and reduce the counter block value by 1 to indicate that a memory block is being used.
+- Conversely, if the semaphore is 0, the process will go into sleep mode until the semaphore is greater than 0.
 
 ### 2.6 Shared Memory
 A mechanism for mapping the area (segments) of a block of memory to be shared by several processes. A process will create a memory segment, then other permitted processes can access that memory. Shared memory is an effective way to exchange data between programs.
