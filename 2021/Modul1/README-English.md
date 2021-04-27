@@ -474,8 +474,8 @@ Relational operators are usually used in conjunction with conditional statements
 ```bash
 #!/bin/bash
 
-a = 15
-b = 7
+a=15
+b=7
 
 if [ $a -eq $b ]
 then
@@ -623,7 +623,7 @@ a=0
 while [ $a -lt 10 ]
 do
 echo $a
-  a = $((a + 2))
+  a=$((a + 2))
 done
 ```
 

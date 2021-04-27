@@ -55,7 +55,7 @@ Sistem operasi dibagi menjadi tiga komponen penting, yaitu Kernel, Shell, dan Pr
 
 - __Kernel__ adalah inti dari komputer. Komponen ini memungkinkan terjadinya komunikasi antara software dan hardware. Jika kernel adalah bagian terdalam dari sebuah sistem operasi, maka __shell__ adalah bagian terluarnya.
 - __Shell__ adalah program penerjemah perintah yang menjembatani user dengan kernel. Umumnya, shell menyediakan __prompt__ sebagai user interface tempat user menginputkan perintah-perintah yang diinginkan, baik berupa perintah internal maupun eksternal. Setelah menerima input dari user dan menjalankan program/perintah berdasarkan input tersebut, shell akan mengeluarkan output. Shell dapat diakses melalui __Terminal__.
-- __Program Utility__ adalah system software yang menjalankan tugas-tugas maintenance. Program utility ini dibuat secara khsus untuk melakukan fungsi tertentu pada suatu area komputasi secara spesifik, seperti memformat harddisk, atau melakukan pengecekan konektifitas jaringan dll.
+- __Program Utility__ adalah system software yang menjalankan tugas-tugas maintenance. Program utility ini dibuat secara khusus untuk melakukan fungsi tertentu pada suatu area komputasi secara spesifik, seperti memformat harddisk, atau melakukan pengecekan konektivitas jaringan dll.
 
 ` Catatan: Coba buka terminal di Linux, maka kamu akan menemukan prompt shell (biasanya $). Disitu, kamu dapat mengetik input berupa perintah, kemudian mengeksekusinya dengan menekan tombol "Enter". Output akan ditampilkan di terminal. `
 
@@ -905,7 +905,7 @@ Cara menginstal Ranger sendiri cukup sederhana:
 - Gunakan key `j` untuk mengarahkan cursor ke bawah
 - Gunakan key `k` untuk mengarahkan cursor ke atas
 - Gunakan key `q` untuk keluar
-- Gunakan key `!` untuk mengeksekusi command shell, contoh `! touch my_text.txt`
+- Gunakan key `!` atau `s` untuk mengeksekusi command shell, contoh `! touch my_text.txt`, lalu tambahakan `-w` sebelum command untuk melihat output dari command tersebut
 
 ## Referensi
 * [https://www.tutorialspoint.com/unix/shell_scripting.htm](https://www.tutorialspoint.com/unix/shell_scripting.htm)

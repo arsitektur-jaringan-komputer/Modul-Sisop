@@ -1,91 +1,91 @@
-# sisop-modul-2
+# Module 2 Operating System
 
-# Daemon dan Proses
+# Daemon and Process
 
-Menggunakan:
+In this module we will be using:
 * Linux
-* Bahasa C (compile dengan _gcc_)
+* C Programming language (compile with _gcc_)
 
-# Daftar Isi
+# List of Content
 
-* Proses dan Daemon
-    * [Daftar Isi](#daftar-isi)
-    * [Proses](#proses)
-        * [1. Pengertian](#1-pengertian)
-        * [2. Macam-Macam PID](#2-macam-macam-pid)
+* Process and Daemon
+    * [List of Content](#list-of-content)
+    * [Process](#process)
+        * [1. Definition](#1-definition)
+        * [2. Types of PID](#2-types-of-pid)
             * [2.1 User ID (UID)](#21-user-id-uid)
             * [2.2 Process ID (PID)](#22-process-id-pid)
             * [2.3 Parent PID (PPID)](#23-parent-pid-ppid)
-        * [3. Melihat Proses Berjalan](#3-melihat-proses-berjalan)
-        * [4. Menghentikan Proses](#4-menghentikan-proses)
-        * [5. Membuat Proses](#5-membuat-proses)
+        * [3. See the Running Process](#3-see-the-running-process)
+        * [4. Stop the Process](#4-stop-the-process)
+        * [5. Making a Process](#5-making-a-process)
             * [fork](#fork)
             * [exec](#exec)
-            * [Menjalankan Program Secara Bersamaan](#menjalankan-program-secara-bersamaan)
+            * [Running Programs Concurrently](#running-programs-concurrently)
             * [wait x fork x exec](#wait-x-fork-x-exec)
             * [system](#system)
-        * [6. Jenis-Jenis Proses](#6-jenis-jenis-proses)
+        * [6. Types of Processes](#6-types-of-processes)
             * [Zombie Process](#zombie-process)
             * [Orphan Process](#orphan-process)
             * [Daemon Process](#daemon-process)
     * [Daemon](#daemon)
-        * [1. Pengertian Daemon](#1-pengertian-daemon)
-        * [2. Langkah Pembuatan Daemon](#2-langkah-pembuatan-daemon)
-        * [3. Implementasi Daemon](#3-implementasi-daemon)
+        * [1. Definition of Daemon](#1-definition-of-daemon)
+        * [2. Daemon Creation Steps](#2-daemon-creation-steps)
+        * [3. Daemon Implementation](#3-daemon-implementation)
     * [Extras](#extras)
-        * [Directory Listing](#directory-listing-in-c)
-        * [File Permission](#file-permission-in-c)
-        * [File Ownership](#file-ownership-in-c)
-    * [Soal Latihan](#soal-latihan)
+        * [Directory Listing in C](#directory-listing-in-c)
+        * [File Permission in C](#file-permission-in-c)
+        * [File Ownership in C](#file-ownership-in-c)
+    * [Exercise](#exercise)
 
-# Proses
+# Process
 
-## 1. Pengertian
+## 1. Definition
 
-[Daftar Isi](#daftar-isi)
+[List of Content](#list-of-content)
 
-Proses adalah kondisi dimana OS menjalankan (eksekusi) suatu program. Ketika suatu program tersebut dieksekusi oleh OS, proses tersebut memiliki PID (Process ID) yang merupakan identifier dari suatu proses. Pada UNIX, untuk melihat proses yang dieksekusi oleh OS dengan memanggil perintah shell ```ps```. Untuk melihat lebih lanjut mengenai perintah ```ps``` dapat membuka ```man ps```.
+Process is a condition in which the OS runs (executes) a program. When a program is executed by the OS, the process has a PID (Process ID) which is the identifier of a process. On UNIX, to see the processes executed by the OS is by calling the shell command ```` ps ```` . To see more about the  ````ps```` command open ``` man ps```.
 
-Dalam penggunaannya, suatu proses dapat membentuk proses lainnya yang disebut _spawning process_. Proses yang memanggil proses lainnya disebut **_parent process_** dan yang terpanggil disebut **_child process_**.
+In its use, a process can form another process called **_spawning process_**. The process that calls another process is called **_parent process_** and the one that is called is **_child process_**.
 
-## 2. Macam-Macam PID
+## 2. Types of PID
 
-[Daftar Isi](#daftar-isi)
+[List of Content](#list-of-content)
 
 ### 2.1 User ID (UID)
-Merupakan identifier dari suatu proses yang menampilkan user yang menjalankan suatu program. Pada program C, dapat memanggil fungsi ``` uid_t getuid(void);```
+Is an identifier of a process that displays the user running a program. In C programs, you can call the function ```uid_t getuid(void);```
 
 ### 2.2 Process ID (PID)
-Angka unik dari suatu proses yang sedang berjalan untuk mengidentifikasi suatu proses. Pada program C, dapat memanggil fungsi ```pid_t getpid(void);```
+Unique number of an ongoing process to identify a process. In a C program, you can call the function ```pid_t getpid(void);```
 
 ### 2.3 Parent PID (PPID)
-Setiap proses memiliki identifier tersendiri dan juga setelah proses tersebut membuat proses lainnya. Proses yang terbentuk ini memiliki identifier berupa ID dari pembuatnya (parent). Pada program C, dapat memanggil fungsi ```pid_t getppid(void); ```.
+Each process has its own identifier and also after that process creates other processes. The process that is formed has an identifier in the form of the ID of the parent. In a C program, you can call the function ```pid_t getppid(void); ```.
 
-## 3. Melihat Proses Berjalan
+## 3. See the Running Process
 
-[Daftar Isi](#daftar-isi)
+[List of Content](#list-of-content)
 
-Untuk melihat proces yang sedang berjalan di OS, dapat menggunakan ```ps -ef``` untuk melihat secara detailnya.
+To see the processes currently running on the OS, you can use ```ps -ef``` to see the details.
 
 ![show ps](img/showps.png)
 
-Penjelasan:
-  * **UID**: user yang menjalankan program
-  * **PID**: process IDnya
-  * **PPID**: parent PID, kalau tidak ada parent akan bernilai 0
+Explanation:
+  * **UID**: the user who runs the program
+  * **PID**: process ID
+  * **PPID**: parent PID, if there is no parent, it will be 0
   * **C**: CPU Util. (%)
-  * **STIME**: waktu proses dijalankan
-  * **TTY**: terminal yang menjalankan proses. Jika tidak ada berarti background
-  * **TIME**: lamanya proses berjalan
-  * **CMD**: perintah yang menjalankan proses tersebut
+  * **STIME**: Time when the process started
+  * **TTY**: Terminal associated with the process. If there is none, it means it's a background process
+  * **TIME**: the length of the process running
+  * **CMD**: command that executes the process
 
-## 4. Menghentikan Proses
+## 4. Stop the Process
 
-[Daftar Isi](#daftar-isi)
+[List of Content](#list-of-content)
 
-Untuk menghentikan (_terminate_) proses yang berjalan, jalankan perintah shell ```kill [options] <pid>```. Biasanya untuk menghentikan paksa suatu proses dapat menggunakan perintah ```kill -9 <pid>```. Angka _9_ adalah kode Signal untuk terminate suatu process.
+To stop (_terminate_) a running process, run the shell command `` kill [options] <pid> ``. Usually to force stop a process you can use the command `` kill -9 <pid> ``. The number _9_ is the Signal code to terminate a process.
 
-### Macam-Macam Signal
+### Types of Signal
 
 | Signal name | Signal value  | Effect       |
 | ------------|:-------------:| -------------|
@@ -95,18 +95,16 @@ Untuk menghentikan (_terminate_) proses yang berjalan, jalankan perintah shell `
 | SIGTERM     | 15            | Termination signal
 | SIGSTOP     | 17,19,23      | Stop the process
 
-Secara default ketika menggunakan perintah shell ```kill <pid>```, akan menggunakan ```SIGSTOP``` yang mana akan menghentikan proses namun masih dapat dilanjutkan kembali.
+By default when using the `` kill <pid> `` shell command, it will use ``SIGSTOP`` which will terminate the process but still can be resumed.
 
-## 5. Membuat Proses
+## 5. Making a Process
 
-[Daftar Isi](#daftar-isi)
+[List of Content](#list-of-content)
 
 ### **fork**
-`fork` adalah fungsi _system call_ di C untuk melakukan _spawning process_. Setelah memanggil fungsi itu, akan terdapat proses baru yang merupakan _child process_, fungsi akan mengembalikan nilai 0 di dalam _child process_, dan akan mengembalikan nilai _PID_ dari _child process_ di dalam _parent process_
+`fork` is a _system call_ function in C to perform _spawning process_. After calling the function, there will be a new process which is the _child process_, the function will return a value of 0 in the _child process_ but return the _PID_ of the newly spawned _child process_ in the _parent process_
 
-Coba program dibawah ini dan compile terlebih dahulu dengan `gcc coba.c -o coba`
-
-Kemudian execute program dengan `./coba`
+Try the program below by compiling it with `gcc try.c -o try` and executing it with `./try`
 
 ```c
 #include <stdio.h>
@@ -118,7 +116,7 @@ int main(){
 
   child_id = fork();
 
-  printf("Ini akan kepanggil 2 kali\n");
+  printf("This will be called twice\n");
 
   if(child_id != 0){
     printf("\nParent process.\nPID: %d, Child's PID: %d\n", (int)getpid(), (int)child_id);
@@ -130,19 +128,21 @@ int main(){
 }
 ```
 
-Hasilnya akan menjadi:
+Result:
 ```c
-Ini akan kepanggil 2 kali
+This will be called twice
 
 Parent process.
 PID: 13101, Child's PID: 13102
-Ini akan kepanggil 2 kali
+This will be called twice
 
 Child process.
 PID: 13102, Parent's PID: 1
 ```
 
-Visualisasi:
+
+Visualization:
+
 ```c
 +-------------------------+
 |   Parent Process        |
@@ -179,9 +179,9 @@ Visualisasi:
 
 ### **exec**
 
-`exec` adalah fungsi untuk menjalankan program baru dan menggantikan program yang sedang berjalan. Fungsi `exec` memiliki banyak variasi seperti `execvp`, `execlp`, dan `execv`.
+`exec` is a function to run a new program and replaces the currently running program. There are variations of the `exec` function such as `execvp`, `execlp`, dan `execv`.
 
-Contoh yang akan digunakan adalah ```execv```.
+The example below will use `execv`
 
 ```c
 #include <stdio.h>
@@ -201,9 +201,10 @@ int main () {
 }
 ```
 
-### **Menjalankan Program Secara Bersamaan**
+### **Running programs concurrently**
 
-Dengan menggabungkan ```fork``` dan ```exec```, kita dapat melakukan dua atau lebih _tasks_ secara bersamaan. Contohnya adalah membackup log yang berbeda secara bersamaan.
+By combining ```fork``` and ```exec``, we can run 2 or more _tasks_ concurrently. An example is backing up different logs at the same time.
+
 
 ```c
 #include <stdlib.h>
@@ -216,7 +217,7 @@ int main() {
   child_id = fork();
 
   if (child_id < 0) {
-    exit(EXIT_FAILURE); // Jika gagal membuat proses baru, program akan berhenti
+    exit(EXIT_FAILURE); // If it fails to create a new process, the program will stop 
   }
 
   if (child_id == 0) {
@@ -233,7 +234,7 @@ int main() {
 }
 ```
 
-Visualisasi:
+Visualization:
 ```c
 +--------+
 | pid=7  |
@@ -254,14 +255,15 @@ Visualisasi:
     V                              V
 ```
 
+If you want to do multiple tasks simultaneously disregarding the order, you can use `fork` and `exec`.
 
-Jika ingin melakukan banyak task secara bersamaan tanpa mementingkan urutan kerjanya, dapat menggunakan ```fork``` dan ```exec```.
 
 ### **wait** x **fork** x **exec**
 
-Kita dapat menjalankan dua proses dalam satu program. Contoh penggunaannya adalah membuat folder dan mengisi folder tersebut dengan suatu file. Pertama, buat folder terlebih dahulu. Kemudian, buat file dengan perintah shell ```touch``` pada folder tersebut. Namun, pada kenyataannya untuk melakukan dua hal bersamaan perlu adanya jeda beberapa saat.
+We can run two processes in one program. An example of its use is to create a folder and fill the folder with a file. First, create a folder. Then, create a file with the shell command `touch` in that folder. However, in reality, to do two things simultaneously requires a moment's pause.
 
-Untuk membuat file yang berada dalam suatu folder, pertama-tama folder harus ada terlebih dahulu. Untuk _delay_ suatu proses dapat menggunakan _system call_ ```wait```.
+To create files that are in a folder, the folder itself must first exist. To _delay_ a process can use the `wait` _system call_.
+
 
 ```c
 #include <stdlib.h>
@@ -276,7 +278,7 @@ int main() {
   child_id = fork();
 
   if (child_id < 0) {
-    exit(EXIT_FAILURE); // Jika gagal membuat proses baru, program akan berhenti
+    exit(EXIT_FAILURE); // If it fails to create a new process, the program will stop
   }
 
   if (child_id == 0) {
@@ -292,19 +294,17 @@ int main() {
   }
 }
 ```
-
-Pada contoh di atas, fungsi ```wait``` adalah menunggu _child process_ selesai melakukan tugasnya, yaitu membuat folder. Setelah _terminated_, _parent process_ akan kembali menjalankan prosesnya membuat ```fileku``` dalam folder ```folderku```.
+In the example above, the `wait` function is to wait for _child process_ to finish doing its job, which is to create a folder. After _terminated_, the _parent process_ will resume running the process of creating `my files` in the` my folders` folder.
 
 ### **system**
 
-```system``` adalah fungsi untuk melakukan pemanggilan perintah shell secara langsung dari program C. Contohnya ketika ingin memanggil suatu script dalam program C. ```system(ls)``` akan menghasilkan output yang sama ketika memanggilnya di shell script dengan ```ls```.
+`system` is a function to call shell commands directly from a C program. For example, when you want to call a script in a C program.` system (ls)` will produce the same output when calling it in a shell script with `ls`.
 
-File inibash.sh:
+File examplebash.sh:
 ```sh
 #!/bin/bash
 
-echo "Shell script dipanggil"
-
+echo "Shell script ran"
 ```
 
 File system.c:
@@ -313,7 +313,7 @@ File system.c:
 
 int main() {
   int return_value;
-  return_value = system("bash inibash.sh");
+  return_value = system("bash examplebash.sh");
   return return_value;
 }
 
@@ -321,7 +321,7 @@ int main() {
 
 Output:
 ```
-Shell script dipanggil
+Shell script ran
 ```
 
 
@@ -415,15 +415,8 @@ close(STDOUT_FILENO);
 close(STDERR_FILENO);
 ```
 
-<<<<<<< HEAD
 ### 2.6 Creating the Main Loop
 This is the main loop where we write the gist of our program. Don't forget to give the command `sleep()` so that the loop runs at an interval.
-=======
-File descriptor sendiri merupakan sebuah angka yang merepresentasikan sabuah file yang dibuka di sebuah sistem operasi. File descriptor mendeskripsikan sumber data dan bagaimana data itu diakses.
-
-### 2.6 Membuat Loop Utama
-Di loop utama ini lah tempat kita menuliskan inti dari program kita. Jangan lupa beri perintah `sleep()` agar loop berjalan pada suatu interval.
->>>>>>> 447bee03a2a47098cc8e322f6db706603a033afb
 
 ```c
 while (1) {
@@ -433,8 +426,9 @@ while (1) {
 }
 ```
 
-## 3. Implementasi Daemon
-Di bawah ini adalah kode hasil gabungan dari langkah-langkah pembuatan daemon (template Daemon):
+
+## 3. Daemon Implementation
+The code below is the result of following the steps of making daemon process (Daemon Template)
 
 ```c
 #include <sys/types.h>
@@ -448,18 +442,18 @@ Di bawah ini adalah kode hasil gabungan dari langkah-langkah pembuatan daemon (t
 #include <string.h>
 
 int main() {
-  pid_t pid, sid;        // Variabel untuk menyimpan PID
+  pid_t pid, sid;        // Variables to store PID
 
-  pid = fork();     // Menyimpan PID dari Child Process
+  pid = fork();     // Storing PID of child process
 
-  /* Keluar saat fork gagal
+  /* Exit the program if fork failed
   * (nilai variabel pid < 0) */
   if (pid < 0) {
     exit(EXIT_FAILURE);
   }
 
-  /* Keluar saat fork berhasil
-  * (nilai variabel pid adalah PID dari child process) */
+  /* Exit the program if fork succeeded
+  * (the value of pid is equal to the child process) */
   if (pid > 0) {
     exit(EXIT_SUCCESS);
   }
@@ -480,28 +474,29 @@ int main() {
   close(STDERR_FILENO);
 
   while (1) {
-    // Tulis program kalian di sini
+    // Write your program here
 
     sleep(30);
   }
 }
 ```
-### 3.1 Meng-_compile_ program daemon
-Untuk menjalankan daemon process pertama kita compile program C yang telah kita buat dengan perintah `gcc [nama_program.c] -o [nama_file_outputd]`.
+### 3.1 Compiling daemon program
+To the daemon process, first we need to compile the C file that we have made with the command `gcc [program_name.c] -o [output_file_name]`.
 
-### 3.2 Menjalankan program daemon
-Setelah melakukan langkah sebelumnya, akan muncul sebuah file executeable yang dapat dijalankan dengan `./nama_file_outputd`.
+### 3.2 Running daemon program
+After completing the last step, the executable file will appear. It can be run by exectuting `./output_file_name`
 
-### 3.3 Periksa apakah Daemon process berjalan
-Untuk memeriksa process apa saja yang sedang berlangsung kita dapat menggunakan perintah `ps -aux`. Untuk menemukan Daemon process yang kita _run_, manfaatkan `grep`. Sehingga perintahnya menjadi `ps -aux | grep "nama_file_outputd"`. Bila ada, berarti daemon process kita sedang berjalan.
+### 3.3 Check if the daemon process is running
+To check what processes are running, we can use the `ps -aux` command. To find the daemon process that we ran, we can use the `grep` command. We can combine both command to be `ps -aux | grep "output_file_name"`. If there is an output, that means the daemon process is running.
 
-### 3.4 Mematikan Daemon process yang sedang berjalan
-Untuk mematikan daemon process kita akan menggunakan perintah `kill`. Pertama kita harus menemukan PID dari Daemon process yang akan dimatikan. Kita dapat menemukan PID tersebut pada langkah sebelumnya. Lalu jalankan `sudo kill -9 pid` untuk mematikan process-nya.
+### 3.4 Terminating daemon process
+To terminate daemon processes, we can use the `kill` command. First we need to fild the pid of the daemon process that we want to terminate. We can find the pid by using the last step. Then we can run `sudo kill -9 pid` to shut the process down. The "pid" is replaced by the pid of your daemon process.
 
 # Extras
 
 ## Directory Listing in C
-Dengan bahasa C, kita bisa melihat ada file apa saja yang terdapat dalam suatu directory. Tentu saja hal ini membutuhkan suatu library khusus bernama `dirent.h`. Berikut contoh directory listing di bahasa C :
+With C, we can check what are the contents of a directory. To achieve this, we need to use a spesific library called `dirent.h`.
+Here are the example of directory listing in C:
 ```c
 #include <stdio.h>
 #include <sys/types.h>
@@ -532,7 +527,7 @@ int main (void)
 }
 ```
 
-Kita juga bisa melakukan traverse secara rekursif terhadap suatu directory. Contoh :
+We can also traverse recursively to a directory. For example :
 ```c
 #include <stdio.h>
 #include <string.h>
@@ -582,7 +577,7 @@ void listFilesRecursively(char *basePath)
 ```
 
 ## File Permission in C
-Kita bisa melihat permission dari suatu file atau directory di bahasa C dengan library yang bernama `sys/stat.h`. Berikut adalah contoh dari checking permission file dengan bahasa C :
+We can see permissions of a file or directory in C language with a library called `sys/stat.h`. Here are some example of file permission checking with C :
 ```c
 #include <stdio.h>
 #include <stdlib.h>
@@ -643,12 +638,12 @@ int main()
     return(0);
 }
 ```
-Untuk variabel dengan prefix `S_...` memiliki suatu aturan seperti file permission di dalam linux. Berikut adalah gambar yang menunjukkan cara penggunaannya :
+Variables that use the prefix `S_...` has some sort of a rule like file permission in linux. Here is an image showing how to use them :
 
 ![file-permission](img/file-permission.png)
 
 ## File Ownership in C
-Kita juga bisa melihat owner dan group dari suatu file dengan bahasa C. Hal ini bisa dilakukan dengan bantuan library `sys/stat.h`, `pwd.h`, dan `grp.h`. Untuk mendapatkan informasi itu, perlu dilakukan 2 langkah yaitu mencari UID dan GID dari suatu file lalu mencari nama dari user dan group dalam user database atau group database. Berikut adalah contoh cara melakukan hal tersebut :
+We can also see the owner and group of a file in C. This thing can be done with the library `sys/stat.h`, `pwd.h`, and `grp.h`. To get that information, 2 steps are needed, which is UID and GID of a file. Then we can find the name of the user and group from the user database or group database. Here is how to use it :
 ```c
 #include <stdio.h>
 #include <stdlib.h>
@@ -680,14 +675,14 @@ int main()
 }
 ```
 
-# Soal Latihan
+# Exercise
 
-[Daftar Isi](#daftar-isi)
-1. Modifikasi code [soal1.c](soal1.c) agar output nya menjadi angka urut dari 0 sampai 100, tanpa menghapus fungsi yang sudah ada dan menggunakan **wait**.
-2. Buatlah sebuah program yang dapat mengcopy folder beserta semua isi dari folder di */home/{USER}/Downloads* ke dalam sebuah folder dengan format nama *tanggal-bulan-tahun_jam:menit:detik* (contoh: 26-03-2021_16:22:09). **Gunakan fork, exec, dan wait**.
-3. Buatlah sebuah daemon yang berjalan setiap 10 detik yang dapat melakukan backup isi dari file *error.txt* yang disimpan dalam file *error.log.{no}* (contoh: error.log.1 , error.log.2, … ) lalu menghapus isi *error.txt* tersebut sehingga file tersebut kosong kembali. **Tidak diperbolehkan menggunakan exec dan system.**
+[List Of Content](#list-of-content)
+1. Modify the code [soal1.c](soal1.c) such that the output can be sorted from 0 to 100, without deleting existing function and using **wait**.
+2. Make a program that copies a folder and all its content in */home/{USER}/Downloads* to a folder with this name format *tanggal-bulan-tahun_jam:menit:detik* (contoh: 26-03-2021_16:22:09). **Use fork, exec, dan wait**.
+3. Make a daemon that runs every 10 seconds to backup the content of *error.txt* file that is saved in a file named *error.log.{no}* (example: error.log.1 , error.log.2, … ) then delete the content of *error.txt* such that the file is empty again. **You cannot use exec and system**
 
-## Referensi
+## References
 * https://notes.shichao.io/apue/ch8/
 * https://www.geeksforgeeks.org/exec-family-of-functions-in-c/
 * http://www.netzmafia.de/skripten/unix/linux-daemon-howto.html

@@ -25,7 +25,7 @@
     - [3.3 epoll](#33-epoll)
   - [Appendix](#appendix)
     - [Libraries documentation (and functions)](#libraries-documentation-and-functions)
-  - [Soal Latihan](#soal-latihan)
+  - [Exercise](#exercise)
     - [References](#references)
 
 
@@ -661,7 +661,7 @@ void main()
         value = shmat(shmid, NULL, 0);
 
         printf("Program 1 : %d\n", *value);
-	    *value = 30;
+        *value = 30;
 
         sleep(5);
 
@@ -670,28 +670,26 @@ void main()
         shmctl(shmid, IPC_RMID, NULL);
 }
 ```
-Jalankan proses 1 terlebih dahulu, lalu proses 2. 
-Hasilnya
-Proses 1
+Run process 1 first, then process 2.
+The result
+Process 1
 ```
 Program 1 : 10
 Program 1 : 30
 ```
-Proses 2
+Process 2
 ```
 Program 1 : 10
 Program 1 : 30
 ```
 
 ## 3. Asynchronous Programming
-
-Kita sudah mengenal bagaimana cara menggunakan thread dan memproses perintah secara terpisah-pisah dan bersamaan. Di tingkatan selanjutnya, kita akan belajar bagaimana suatu proses menerima suatu perintah tanpa terblok oleh proses yang lain. Disinilah kita akan belajar tentang Asynchronous Programming dimana kita tidak perlu menunggu sesuatu terlalu lama dan kita membiarkan tugas lainnya dikerjakan oleh core processor yang lain. Berikut adalah beberapa perintah yang bisa digunakan untuk menerapkan Asynchronous Programming di C.
+We already know how to use thread and process commands separately and simultaneously. Next, we will learn how a process receives a command without being blocked by another process. This is where we will learn about Asynchronous Programming where we don't have to wait for something too long and we let other tasks be done by other processor cores. Here are some commands that can be used to implement Asynchronous Programming in C.
 
 ### 3.1 select
+Select gives us the ability to monitor a large number of sockets, and each socket is not blocked by any other sockets. Maybe we can use threads, but if the number of sockets is very large like 1024, having 1024 threads is not the right solution and using select will make the job easier.
 
-Select memberikan kita kemampuan untuk memonitor jumlah socket yang cukup besar, dan tiap socket tidak terblok oleh socket yang lain. Mungkin kita bisa mengakali menggunakan thread, hanya saja jika jumlah socket sangat besar seperti 1024, memiliki 1024 thread bukanlah solusi yang tepat dan penggunaan select akan lebih memudahkan pekerjaan.
-
-Fungsi select()
+`select()` function
 ```c
 int select(int nfds, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, struct timeval *timeout);
 
@@ -701,19 +699,19 @@ struct timeval {
 };
 ```
 
-Penjelasan untuk parameter yang digunakan :
-- nfds  :   Jumlah file descriptor tertinggi + 1, bisa menggunakan `FD_SETSIZE` yang berisi angka 1024
-- readfds : File descriptor untuk pembacaan
-- writefds : File descriptor untuk penulisan
-- exceptfds :   File descriptor untuk exception
-- timeout   :   Timeout jika aplikasi menginginkan ada timeout
+Explanation of the parameters used :
+- nfds  :   The highest number of file descriptors + 1, we can use `FD_SETSIZE` which contains the number 1024
+- readfds : File descriptor for reading
+- writefds : File descriptor for writing
+- exceptfds :   File descriptor for exception
+- timeout   :   Time until timeout
 
-Contoh penggunaan dapat dilihat pada [file server](select-server.c) dan [file client](select-client.c) yang ada pada modul. Lakukan seperti di [Subbab 2.3 Sockets](#23-sockets) untuk testing.
+Examples of use can be seen at [server File](select-server.c) and [client file](select-client.c) in the module. Do as in [Section 2.3 Sockets](#23-sockets) for testing.
 
 ### 3.2 poll
-`poll()` sendiri melakukan sesuatu yang sama dengan `select()` yaitu menunggu salah satu dari file descriptor untuk siap melakukan operasi. Tetapi `poll()` sendiri diciptakan untuk mengatasi permasalahan pending yang dimiliki oleh `select()`
+`poll ()` does the same thing as `select ()` which waits for one of the file descriptors to be ready to perform the operation. But `poll ()` was created to solve the pending problems that `select ()` has
 
-Fungsi `poll()`
+`poll()` function
 ```c
 #include <poll.h> 
 
@@ -726,18 +724,22 @@ struct pollfd {
 };
 ```
 
-Penjelasan Parameter :
+Explanation of the parameters used :
 - fds   :   Array dari file descriptor
 - nfds  :   Jumlah file descriptor
 - timeout   :    Timeout untuk program
 - events & revents : Bisa membaca sumber yang ada di referensi karena cukup banyak dan beragam
+- fds: An array of file descriptors
+- nfds: Number of file descriptors
+- timeout: Time until timeout
+- events & revents: For a more complete explanation, you can read the reference source because it is quite diverse
 
-Contoh penggunaan dapat dilihat pada [file server](poll-server.c) dan [file client](poll-client.c) yang ada pada modul. Lakukan seperti di [Subbab 2.3 Sockets](#23-sockets) untuk testing.
+Examples of usage can be seen in the [server file](poll-server.c) and [client file](poll-client.c) in the module. Do as in [Section 2.3 Sockets](#23-sockets) for testing.
 
 ### 3.3 epoll
-`epoll` adalah varian dari `poll()` yang bisa memperbesar skala dengan baik untuk jumlah file descriptor yang besar. 3 system call disediakan untuk set up dan mengkontrol epoll set : `epoll_create()`, `epoll_ctl()`, `epoll_wait()`.
+`epoll` is a variant of` poll() `which scales well for a large number of file descriptors. Three system calls are provided to set up and control epoll set: `epoll_create()`, `epoll_ctl()`, `epoll_wait()`.
 
-Fungsi-fungsi untuk `epoll`
+Functions for `epoll`
 ```c
 int epoll_create(int size); // creates an epoll() instance
 
@@ -758,7 +760,7 @@ struct epoll_event {
 };
 ```
 
-Contoh penggunaan dapat dilihat pada [file server](epoll-server.c) dan [file client](epoll-client.c) yang ada pada modul. Lakukan seperti di [Subbab 2.3 Sockets](#23-sockets) untuk testing.
+Examples of usage can be seen in the [server file](epoll-server.c) and [client file](epoll-client.c) in the module. Do as in [Section 2.3 Sockets](#23-sockets) for testing.
 
 ## Appendix
 ### Libraries documentation (and functions)
@@ -768,8 +770,8 @@ $ man mkfifo
 $ man fcntl
 ```
 
-## Soal Latihan 
-1. Buatlah program C yang bisa menghitung faktorial secara parallel lalu menampilkan hasilnya secara berurutan.  
+## Exercise
+1. Create a C program that can calculate factorials in parallel and then display the results sequentially.
 Contoh: 
 ```bash
 ## input
@@ -782,9 +784,9 @@ Contoh:
 5! = 120
 ```
 
-2. Buatlah sebuah program untuk menampilkan file pada urutan ketiga dari sebuah direktori, dengan menggunakan pipe dan command ls, head, tail.
+2. Create a program to display files in the third order of a directory, using the pipe and the command ls, head, and tail.
 
-3. Buatlah sebuah program menggunakan socket dimana terdiri dari client dan server. Saat client mengetikkan "tambah" maka suatu angka yang ada pada server bertambah 1 dan server otomatis mengirimkan pesan ke client yang berisi "Penambahan berhasil" dan ketika mengetikan perintah “kurang” maka suatu angka yang ada pada server berkurang 1 dan server otomatis mengirimkan pesan ke client yang berisi "Pengurangan berhasil". Perintah yang lainnya pada client adalah "cek", maka server akan mengirimkan pesan yang berisi jumlah terkini angka tersebut, selain perintah tersebut server akan mengirimkan pesan “command tidak sesuai”. Program ini dapat berjalan tanpa henti. (Nilai awal angka pada server adalah 5).
+3. Create a program using a socket which consists of the client and server. When the client types "add" then the number on the server increases by 1 and the server automatically sends a message to the client that says "The addition was successful" and when typing the command "subtract" then the number on the server decreases by 1 and the server automatically sends a message to client containing "Subtraction was successful". Another command on the client is "check", then the server will send a message containing the most recent number, other than that command the server will send a message "command does not match". This program can run without stopping. (The initial value of the number on the server is 5).
 
 ### References 
 - https://notes.shichao.io/apue/  
