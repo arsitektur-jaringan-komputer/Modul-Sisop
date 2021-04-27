@@ -1,9 +1,9 @@
 # Thread dan IPC
 
 ## Objectives
-1. Peserta mengetahui thread
-2. Peserta memahami bagaimana thread bekerja
-3. Peserta memahami bagaimana cara membuat thread
+1. To develop knowledge about thread
+2. To understand how thread works
+3. To understand how to make thread
 
 - [Thread dan IPC](#thread-dan-ipc)
   - [Objectives](#objectives)
@@ -31,16 +31,16 @@
 
 ## 1. Thread 
 ### 1.1 Thread
-Thread merupakan unit terkecil dalam suatu proses yang dapat dijadwalkan oleh sistem operasi. Thread juga sering disebut sebagai Lightweight Processes. Thread biasanya terbentuk oleh `fork` yang berjalan pada suatu script atau program untuk sebuah proses. Minimal terdapat sebuah thread yang berjalan dalam suatu proses, walau biasanya terdapat lebih dari satu thread dalam proses tersebut. Thread akan berbagi memori dan menggunakan informasi (nilai) dari variabel-variabel pada suatu proses tersebut. Penggambaran thread pada sebuah proses dapat dilihat sebagai berikut.
+Thread is smallest unit in a process that are scheduled by the operating system. Thread are usually made by `fork` that runs in a script or program. There is at least 1 thread running for each process, but you can also have multiple thread run for one process. Thread will share their memory and use information (value) of variables in that process. You can picture thread as follows.
 
 ![thread](img/thread2.png)
 
-Untuk melihat thread yang sedang berjalan, gunakan perintah :
+To see running thread, we can use the command :
 ```bash
 top -H
 ```
 
-Thread dapat dibuat menggunakan fungsi pada program berbahasa C :
+Thread can be made by calling a function in C Language :
 ```c
 #include <pthread.h> //library thread
 
@@ -49,15 +49,15 @@ int pthread_create(pthread_t *restrict tidp,
                    void *(*start_rtn)(void *),
                    void *restrict arg);
 
-/* Jika berhasil mengembalikan nilai 0, jika error mengembalikan nilai 1 */
+/* If thread creation succeeds it will return 0, otherwise it will return 1 */
 ```
-Penjelasan Syntax:
-- Pointer `tidp` digunakan untuk menunjukkan alamat memori dengan thread ID dari thread baru.
-- Argumen `attr` digunakan untuk menyesuaikan atribut yang digunakan oleh thread. nilai `attr` di-set `NULL` ketika thread menggunakan atribut *default*.
-- Thread yang baru dibuat akan berjalan dimulai dari fungsi `start_rtn` dalam fungsi thread.
-- Pointer `arg` digunakan untuk memberikan sebuah argumen ke fungsi `start_rtn`, jika tidak diperlukan argumen, maka `arg` akan di-set `NULL`.
+Syntax:
+- Pointer `tidp` points to memory address with thread id of the new thread.
+- Argumen `attr` is used to pass attributes of the thread. the value `attr` is set to `NULL` when the thread uses the *default* attribute .
+- The new thread will start on the `start_rtn` function.
+- Pointer `arg` is used to pass any argument to the `start_rtn` function, if no argument is needed, then `arg` is set to `NULL`.
 
-Contoh membuat program tanpa menggunakan thread [playtanpathread.c](playtanpathread.c):
+Example of a program not using thread [playtanpathread.c](playtanpathread.c):
 
 ```c
 #include<stdio.h>
@@ -91,8 +91,8 @@ int main()
 
 ```
 
-Contoh membuat program menggunakan thread [playthread.c](playthread.c) :
-> compile dengan cara `gcc -pthread -o [output] input.c`
+Example f a program using thread [playthread.c](playthread.c) :
+> use this command to compile : `gcc -pthread -o [output] input.c`
 
 ```c
 #include<stdio.h>
@@ -103,10 +103,10 @@ Contoh membuat program menggunakan thread [playthread.c](playthread.c) :
 #include<sys/types.h>
 #include<sys/wait.h>
 
-pthread_t tid[3]; //inisialisasi array untuk menampung thread dalam kasus ini ada 2 thread
+pthread_t tid[3]; //array initialization to save the threads, there are 2 in this case
 pid_t child;
 
-int length=5; //inisialisasi jumlah untuk looping
+int length=5; //Loop length initialization
 void* playandcount(void *arg)
 {
 	char *argv1[] = {"clear", NULL};
@@ -114,14 +114,14 @@ void* playandcount(void *arg)
 	unsigned long i=0;
 	pthread_t id=pthread_self();
 	int iter;
-	if(pthread_equal(id,tid[0])) //thread untuk clear layar
+	if(pthread_equal(id,tid[0])) //Thread to clear the screen
 	{
 		child = fork();
 		if (child==0) {
 		    execv("/usr/bin/clear", argv1);
 	    	}
 	}
-	else if(pthread_equal(id,tid[1])) // thread menampilkan counter
+	else if(pthread_equal(id,tid[1])) // Thread to show a counter
 	{
         for(iter=0;iter<6;iter++)
 		{
@@ -130,7 +130,7 @@ void* playandcount(void *arg)
 			sleep(1);
 		}
 	}
-	else if(pthread_equal(id,tid[2])) // thread menampilkan gambar
+	else if(pthread_equal(id,tid[2])) // Thread to show an image
 	{
         child = fork();
         if (child==0) {
@@ -145,10 +145,10 @@ int main(void)
 {
 	int i=0;
 	int err;
-	while(i<3) // loop sejumlah thread
+	while(i<3) // loop all threads
 	{
-		err=pthread_create(&(tid[i]),NULL,&playandcount,NULL); //membuat thread
-		if(err!=0) //cek error
+		err=pthread_create(&(tid[i]),NULL,&playandcount,NULL); //making a thread
+		if(err!=0) //error check
 		{
 			printf("\n can't create thread : [%s]",strerror(err));
 		}
@@ -167,22 +167,22 @@ int main(void)
 
 ```
 
-**Kesimpulan** :
-Terlihat ketika program menggunakan thread dapat menjalankan dua task secara bersamaan (task menampilkan gambar dan task timer).
+**Conclusion** :
+It is shown that the use of thread allows two task to run simultaneously (image task and counter task).
 
 
 ### 1.2 Multiprocess Vs Multithread
 
 ![multivsmulti](multiprocessing_multithreading.gif)
 
-Perbedaan multiprocess dan multithread
-Nomor | Multiprocess | Multithread
+The differences between multiprocess and multithread
+No | Multiprocess | Multithread
 --- | --- | ---
-1 | banyak proses dieksekusi secara konkuren | banyak thread dalam 1 proses dieksekusi secara konkuren
-2 | menambah CPU untuk menigkatkan kekuatan komputasi | membuat banyak thread dalam 1 proses untuk meningkatkan kekuatan komputasi
-3 | pembuatan proses membutuhkan waktu dan resource yang besar | pembuatan thread lebih ekonomis dalam segi waktu dan resource
-4 | bergantung pada object di memori untuk mengirim data ke proses lain | tidak bergantung pada object lain
-5 |child process sebagian besar bersifat interruptible / killable | multithreading tidak bersifat interruptible / killable
+1 | multiple process executed concurently | multiple thread in 1 process executed concurently
+2 | using more CPU to improve computation power | making multiple thread in a process to improve computation power
+3 | the creation process used a lot of time and resources | the thread creation used less time and resources
+4 | dependency on other object in the memory to send data to other process| no dependency to other object
+5 | most child process is interruptible / killable | multithreading is not interruptible / killable
 
 
 
