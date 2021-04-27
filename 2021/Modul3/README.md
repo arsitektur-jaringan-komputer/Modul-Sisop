@@ -611,11 +611,11 @@ Semaphore berbeda dengan jenis-jenis IPC yang lain. Pada pengaplikasiannya, sema
 - Sebaliknya, jika semaphore bernilai 0, proses akan masuk pada mode sleep sampai semaphore bernilai lebih besar dari 0.
 
 ### 2.6 Shared Memory
-Sebuah mekanisme *mapping area(segments)* dari suatu blok *memory* untuk digunakan bersama oleh beberapa proses. Sebuah proses akan menciptakan *segment memory*, kemudian proses lain yang diijinkan dapat mengakses *memory* tersebut. *Shared memory* merupakan cara yang efektif untuk melakukan pertukaran data antar program.
+A mechanism for mapping the area (segments) of a block of memory to be shared by several processes. A process will create a memory segment, then other permitted processes can access that memory. Shared memory is an effective way to exchange data between programs.
 
 Example: [Proses 1](proses1.c) [Proses 2](proses2.c)
 
-Proses 1
+Process 1
 ```c
 #include <stdio.h>
 #include <sys/ipc.h>
@@ -641,7 +641,7 @@ void main()
         shmctl(shmid, IPC_RMID, NULL);
 }
 ```
-Proses 2
+Process 2
 ```c
 #include <stdio.h>
 #include <sys/ipc.h>
@@ -657,7 +657,7 @@ void main()
         value = shmat(shmid, NULL, 0);
 
         printf("Program 1 : %d\n", *value);
-	*value = 30;
+	    *value = 30;
 
         sleep(5);
 
