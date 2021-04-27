@@ -19,10 +19,6 @@
     - [2.4 Message Queues](#24-message-queues)
     - [2.5 Semaphores](#25-semaphores)
     - [2.6 Shared Memory](#26-shared-memory)
-  - [3. Asynchronous Programming](#3-asynchronous-programming)
-    - [3.1 select](#31-select)
-    - [3.2 poll](#32-poll)
-    - [3.3 epoll](#33-epoll)
   - [Appendix](#appendix)
     - [Libraries documentation (and functions)](#libraries-documentation-and-functions)
   - [Soal Latihan](#soal-latihan)
@@ -31,7 +27,7 @@
 
 ## 1. Thread 
 ### 1.1 Thread
-Thread merupakan unit terkecil dalam suatu proses yang dapat dijadwalkan oleh sistem operasi. Thread juga sering disebut sebagai Lightweight Processes. Thread biasanya terbentuk oleh `fork` yang berjalan pada suatu script atau program untuk sebuah proses. Minimal terdapat sebuah thread yang berjalan dalam suatu proses, walau biasanya terdapat lebih dari satu thread dalam proses tersebut. Thread akan berbagi memori dan menggunakan informasi (nilai) dari variabel-variabel pada suatu proses tersebut. Penggambaran thread pada sebuah proses dapat dilihat sebagai berikut.
+Thread merupakan unit terkecil dalam suatu proses yang dapat dijadwalkan oleh sistem operasi. Thread biasanya terbentuk oleh `fork` yang berjalan pada suatu script atau program untuk sebuah proses. Minimal terdapat sebuah thread yang berjalan dalam suatu proses, walau biasanya terdapat lebih dari satu thread dalam proses tersebut. Thread akan berbagi memori dan menggunakan informasi (nilai) dari variabel-variabel pada suatu proses tersebut. Penggambaran thread pada sebuah proses dapat dilihat sebagai berikut.
 
 ![thread](img/thread2.png)
 
@@ -615,11 +611,11 @@ Semaphore berbeda dengan jenis-jenis IPC yang lain. Pada pengaplikasiannya, sema
 - Sebaliknya, jika semaphore bernilai 0, proses akan masuk pada mode sleep sampai semaphore bernilai lebih besar dari 0.
 
 ### 2.6 Shared Memory
-A mechanism for mapping the area (segments) of a block of memory to be shared by several processes. A process will create a memory segment, then other permitted processes can access that memory. Shared memory is an effective way to exchange data between programs.
+Sebuah mekanisme *mapping area(segments)* dari suatu blok *memory* untuk digunakan bersama oleh beberapa proses. Sebuah proses akan menciptakan *segment memory*, kemudian proses lain yang diijinkan dapat mengakses *memory* tersebut. *Shared memory* merupakan cara yang efektif untuk melakukan pertukaran data antar program.
 
 Example: [Proses 1](proses1.c) [Proses 2](proses2.c)
 
-Process 1
+Proses 1
 ```c
 #include <stdio.h>
 #include <sys/ipc.h>
@@ -645,7 +641,7 @@ void main()
         shmctl(shmid, IPC_RMID, NULL);
 }
 ```
-Process 2
+Proses 2
 ```c
 #include <stdio.h>
 #include <sys/ipc.h>
@@ -661,7 +657,7 @@ void main()
         value = shmat(shmid, NULL, 0);
 
         printf("Program 1 : %d\n", *value);
-	    *value = 30;
+	*value = 30;
 
         sleep(5);
 
@@ -683,83 +679,6 @@ Program 1 : 10
 Program 1 : 30
 ```
 
-## 3. Asynchronous Programming
-
-Kita sudah mengenal bagaimana cara menggunakan thread dan memproses perintah secara terpisah-pisah dan bersamaan. Di tingkatan selanjutnya, kita akan belajar bagaimana suatu proses menerima suatu perintah tanpa terblok oleh proses yang lain. Disinilah kita akan belajar tentang Asynchronous Programming dimana kita tidak perlu menunggu sesuatu terlalu lama dan kita membiarkan tugas lainnya dikerjakan oleh core processor yang lain. Berikut adalah beberapa perintah yang bisa digunakan untuk menerapkan Asynchronous Programming di C.
-
-### 3.1 select
-
-Select memberikan kita kemampuan untuk memonitor jumlah socket yang cukup besar, dan tiap socket tidak terblok oleh socket yang lain. Mungkin kita bisa mengakali menggunakan thread, hanya saja jika jumlah socket sangat besar seperti 1024, memiliki 1024 thread bukanlah solusi yang tepat dan penggunaan select akan lebih memudahkan pekerjaan.
-
-Fungsi select()
-```c
-int select(int nfds, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, struct timeval *timeout);
-
-struct timeval {
-    long int tv_sec;    /* Value in seconds */
-    long int tv_usec;   /* Value in milli-seconds */
-};
-```
-
-Penjelasan untuk parameter yang digunakan :
-- nfds  :   Jumlah file descriptor tertinggi + 1, bisa menggunakan `FD_SETSIZE` yang berisi angka 1024
-- readfds : File descriptor untuk pembacaan
-- writefds : File descriptor untuk penulisan
-- exceptfds :   File descriptor untuk exception
-- timeout   :   Timeout jika aplikasi menginginkan ada timeout
-
-Contoh penggunaan dapat dilihat pada [file server](select-server.c) dan [file client](select-client.c) yang ada pada modul. Lakukan seperti di [Subbab 2.3 Sockets](#23-sockets) untuk testing.
-
-### 3.2 poll
-`poll()` sendiri melakukan sesuatu yang sama dengan `select()` yaitu menunggu salah satu dari file descriptor untuk siap melakukan operasi. Tetapi `poll()` sendiri diciptakan untuk mengatasi permasalahan pending yang dimiliki oleh `select()`
-
-Fungsi `poll()`
-```c
-#include <poll.h> 
-
-int poll(struct pollfd *fds, int nfds, int timeout);
-
-struct pollfd {
-    int   fd;         /* file descriptor */
-    short events;     /* requested events */
-    short revents;    /* returned events */
-};
-```
-
-Penjelasan Parameter :
-- fds   :   Array dari file descriptor
-- nfds  :   Jumlah file descriptor
-- timeout   :    Timeout untuk program
-- events & revents : Bisa membaca sumber yang ada di referensi karena cukup banyak dan beragam
-
-Contoh penggunaan dapat dilihat pada [file server](poll-server.c) dan [file client](poll-client.c) yang ada pada modul. Lakukan seperti di [Subbab 2.3 Sockets](#23-sockets) untuk testing.
-
-### 3.3 epoll
-`epoll` adalah varian dari `poll()` yang bisa memperbesar skala dengan baik untuk jumlah file descriptor yang besar. 3 system call disediakan untuk set up dan mengkontrol epoll set : `epoll_create()`, `epoll_ctl()`, `epoll_wait()`.
-
-Fungsi-fungsi untuk `epoll`
-```c
-int epoll_create(int size); // creates an epoll() instance
-
-int epoll_ctl(int epfd, int op, int fd, struct epoll_event *event); // performs control operations on the epoll() instance referred to by the file descriptor epfd.
-
-int epoll_wait(int epfd, struct epoll_event *events,int maxevents, int timeout); // waits for events on the epoll() instance referred to by the file descriptor epfd
-
-typedef union epoll_data {
-    void        *ptr;
-    int          fd;
-    uint32_t     u32;
-    uint64_t     u64;
-} epoll_data_t;
-
-struct epoll_event {
-    uint32_t     events;      /* Epoll events */
-    epoll_data_t data;        /* User data variable */
-};
-```
-
-Contoh penggunaan dapat dilihat pada [file server](epoll-server.c) dan [file client](epoll-client.c) yang ada pada modul. Lakukan seperti di [Subbab 2.3 Sockets](#23-sockets) untuk testing.
-
 ## Appendix
 ### Libraries documentation (and functions)
 ```
@@ -769,32 +688,12 @@ $ man fcntl
 ```
 
 ## Soal Latihan 
-1. Buatlah program C yang bisa menghitung faktorial secara parallel lalu menampilkan hasilnya secara berurutan.  
-Contoh: 
-```bash
-## input
-./faktorial 5 3 4
-```
-```bash
-### output
-3! = 6  
-4! = 24  
-5! = 120
-```
 
-2. Buatlah sebuah program untuk menampilkan file pada urutan ketiga dari sebuah direktori, dengan menggunakan pipe dan command ls, head, tail.
-
-3. Buatlah sebuah program menggunakan socket dimana terdiri dari client dan server. Saat client mengetikkan "tambah" maka suatu angka yang ada pada server bertambah 1 dan server otomatis mengirimkan pesan ke client yang berisi "Penambahan berhasil" dan ketika mengetikan perintah “kurang” maka suatu angka yang ada pada server berkurang 1 dan server otomatis mengirimkan pesan ke client yang berisi "Pengurangan berhasil". Perintah yang lainnya pada client adalah "cek", maka server akan mengirimkan pesan yang berisi jumlah terkini angka tersebut, selain perintah tersebut server akan mengirimkan pesan “command tidak sesuai”. Program ini dapat berjalan tanpa henti. (Nilai awal angka pada server adalah 5).
 
 ### References 
-- https://notes.shichao.io/apue/  
-- https://www.gta.ufrj.br/ensino/eel878/sockets/index.html  
-- http://advancedlinuxprogramming.com/alp-folder/alp-ch05-ipc.pdf  
-- https://www.geeksforgeeks.org/socket-programming-cc/  
-- https://www.geeksforgeeks.org/pipe-system-call/  
-- https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Asynchronous/Concepts
-- http://codingbison.com/c/c-sockets-select.html
-- https://www.tutorialspoint.com/unix_system_calls/poll.htm
-- https://pubs.opengroup.org/onlinepubs/009696799/functions/poll.html
-- https://linux.die.net/man/4/epoll
-- https://programmer.ink/think/epoll-for-linux-programming.html
+https://notes.shichao.io/apue/  
+https://www.gta.ufrj.br/ensino/eel878/sockets/index.html  
+http://advancedlinuxprogramming.com/alp-folder/alp-ch05-ipc.pdf  
+https://www.geeksforgeeks.org/socket-programming-cc/  
+https://www.geeksforgeeks.org/pipe-system-call/  
+
