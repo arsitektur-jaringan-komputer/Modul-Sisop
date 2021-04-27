@@ -325,68 +325,68 @@ Shell script dipanggil
 ```
 
 
-## 6. Types of Processes
+## 6. Jenis-Jenis Proses
 
-[List of Content](#list-of-content)
+[Daftar Isi](#daftar-isi)
 
 ### **Zombie Process**
 
-The Zombie process occurs because there is a child process that is exited but the parent process does not know that the child process has ended, for example due to a network break. So that the parent process does not releases processes that are still used by the child processes even though the process is dead.
+Zombie Process terjadi karena adaanya child process yang di exit namun parrent processnya tidak tahu bahwa child process tersebut telah di terminate, misalnya disebabkan karena putusnya network. Sehingga parent process tidak merelease process yang masih digunakan oleh child process tersebut walaupun process tersebut sudah mati.
 
 ### **Orphan Process**
 
-Orphan Process is a process on the computer where the parent process has finished or has stopped working, but the child process itself is still running.
+Orphan Process adalah sebuah proses yang ada dalam komputer dimana parent process telah selesai atau berhenti bekerja namun proses anak sendiri tetap berjalan.
 
 ### **Daemon Process**
 
-Daemon Process is a process that runs in the background because it does not have a controlling terminal. In the Windows operating system it is usually better known as a service. Daemon is a process that is designed so that the process does not get intervention from a user.
+Daemon Process adalah sebuah proses yang bekerja pada background karena proses ini tidak memiliki terminal pengontrol. Dalam sistem operasi Windows biasanya lebih dikenal dengan sebutan service. Daemon adalah sebuah proses yang didesain supaya proses tersebut tidak mendapatkan intervensi dari user.
 
 ---
 
 # Daemon
 
-[List of Content](#list-of-content)
+[Daftar Isi](#daftar-isi)
 
-## 1. Definition of Daemon
-Daemon is a program that runs in the background continuously without direct interaction with an active user.
+## 1. Pengertian Daemon
+Daemon adalah suatu program yang berjalan di background secara terus menerus tanpa adanya interaksi secara langsung dengan user yang sedang aktif.
 
 <!-- Sebuah daemon dapat berhenti karena beberapa hal. -->
-## 2. Daemon Creation Steps
-There are several steps to creating a daemon:
-### 2.1 Fork the Parent Process and turn off the Parent Process
-The first step is to create a parent process and generate the child process by `fork()`, then kill the parent process so that the operating system thinks the process is complete.
+## 2. Langkah Pembuatan Daemon
+Ada beberapa langkah untuk membuat sebuah daemon:
+### 2.1 Melakukan Fork pada Parent Process dan mematikan Parent Process
+Langkah pertama adalah membuat sebuah parent process dan memunculkan child process dengan melakukan `fork()`. Kemudian bunuh parent process agar sistem operasi mengira bahwa proses telah selesai.
 
 ```c
-pid_t pid;        // Variable to store pid
+pid_t pid;        // Variabel untuk menyimpan PID
 
-pid = fork();     // Store the pid of the child process
+pid = fork();     // Menyimpan PID dari Child Process
 
-/* Exit when fork failed
- * (pid value < 0) */
+/* Keluar saat fork gagal
+ * (nilai variabel pid < 0) */
 if (pid < 0) {
   exit(EXIT_FAILURE);
 }
 
-/* Exit when fork succeed
- * (the value of pid is the child process's pid) */
+/* Keluar saat fork berhasil
+ * (nilai variabel pid adalah PID dari child process) */
 if (pid > 0) {
   exit(EXIT_SUCCESS);
 }
 ```
 
-### 2.2 Changing File Mode with `umask`
-Each file and directory has a _permissions_ that regulate who can read, write, and delete on the file or the directory.
+### 2.2 Mengubah Mode File dengan `umask`
+Setiap file dan directory memiliki _permission_ atau izin yang mengatur siapa saja yang boleh melakukan _read, write,_ dan _execute_ pada file atau directory tersebut.
 
-Using `umask` we can set a  _permission_ from a file when it is created. Here we use  `umask(0)` so that we get full access of a file when a daemon created it.
+Dengan menggunakan `umask` kita dapat mengatur _permission_ dari suatu file pada saat file itu dibuat. Di sini kita mengatur nilai `umask(0)` agar kita mendapatkan akses full terhadap file yang dibuat oleh daemon.
 
 ```c
 umask(0);
 ```
 
-### 2.3 Creating Unique Session ID (SID)
-A Child Process must have an SID in order to run. Without an SID, the Child Process whose Parent has been `kill`-ed will become an Orphan Process.
+### 2.3 Membuat Unique Session ID (SID)
+Sebuah Child Process harus memiliki SID agar dapat berjalan. Tanpa adanya SID, Child Process yang Parent-nya sudah di-`kill` akan menjadi Orphan Process.
 
-To get an SID we can use the command `setsid()`. This command has the same _return type_ as `fork()`.
+Untuk mendapatkan SID kita dapat menggunakan perintah `setsid()`. Perintah tersebut memiliki _return type_ yang sama dengan perintah `fork()`.
 
 ```c
 sid = setsid();
@@ -395,10 +395,10 @@ if (sid < 0) {
 }
 ```
 
-### 2.4 Changing Working Directory
-A working directory must be changed to a directory that is sure to exist. To be safe, we will change it to the root (/) directory because it is a guaranteed directory on all Linux distributions.
+### 2.4 Mengubah Working Directory
+Working directory harus diubah ke suatu directory yang pasti ada. Untuk amannya, kita akan mengubahnya ke root (/) directory karena itu adalah directory yang dijamin ada pada semua distro linux.
 
-To change the Working Directory, we can use the command `chdir()`.
+Untuk mengubah Working Directory, kita dapat menggunakan perintah `chdir()`.
 
 ```c
 if ((chdir("/")) < 0) {
@@ -406,8 +406,8 @@ if ((chdir("/")) < 0) {
 }
 ```
 
-### 2.5 Closing the Standard File Descriptor
-A daemon cannot use the terminal. Therefore we must close the standard file descriptors (STDIN, STDOUT, STDERR).
+### 2.5 Menutup File Descriptor Standar
+Sebuah daemon tidak boleh menggunakan terminal. Oleh sebab itu kita harus _menutup_ file descriptor standar (STDIN, STDOUT, STDERR).
 
 ```c
 close(STDIN_FILENO);
@@ -415,19 +415,14 @@ close(STDOUT_FILENO);
 close(STDERR_FILENO);
 ```
 
-<<<<<<< HEAD
-### 2.6 Creating the Main Loop
-This is the main loop where we write the gist of our program. Don't forget to give the command `sleep()` so that the loop runs at an interval.
-=======
 File descriptor sendiri merupakan sebuah angka yang merepresentasikan sabuah file yang dibuka di sebuah sistem operasi. File descriptor mendeskripsikan sumber data dan bagaimana data itu diakses.
 
 ### 2.6 Membuat Loop Utama
 Di loop utama ini lah tempat kita menuliskan inti dari program kita. Jangan lupa beri perintah `sleep()` agar loop berjalan pada suatu interval.
->>>>>>> 447bee03a2a47098cc8e322f6db706603a033afb
 
 ```c
 while (1) {
-  // Write your program here
+  // Tulis program kalian di sini
 
   sleep(30);
 }
