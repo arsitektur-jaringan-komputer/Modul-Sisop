@@ -10,34 +10,27 @@
 2. Peserta mengetahui dan mampu mengimplementasikan FUSE
 
 
-
 ## Daftar Isi
 
--  [1. File System](https://github.com/Armunz/sisop-modul-4#1-file-system)
+- [File System dan FUSE](#file-system-dan-fuse)
+  - [Objectives](#objectives)
+  - [Daftar Isi](#daftar-isi)
+- [File System](#file-system)
+  - [1. Tipe File System](#1-tipe-file-system)
+  - [2. Virtual File System](#2-virtual-file-system)
+  - [3. Dentry](#3-dentry)
+  - [4. Superblock](#4-superblock)
+  - [5. Inode](#5-inode)
+- [File System in Userspace (FUSE)](#file-system-in-userspace-fuse)
+  - [1. Instalasi FUSE](#1-instalasi-fuse)
+  - [2. Cara Kerja FUSE](#2-cara-kerja-fuse)
+  - [3. Membuat Program FUSE](#3-membuat-program-fuse)
+    - [Tips](#tips)
+  - [4. Unmount FUSE](#4-unmount-fuse)
+- [Soal Latihan](#soal-latihan)
+- [References](#references)
 
--  [1.1 Tipe File System](https://github.com/Armunz/sisop-modul-4#11-tipe-file-system)
-
--  [1.2 Virtual File System](https://github.com/Armunz/sisop-modul-4#12-virtual-file-system)
-
--  [1.3 Dentry](https://github.com/Armunz/sisop-modul-4#13-dentry)
-
--  [1.4 Superblock](https://github.com/Armunz/sisop-modul-4#14-superblock)
-
--  [1.5 Inode](https://github.com/Armunz/sisop-modul-4#15-inode)
-
--  [2. File System in Userspace (FUSE)](https://github.com/Armunz/sisop-modul-4#2-file-system-in-userspace-fuse)
-
--  [2.1 Instalasi FUSE](https://github.com/Armunz/sisop-modul-4#21-instalasi-fuse)
-
--  [2.2 Cara Kerja FUSE](https://github.com/Armunz/sisop-modul-4#22-cara-kerja-fuse)
-
--  [2.3 Membuat Program FUSE](https://github.com/Armunz/sisop-modul-4#23-membuat-program-fuse)
-
-- [2.4 Unmount FUSE](https://github.com/Armunz/sisop-modul-4#24-unmount-fuse)
-
-
-
-# 1. File System
+# File System
 
 _File system_ adalah struktur logika yang digunakan untuk mengendalikan akses data seperti bagaimana dia disimpan maupun diambil. _File system_ sendiri memiliki banyak jenis dengan penggunaan algoritma yang tentu berbeda. Setiap Sistem Operasi (OS) memiliki support file system yang berbeda-beda. File system digunakan untuk mengorganisir dan menyimpan file pada storage device.
 
@@ -49,7 +42,7 @@ _File system_ menyediakan cara untuk memisah-misahkan data pada drive menjadi be
 ![enter image description here](https://github.com/Armunz/sisop-modul-4/blob/master/img/linux-filesystem.png?raw=true)
 
 
-### 1.1 Tipe File System
+## 1. Tipe File System
 
 **1. File System Disk**
 
@@ -103,13 +96,13 @@ _File system_ jaringan adalah _file system_ yang bertindak sebagai klien untuk p
 _File system_ yang mencatat setiap perubahan yang terjadi pada storage device ke dalam jurnal (biasanya berupa log sirkular dalam area tertentu) sebelum melakukan perubahan ke _file system_. File sistem seperti ini memiliki kemungkinan yang lebih kecil mengalami kerusakan saat terjadi _power failure_ atau _system crash_.
 
 
-### 1.2 Virtual File System
+## 2. Virtual File System
 
 Virtual file system (VFS) adalah suatu lapisan perangkat lunak dalam kernel yang menyediakan _interface file system_ untuk program _user space_. _Virtual file system_ berfungsi agar berbagai jenis _file system_ dapat diakses oleh aplikasi komputer dengan cara yang seragam. VFS menyediakan antarmuka antara _system call_ dengan sistem yang sesungguhnya.
 
 
 
-### 1.3 Dentry
+## 3. Dentry
 
 Dentry atau **Directory Entry** merupakan sebuah struktur data yang memiliki tugas sebagai penerjemah nama berkas ke inode-nya. Contoh informasi yang disimpan dalam dentry adalah _name_, _pointer to inode_, _pointer to parent dentry_, _use count_, dan lainnya. Adapula command dalam VFS dentry adalah D_compare, D_delete, D_release.
 
@@ -117,7 +110,7 @@ Dentry atau **Directory Entry** merupakan sebuah struktur data yang memiliki tug
 
 
 
-### 1.4 Superblock
+## 4. Superblock
 
 Setiap _file system_ yang di-_mount_ akan direpresentasikan oleh sebuah VFS Superblock. _Superblock_ digunakan untuk menyimpan informasi mengenai partisi tersebut. _Superblock_ menyimpan informasi sebagai berikut:
 
@@ -137,7 +130,7 @@ Setiap _file system_ yang di-_mount_ akan direpresentasikan oleh sebuah VFS Supe
 
 
 
-### 1.5 Inode
+## 5. Inode
 
 Inode adalah abstraksi VFS untuk berkas. Setiap berkas, directory, dan data lainnya pada VFS direpresentasikan oleh satu dan hanya satu VFS inode. VFS inode hanya terdapat di memori kernel dan disimpan di inode chace selama masih dibutuhkan oleh sistem. Informasi yang disimpan oleh VFS Inode diantaranya:
 
@@ -170,7 +163,7 @@ Berikut adalah hubungan antara dentry, superblock, dan inode pada Virtual File S
 ![enter image description here](https://github.com/Armunz/sisop-modul-4/blob/master/img/dentry.JPG?raw=true)
 
 
-# 2. File System in Userspace (FUSE)
+# File System in Userspace (FUSE)
 
 FUSE (Filesystem in Userspace) adalah sebuah _interface_ dimana kita dapat membuat _file system_ sendiri pada _userspace_ pada linux.
 
@@ -187,8 +180,6 @@ Keuntungan menggunakan FUSE ialah kita dapat menggunakan _library_ apapun yang t
 
 ![enter image description here](https://github.com/Armunz/sisop-modul-4/blob/master/img/fuse.png?raw=true)
 
-
-#
 
 Salah satu contoh yang menarik dari FUSE adalah [GDFS][7bb7b7cc] (Google Drive File System), dimana GDFS ini memungkinkan kita untuk me-_mount Google Drive_ kita ke sistem linux dan menggunakannya seperti file linux biasa.
 
@@ -208,7 +199,7 @@ Untuk lebih jelasnya mari kita coba membuat program FUSE.
 
 
 
-### 2.1 Instalasi FUSE
+## 1. Instalasi FUSE
 
 Pertama-tama kita harus memstikan bahwa FUSE sudah ter-install di perangkat anda
 
@@ -222,7 +213,7 @@ $ sudo apt install libfuse*
 
 
 
-### 2.2 Cara Kerja FUSE
+## 2. Cara Kerja FUSE
 
 
 
@@ -326,7 +317,7 @@ int (*write) (const char *, const char *, size_t, off_t, struct fuse_file_info *
 
 
 
-### 2.3 Membuat Program FUSE
+## 3. Membuat Program FUSE
 
 Fuse memiliki ```struct``` yang dinamakan ```fuse_operations``` yang didefinisikan seperti dibawah ini:
 
@@ -384,8 +375,6 @@ Kebanyakan fungsi-fungsi yang tersedia adalah **opsional**, kita tidak perlu men
 - Fungsi ```read``` yang dipanggil saat sistem mencoba untuk membaca potongan demi potongan data dari suatu file.
 
 Untuk melihat fungsi-fungsi yang tersedia pada **FUSE** yang lain, buka link berikut: [https://libfuse.github.io/doxygen/structfuse__operations.html](https://libfuse.github.io/doxygen/structfuse__operations.html)
-
-#
 
 Contoh program FUSE sederhana yang hanya menggunakan 3 fungsi tersebut.
 
@@ -501,7 +490,7 @@ $ ./[output] [direktori tujuan]
 Setelah program dijalankan, masuklah kedalam direktori tujuan tersebut. Isi dari direktori tersebut adalah list folder yang sama seperti yang ada di dalam ```root``` atau ```/```.
 
 
-#### Tips
+### Tips
 Salah satu cara debugging yang bisa dilakukan saat memprogram fuse adalah dengan menggunakan `printf` dan menjalankan program dengan cara `./[output] -f [direktori tujuan]`. Dimana `-f` disini berarti menjaga program agar tetap berjalan di foreground sehingga bisa menggunakan `printf`.
 
 
@@ -627,7 +616,7 @@ int  main(int  argc, char *argv[])
 }
 ```
 
-### 2.4 Unmount FUSE
+## 4. Unmount FUSE
 Unmount command digunakan untuk "unmount" sebuah filesystem yang telah ter-mount, lalu juga menginformasikan ke sistem untuk menyelesaikan semua operasi read dan write yang masih tertunda agar bisa di-detach (dilepaskan) dengan aman.
 
 Untuk melakukan **unmount** FUSE, jalankan command di bawah ini:
@@ -638,12 +627,12 @@ fusermount -u [direktori tujuan]
 ```
 
 
-## Soal Latihan
+# Soal Latihan
 
 
 
 
-### References
+# References
 
 1. https://www.cs.hmc.edu/~geoff/classes/hmc.cs135.201109/homework/fuse/fuse_doc.html
 2. http://www.maastaar.net/fuse/linux/filesystem/c/2016/05/21/writing-a-simple-filesystem-using-fuse/
