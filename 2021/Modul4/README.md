@@ -629,8 +629,8 @@ fusermount -u [direktori tujuan]
 
 # Soal Latihan
 
-
-
+1. Buat sebuah file system yang mengarah ke /home/[user]/Downloads, file sistem bernama JagoFS, sehingga nama file yang ada pada folder tersebut akan ditampilkan Jago_[nama_file]. Sebagai contoh contohfile.txt menjadi Jago_contohfile.txt. File system ini hanya memiliki akses read. Contoh lainnya Jago_contohkedua.txt menjadi Jago_Jago_contohkedua.txt.
+2. Buat sebuah file system yang mengarah ke /home/[user]/Documents. File system ini memiliki fitur pencatatan, dimana ketika file pada folder tersebut dimodifikasi, kejadian perubahan tersebut akan dicatat pada suatu file log dengan format <namafile>.<time:date>.<ekstensi>. Jika file log belum ada, maka secara otomatis akan membuat file log sebelum dicatat.
 
 # References
 
