@@ -1,4 +1,4 @@
-# Thread dan IPC
+# Thread and IPC
 
 ## Objectives
 1. To develop knowledge about thread
@@ -19,17 +19,13 @@
     - [2.4 Message Queues](#24-message-queues)
     - [2.5 Semaphores](#25-semaphores)
     - [2.6 Shared Memory](#26-shared-memory)
-  - [3. Asynchronous Programming](#3-asynchronous-programming)
-    - [3.1 select](#31-select)
-    - [3.2 poll](#32-poll)
-    - [3.3 epoll](#33-epoll)
   - [Appendix](#appendix)
     - [Libraries documentation (and functions)](#libraries-documentation-and-functions)
-  - [Exercise](#exercise)
+  - [Soal Latihan](#soal-latihan)
     - [References](#references)
 
 
-## 1. Thread 
+## 1. Thread
 ### 1.1 Thread
 Thread is smallest unit in a process that are scheduled by the operating system. Thread are usually made by `fork` that runs in a script or program. There is at least 1 thread running for each process, but you can also have multiple thread run for one process. Thread will share their memory and use information (value) of variables in that process. You can picture thread as follows.
 
@@ -86,7 +82,7 @@ int main()
 		}
 		execv("/usr/bin/xlogo", argv2);
 	}
-	
+
 }
 
 ```
@@ -226,7 +222,7 @@ int main()
     printf("pthread_create() for thread 2 returns: %d\n",iret2);
 
     // pthread_join( thread1, NULL);
-    // pthread_join( thread2, NULL); 
+    // pthread_join( thread2, NULL);
 
     exit(EXIT_SUCCESS);
 }
@@ -276,21 +272,21 @@ Example of Simple Mutual_Exclusion program [threadmutex.c](threadmutex.c):
 #include<pthread.h>
 #include<stdlib.h>
 #include<unistd.h>
- 
+
 pthread_t tid1, tid2;
 int status;
 
 int number;
- 
+
 void* write(void *arg)
 {
     status = 0;
- 
+
     printf("Input number : ");
     scanf("%d", &number);
- 
+
     status = 1;
- 
+
     return NULL;
 }
 
@@ -304,15 +300,15 @@ void* read(void *arg)
     printf("Number %d\n", number);
 
 }
- 
+
 int main(void)
 {
     pthread_create(&(tid1), NULL, write, NULL);
     pthread_create(&(tid2), NULL, read, NULL);
- 
+
     pthread_join(tid1, NULL);
     pthread_join(tid2, NULL);
- 
+
     return 0;
 }
 
@@ -349,7 +345,7 @@ Syntax in C languange :
 int pipe(int fds[2]);
 
 Parameters :
-fd[0] will be the fd(file descriptor) for the 
+fd[0] will be the fd(file descriptor) for the
 read end of pipe.
 fd[1] will be the fd for the write end of pipe.
 Returns : 0 on Success.
@@ -359,39 +355,39 @@ Example :
 [pipe1.c](pipe1.c)
 
 ```c
-// C program to illustrate 
-// pipe system call in C 
-#include <stdio.h> 
-#include <unistd.h> 
+// C program to illustrate
+// pipe system call in C
+#include <stdio.h>
+#include <unistd.h>
 #include <stdlib.h>
 
-#define MSGSIZE 16 
-char* msg1 = "hello, world #1"; 
-char* msg2 = "hello, world #2"; 
-char* msg3 = "hello, world #3"; 
+#define MSGSIZE 16
+char* msg1 = "hello, world #1";
+char* msg2 = "hello, world #2";
+char* msg3 = "hello, world #3";
 
-int main() 
-{ 
-	char inbuf[MSGSIZE]; 
-	int p[2], i; 
+int main()
+{
+	char inbuf[MSGSIZE];
+	int p[2], i;
 
-	if (pipe(p) < 0) 
-		exit(1); 
+	if (pipe(p) < 0)
+		exit(1);
 
 	/* continued */
 	/* write pipe */
 
-	write(p[1], msg1, MSGSIZE); 
-	write(p[1], msg2, MSGSIZE); 
-	write(p[1], msg3, MSGSIZE); 
+	write(p[1], msg1, MSGSIZE);
+	write(p[1], msg2, MSGSIZE);
+	write(p[1], msg3, MSGSIZE);
 
-	for (i = 0; i < 3; i++) { 
+	for (i = 0; i < 3; i++) {
 		/* read pipe */
-		read(p[0], inbuf, MSGSIZE); 
-		printf("%s\n", inbuf); 
-	} 
-	return 0; 
-} 
+		read(p[0], inbuf, MSGSIZE);
+		printf("%s\n", inbuf);
+	}
+	return 0;
+}
 
 ```  
 Output :  
@@ -409,105 +405,105 @@ Diagram :
 Example :  
 [pipe-fork](pipe-fork.c)  
 ```c
-// C program to demonstrate use of fork() and pipe() 
-#include<stdio.h> 
-#include<stdlib.h> 
-#include<unistd.h> 
-#include<sys/types.h> 
-#include<string.h> 
-#include<sys/wait.h> 
+// C program to demonstrate use of fork() and pipe()
+#include<stdio.h>
+#include<stdlib.h>
+#include<unistd.h>
+#include<sys/types.h>
+#include<string.h>
+#include<sys/wait.h>
 
-int main() 
-{ 
-	// We use two pipes 
-	// First pipe to send input string from parent 
-	// Second pipe to send concatenated string from child 
+int main()
+{
+	// We use two pipes
+	// First pipe to send input string from parent
+	// Second pipe to send concatenated string from child
 
-	int fd1[2]; // Used to store two ends of first pipe 
-	int fd2[2]; // Used to store two ends of second pipe 
+	int fd1[2]; // Used to store two ends of first pipe
+	int fd2[2]; // Used to store two ends of second pipe
 
-	char fixed_str[] = "forgeeks.org"; 
-	char input_str[100]; 
-	pid_t p; 
+	char fixed_str[] = "forgeeks.org";
+	char input_str[100];
+	pid_t p;
 
-	if (pipe(fd1)==-1) 
-	{ 
-		fprintf(stderr, "Pipe Failed" ); 
-		return 1; 
-	} 
-	if (pipe(fd2)==-1) 
-	{ 
-		fprintf(stderr, "Pipe Failed" ); 
-		return 1; 
-	} 
+	if (pipe(fd1)==-1)
+	{
+		fprintf(stderr, "Pipe Failed" );
+		return 1;
+	}
+	if (pipe(fd2)==-1)
+	{
+		fprintf(stderr, "Pipe Failed" );
+		return 1;
+	}
 
-	scanf("%s", input_str); 
-	p = fork(); 
+	scanf("%s", input_str);
+	p = fork();
 
-	if (p < 0) 
-	{ 
-		fprintf(stderr, "fork Failed" ); 
-		return 1; 
-	} 
+	if (p < 0)
+	{
+		fprintf(stderr, "fork Failed" );
+		return 1;
+	}
 
-	// Parent process 
-	else if (p > 0) 
-	{ 
-		char concat_str[100]; 
+	// Parent process
+	else if (p > 0)
+	{
+		char concat_str[100];
 
-		close(fd1[0]); // Close reading end of first pipe 
+		close(fd1[0]); // Close reading end of first pipe
 
-		// Write input string and close writing end of first 
-		// pipe. 
-		write(fd1[1], input_str, strlen(input_str)+1); 
-		close(fd1[1]); 
+		// Write input string and close writing end of first
+		// pipe.
+		write(fd1[1], input_str, strlen(input_str)+1);
+		close(fd1[1]);
 
-		// Wait for child to send a string 
-		wait(NULL); 
+		// Wait for child to send a string
+		wait(NULL);
 
-		close(fd2[1]); // Close writing end of second pipe 
+		close(fd2[1]); // Close writing end of second pipe
 
-		// Read string from child, print it and close 
-		// reading end. 
-		read(fd2[0], concat_str, 100); 
-		printf("Concatenated string %s\n", concat_str); 
-		close(fd2[0]); 
-	} 
+		// Read string from child, print it and close
+		// reading end.
+		read(fd2[0], concat_str, 100);
+		printf("Concatenated string %s\n", concat_str);
+		close(fd2[0]);
+	}
 
-	// child process 
+	// child process
 	else
-	{ 
-		close(fd1[1]); // Close writing end of first pipe 
+	{
+		close(fd1[1]); // Close writing end of first pipe
 
-		// Read a string using first pipe 
-		char concat_str[100]; 
-		read(fd1[0], concat_str, 100); 
+		// Read a string using first pipe
+		char concat_str[100];
+		read(fd1[0], concat_str, 100);
 
-		// Concatenate a fixed string with it 
-		int k = strlen(concat_str); 
-		int i; 
-		for (i=0; i<strlen(fixed_str); i++) 
-			concat_str[k++] = fixed_str[i]; 
+		// Concatenate a fixed string with it
+		int k = strlen(concat_str);
+		int i;
+		for (i=0; i<strlen(fixed_str); i++)
+			concat_str[k++] = fixed_str[i];
 
-		concat_str[k] = '\0'; // string ends with '\0' 
+		concat_str[k] = '\0'; // string ends with '\0'
 
-		// Close both reading ends 
-		close(fd1[0]); 
-		close(fd2[0]); 
+		// Close both reading ends
+		close(fd1[0]);
+		close(fd2[0]);
 
-		// Write concatenated string and close writing end 
-		write(fd2[1], concat_str, strlen(concat_str)+1); 
-		close(fd2[1]); 
+		// Write concatenated string and close writing end
+		write(fd2[1], concat_str, strlen(concat_str)+1);
+		close(fd2[1]);
 
-		exit(0); 
-	} 
-} 
+		exit(0);
+	}
+}
 
 ```
 
 
 ### 2.3 Sockets
-*Socket* is an *end-point* in a process that communicates with each other. Usually *socket* is used for communication betwwen processes on different computers, but can also be used in the same computer 
+*Socket* is an *end-point* in a process that communicates with each other. Usually *socket* is used for communication betwwen processes on different computers, but can also be used in the same computer
 
 Diagram :   
 ![alt](img/socket.png "implementasi socket C")
@@ -531,12 +527,12 @@ int main(int argc, char const *argv[]) {
     int addrlen = sizeof(address);
     char buffer[1024] = {0};
     char *hello = "Hello from server";
-      
+
     if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0) {
         perror("socket failed");
         exit(EXIT_FAILURE);
     }
-      
+
     if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt))) {
         perror("setsockopt");
         exit(EXIT_FAILURE);
@@ -545,7 +541,7 @@ int main(int argc, char const *argv[]) {
     address.sin_family = AF_INET;
     address.sin_addr.s_addr = INADDR_ANY;
     address.sin_port = htons( PORT );
-      
+
     if (bind(server_fd, (struct sockaddr *)&address, sizeof(address))<0) {
         perror("bind failed");
         exit(EXIT_FAILURE);
@@ -578,7 +574,7 @@ Client
 #include <unistd.h>
 #include <arpa/inet.h>
 #define PORT 8080
-  
+
 int main(int argc, char const *argv[]) {
     struct sockaddr_in address;
     int sock = 0, valread;
@@ -589,17 +585,17 @@ int main(int argc, char const *argv[]) {
         printf("\n Socket creation error \n");
         return -1;
     }
-  
+
     memset(&serv_addr, '0', sizeof(serv_addr));
-  
+
     serv_addr.sin_family = AF_INET;
     serv_addr.sin_port = htons(PORT);
-      
+
     if(inet_pton(AF_INET, "127.0.0.1", &serv_addr.sin_addr)<=0) {
         printf("\nInvalid address/ Address not supported \n");
         return -1;
     }
-  
+
     if (connect(sock, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0) {
         printf("\nConnection Failed \n");
         return -1;
@@ -722,7 +718,7 @@ Examples of use can be seen at [server File](select-server.c) and [client file](
 
 `poll()` function
 ```c
-#include <poll.h> 
+#include <poll.h>
 
 int poll(struct pollfd *fds, int nfds, int timeout);
 
@@ -781,7 +777,7 @@ $ man fcntl
 
 ## Exercise
 1. Create a C program that can calculate factorials in parallel and then display the results sequentially.
-Contoh: 
+Contoh:
 ```bash
 ## input
 ./faktorial 5 3 4
@@ -797,7 +793,7 @@ Contoh:
 
 3. Create a program using a socket which consists of the client and server. When the client types "add" then the number on the server increases by 1 and the server automatically sends a message to the client that says "The addition was successful" and when typing the command "subtract" then the number on the server decreases by 1 and the server automatically sends a message to client containing "Subtraction was successful". Another command on the client is "check", then the server will send a message containing the most recent number, other than that command the server will send a message "command does not match". This program can run without stopping. (The initial value of the number on the server is 5).
 
-### References 
+### References
 - https://notes.shichao.io/apue/  
 - https://www.gta.ufrj.br/ensino/eel878/sockets/index.html  
 - http://advancedlinuxprogramming.com/alp-folder/alp-ch05-ipc.pdf  
