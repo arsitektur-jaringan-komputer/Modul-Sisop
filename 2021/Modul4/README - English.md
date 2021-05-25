@@ -84,27 +84,28 @@ Beberapa program terkadang membutuhkan perubahan pada beberapa file. Jika pada p
 Pada File System Transaksional, tidak akan membiarkan hal tersebut terjadi. File System ini menjamin bahwa jika ada suatu proses yang error, maka proses tersebut akan dibatalkan, dan file-file yang telah terbentuk selama proses tadi akan di roll back seperti semula. Contoh dari File System ini pada UNIX adalah Valor File System, Amino, LFS dan TFFS,
 
 
-**5. File System Jaringan**
+
+**5. Network File System**
 
 
 
-_File system_ jaringan adalah _file system_ yang bertindak sebagai klien untuk protokol akses file jarak jauh, memberikan akses ke _file_ pada sebuah _server_. Contoh dari _file system_ jaringan ini adalah klien protokol NFS, AFS, SMB, dan klien FTP dan WebDAV.
+Network _File system_ is a _file system_ which acts as a client for the remote file access protocol, granting access to _files_ on a _server_. Examples of these network _file system_ are NFS, AFS, SMB protocol clients, and FTP and WebDAV clients.
 
 
-**6. File System Journaling**
+**6. Journaling File System**
 
-_File system_ yang mencatat setiap perubahan yang terjadi pada storage device ke dalam jurnal (biasanya berupa log sirkular dalam area tertentu) sebelum melakukan perubahan ke _file system_. File sistem seperti ini memiliki kemungkinan yang lebih kecil mengalami kerusakan saat terjadi _power failure_ atau _system crash_.
+_File system_ that records every change that occurs on the storage device into a journal (usually a circular log in a certain area) before making changes to the _file system_. Such system files are less likely to be damaged when a power failure or system crash occurs.
 
 
 ## 2. Virtual File System
 
-Virtual file system (VFS) adalah suatu lapisan perangkat lunak dalam kernel yang menyediakan _interface file system_ untuk program _user space_. _Virtual file system_ berfungsi agar berbagai jenis _file system_ dapat diakses oleh aplikasi komputer dengan cara yang seragam. VFS menyediakan antarmuka antara _system call_ dengan sistem yang sesungguhnya.
-
+A virtual file system (VFS) is a layer of software in the kernel that provides a _file system interface_ for the program's _user space_. _Virtual file system_ functions so that various types of _file system_ can be accessed by computer applications in a uniform manner. VFS provides an interface between the _system call_ and the real system.
 
 
 ## 3. Dentry
 
-Dentry atau **Directory Entry** merupakan sebuah struktur data yang memiliki tugas sebagai penerjemah nama berkas ke inode-nya. Contoh informasi yang disimpan dalam dentry adalah _name_, _pointer to inode_, _pointer to parent dentry_, _use count_, dan lainnya. Adapula command dalam VFS dentry adalah D_compare, D_delete, D_release.
+
+Dentry or **Directory Entry** is a data structure that translates filenames into their inodes. Examples of information stored in dentry are _name_, _pointer to inode_, _pointer to parent dentry_, _use count_, and others. There are also commands in VFS dentry are D_compare, D_delete, D_release.
 
 ![enter image description here](https://github.com/Armunz/sisop-modul-4/blob/master/img/figure5.gif?raw=true)
 
@@ -112,19 +113,19 @@ Dentry atau **Directory Entry** merupakan sebuah struktur data yang memiliki tug
 
 ## 4. Superblock
 
-Setiap _file system_ yang di-_mount_ akan direpresentasikan oleh sebuah VFS Superblock. _Superblock_ digunakan untuk menyimpan informasi mengenai partisi tersebut. _Superblock_ menyimpan informasi sebagai berikut:
+Every file system that is mounted will be represented by a VFS Superblock. _Superblock_ is used to store information about the partition. _Superblock_ stores the following information:
 
--  _Device_: Merupakan _device identifier_, contohnya **/dev/hda1** adalah _harddisk_ pertama yang terdapat pada sistem memiliki device identifier **0×300**.
+-  _Device_: Is the _device identifier_, for example **/ dev / hda1** is the first _harddisk_ on the system having device identifier **0 × 300**.
 
--  _Inode Pointer_: Merupakan suatu _pointer_ yang menunjuk ke inode pertama pada sistem berkas.
+-  _Inode Pointer_: Is a _pointer_ which points to the first inode of the filesystem.
 
--  _Blocksize_: Menunjukkan ukuran suatu _block_ dari sistem berkas, contohnya **1024** _**bytes**_.
+-  _Blocksize_: Indicates the size of a _block_ file system, for example **1024** **bytes**. 
 
--  _Superblock Operation_: Merupakan suatu pointer ke sekumpulan _superblock routine_ (fungsi) dari _file system_, contohnya _**read**_, _**write**_, dan sebagainya.
+-  _Superblock Operation_: Is a pointer to a set of superblock routines (functions) from the _file system_, for example **read**, **write**, and so on.
 
--  _File System Type_: Menunjukkan tipe dari _file system_, contoh: EXT2, FAT, NTFS.
+-  _File System Type_: Shows the type of _file system_, for example: EXT2, FAT, NTFS.
 
--  _File System Specific_: Merupakan suatu pointer ke informasi yang dibutuhkan oleh _file system.
+-  _File System Specific_: It is a pointer to the information required by the _file system.
 
   ![enter image description here](https://github.com/Armunz/sisop-modul-4/blob/master/img/figure3.gif?raw=true)
 
@@ -132,31 +133,32 @@ Setiap _file system_ yang di-_mount_ akan direpresentasikan oleh sebuah VFS Supe
 
 ## 5. Inode
 
-Inode adalah abstraksi VFS untuk berkas. Setiap berkas, directory, dan data lainnya pada VFS direpresentasikan oleh satu dan hanya satu VFS inode. VFS inode hanya terdapat di memori kernel dan disimpan di inode chace selama masih dibutuhkan oleh sistem. Informasi yang disimpan oleh VFS Inode diantaranya:
 
--  _Device_: Menunjukan device identifier dari suatu device yang menyimpan berkas ataupun _directory_.
+An inode is a VFS abstraction for files. Each file, directory, and other data on VFS is represented by one and only one VFS inode. VFS inodes exist only in kernel memory and are stored in the inode cache as long as they are needed by the system. The information stored by the VFS Inode includes:
 
--  _Inode Number_: Merupakan nomor inode yang unik dalam _file system_.
+-  _Device_: Shows the device identifier of a device that stores files or a _directory_.
 
-- Mode: Menggambarkan apa yang direpresentasikan oleh VFS inode.
+-  _Inode Number_: Is a unique inode number in the _file system_.
 
--  _User_ ID: Merupakan identifier bagi pemilik berkas.
+- Mode: Describes what the VFS inode represents.
 
--  _Time_: Menunjukkan kapan pembuatan, modifikasi, dan penulisan suatu berkas.
+-  _User_ ID: Is an identifier for the owner of the file.
 
--  _Blocksize_: Menunjukkan ukuran dari _block_ yang digunakan oleh berkas.
+-  _Time_: Indicate when the creation, modification, and writing of a file.
 
--  _Inode Operations_: Merupakan _pointer_ ke suatu _routine_ yang melakukan berbagai operasi pada inode.
+-  _Blocksize_: Shows the size of the _block_ used by the file.
 
--  _Count_: Menunjukkan berapa kali suatu sistem telah menggunakan suatu inode.
+-  _Inode Operations_: Is _pointer_ to a _routine_ who perform various operations on inode.
 
--  _Lock_: Digunakan untuk mengunci VFS inode.
+-  _Count_: Shows the number of times a system has used an inode.
 
--  _File System Specific Information_: Menunjukkan informasi khusus yang dibutuhkan oleh suatu inode.
+-  _Lock_: Used to lock the VFS inode.
+
+-  _File System Specific Information_: Indicates specific information required by an inode.
 
 ![enter image description here](https://github.com/Armunz/sisop-modul-4/blob/master/img/figure4.gif?raw=true)
 
-Berikut adalah hubungan antara dentry, superblock, dan inode pada Virtual File System.
+Following is the relationship between dentry, superblock, and inode on a Virtual File System.
 
 ![enter image description here](https://github.com/Armunz/sisop-modul-4/blob/master/img/daHCZ.gif?raw=true)
 
@@ -204,11 +206,8 @@ Untuk lebih jelasnya mari kita coba membuat program FUSE.
 Pertama-tama kita harus memstikan bahwa FUSE sudah ter-install di perangkat anda
 
 ```
-
 $ sudo apt update
-
 $ sudo apt install libfuse*
-
 ```
 
 
@@ -232,7 +231,6 @@ $ sudo apt install libfuse*
 Ini adalah beberapa fungsi yang disediakan oleh **FUSE**:
 
 ```c
-
 int (*getattr) (const char *, struct stat *);
 
 //Get file attributes.
@@ -312,7 +310,6 @@ int (*read) (const char *, char *, size_t, off_t, struct fuse_file_info *);
 int (*write) (const char *, const char *, size_t, off_t, struct fuse_file_info *);
 
 //Write data to an open file
-
 ```
 
 
@@ -322,7 +319,6 @@ int (*write) (const char *, const char *, size_t, off_t, struct fuse_file_info *
 Fuse has a ```struct``` named ```fuse_operations``` which is defined as follows:
 
 ```c
-
 static  struct fuse_operations xmp_oper = {
     .getattr = xmp_getattr,
     .access = xmp_access,
@@ -351,7 +347,6 @@ static  struct fuse_operations xmp_oper = {
     .listxattr = xmp_listxattr,
     .removexattr = xmp_removexattr,
 };
-
 ```
 
 Every attribute on the ```struct``` is a _pointer_ that points to a function. Every function is called by FUSE when an event occurred on the *file system*. For example when _user_ write on a file, a function that is referenced by the attribute "write" on the struct ```struct``` will be called.
@@ -389,6 +384,7 @@ Here is an example program, by only implementing those 3 functions.
 #include <errno.h>
 #include <sys/time.h>
 
+
 static  int  xmp_getattr(const char *path, struct stat *stbuf)
 {
     int res;
@@ -398,14 +394,13 @@ static  int  xmp_getattr(const char *path, struct stat *stbuf)
     return 0;
 }
 
-
-
 static int xmp_readdir(const char *path, void *buf, fuse_fill_dir_t filler, off_t offset, struct fuse_file_info *fi)
 {
     DIR *dp;
     struct dirent *de;
     (void) offset;
     (void) fi;
+
 
     dp = opendir(path);
 
@@ -425,13 +420,12 @@ static int xmp_readdir(const char *path, void *buf, fuse_fill_dir_t filler, off_
     return 0;
 }
 
-
-
 static int xmp_read(const char *path, char *buf, size_t size, off_t offset, struct fuse_file_info *fi)
 {
     int fd;
     int res;
     (void) fi;
+
 
     fd = open(path, O_RDONLY);
 
@@ -446,15 +440,11 @@ static int xmp_read(const char *path, char *buf, size_t size, off_t offset, stru
     return res;
 }
 
-
-
 static struct fuse_operations xmp_oper = {
     .getattr = xmp_getattr,
     .readdir = xmp_readdir,
     .read = xmp_read,
 };
-
-
 
 int  main(int  argc, char *argv[])
 {
@@ -470,9 +460,7 @@ We can _compile_ the code by using the following command
 
 
 ```
-
 gcc -Wall `pkg-config fuse --cflags` [file.c] -o [output] `pkg-config fuse --libs`
-
 ```
 
 
@@ -480,11 +468,8 @@ gcc -Wall `pkg-config fuse --cflags` [file.c] -o [output] `pkg-config fuse --lib
 We then make the directory for the destination of our FUSE file system and execute FUSE on that directory.
 
 ```
-
 $ mkdir [destination directory]
-
 $ ./[output] [destination directory]
-
 ```
 
 After you execute the program, enter the destination directory. The content of that directory is similar to what is listed on the ```root``` or ```/``` directory.
@@ -518,6 +503,7 @@ static  int  xmp_getattr(const char *path, struct stat *stbuf)
     int res;
     char fpath[1000];
 
+
     sprintf(fpath,"%s%s",dirpath,path);
 
     res = lstat(fpath, stbuf);
@@ -540,7 +526,6 @@ static int xmp_readdir(const char *path, void *buf, fuse_fill_dir_t filler, off_
     } else sprintf(fpath, "%s%s",dirpath,path);
 
     int res = 0;
-
     DIR *dp;
     struct dirent *de;
     (void) offset;
@@ -567,14 +552,13 @@ static int xmp_readdir(const char *path, void *buf, fuse_fill_dir_t filler, off_
     return 0;
 }
 
-
-
 static int xmp_read(const char *path, char *buf, size_t size, off_t offset, struct fuse_file_info *fi)
 {
     char fpath[1000];
     if(strcmp(path,"/") == 0)
     {
         path=dirpath;
+
 
         sprintf(fpath,"%s",path);
     }
@@ -598,20 +582,15 @@ static int xmp_read(const char *path, char *buf, size_t size, off_t offset, stru
     return res;
 }
 
-
-
 static struct fuse_operations xmp_oper = {
     .getattr = xmp_getattr,
     .readdir = xmp_readdir,
     .read = xmp_read,
 };
 
-
-
 int  main(int  argc, char *argv[])
 {
     umask(0);
-
     return fuse_main(argc, argv, &xmp_oper, NULL);
 }
 ```
