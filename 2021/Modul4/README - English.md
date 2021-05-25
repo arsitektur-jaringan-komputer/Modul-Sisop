@@ -203,9 +203,6 @@ $ sudo apt install libfuse*
 -  ```fuse_new()``` (lib/fuse.c) = creates a data structure containing the space used to store the file system data
 -  ```fuse_loop()``` (lib/fuse.c) = read file system calls from /dev/fuse
 
-
-## 2. How FUSE Works
-
 These are some of the functions provided by **FUSE**:
 
 ```c
