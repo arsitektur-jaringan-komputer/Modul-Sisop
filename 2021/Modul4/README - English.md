@@ -84,6 +84,7 @@ Beberapa program terkadang membutuhkan perubahan pada beberapa file. Jika pada p
 Pada File System Transaksional, tidak akan membiarkan hal tersebut terjadi. File System ini menjamin bahwa jika ada suatu proses yang error, maka proses tersebut akan dibatalkan, dan file-file yang telah terbentuk selama proses tadi akan di roll back seperti semula. Contoh dari File System ini pada UNIX adalah Valor File System, Amino, LFS dan TFFS,
 
 
+
 **5. Network File System**
 
 
@@ -101,8 +102,8 @@ _File system_ that records every change that occurs on the storage device into a
 A virtual file system (VFS) is a layer of software in the kernel that provides a _file system interface_ for the program's _user space_. _Virtual file system_ functions so that various types of _file system_ can be accessed by computer applications in a uniform manner. VFS provides an interface between the _system call_ and the real system.
 
 
-
 ## 3. Dentry
+
 
 Dentry or **Directory Entry** is a data structure that translates filenames into their inodes. Examples of information stored in dentry are _name_, _pointer to inode_, _pointer to parent dentry_, _use count_, and others. There are also commands in VFS dentry are D_compare, D_delete, D_release.
 
@@ -131,6 +132,7 @@ Every file system that is mounted will be represented by a VFS Superblock. _Supe
 
 
 ## 5. Inode
+
 
 An inode is a VFS abstraction for files. Each file, directory, and other data on VFS is represented by one and only one VFS inode. VFS inodes exist only in kernel memory and are stored in the inode cache as long as they are needed by the system. The information stored by the VFS Inode includes:
 
@@ -230,32 +232,83 @@ Ini adalah beberapa fungsi yang disediakan oleh **FUSE**:
 
 ```c
 int (*getattr) (const char *, struct stat *);
+
 //Get file attributes.
+
+
+
 int (*readlink) (const char *, char *, size_t);
+
 //Read the target of a symbolic link
+
 int (*mknod) (const char *, mode_t, dev_t);
+
 //Create a file node.
+
+
+
 int (*mkdir) (const char *, mode_t);
+
 //Create a directory.
+
+
+
 int (*unlink) (const char *);
+
 //Remove a file
+
+
+
 int (*rmdir) (const char *);
+
 //Remove a directory
+
+
+
 int (*rename) (const char *, const char *);
+
 //Rename a file
+
+
+
 int (*chmod) (const char *, mode_t);
+
 //Change the permission bits of a file
+
+
+
 int (*chown) (const char *, uid_t, gid_t);
+
 //Change the owner and group of a file
+
+
+
 int (*truncate) (const char *, off_t);
+
 //Change the size of a file
+
+
+
 int (*open) (const char *, struct fuse_file_info *);
+
 //File open operation.
+
+
+
 int (*readdir) (const char *, void *, fuse_fill_dir_t, off_t, struct fuse_file_info *);
+
 //Read directory
+
+
+
 int (*read) (const char *, char *, size_t, off_t, struct fuse_file_info *);
+
 //Read data from an open file
+
+
+
 int (*write) (const char *, const char *, size_t, off_t, struct fuse_file_info *);
+
 //Write data to an open file
 ```
 
@@ -330,48 +383,69 @@ Here is an example program, by only implementing those 3 functions.
 #include <dirent.h>
 #include <errno.h>
 #include <sys/time.h>
+
+
 static  int  xmp_getattr(const char *path, struct stat *stbuf)
 {
     int res;
     res = lstat(path, stbuf);
+
     if (res == -1) return -errno;
     return 0;
 }
+
 static int xmp_readdir(const char *path, void *buf, fuse_fill_dir_t filler, off_t offset, struct fuse_file_info *fi)
 {
     DIR *dp;
     struct dirent *de;
     (void) offset;
     (void) fi;
+
+
     dp = opendir(path);
+
     if (dp == NULL) return -errno;
+
     while ((de = readdir(dp)) != NULL) {
         struct stat st;
+
         memset(&st, 0, sizeof(st));
+
         st.st_ino = de->d_ino;
         st.st_mode = de->d_type << 12;
+
         if(filler(buf, de->d_name, &st, 0)) break;
     }
     closedir(dp);
     return 0;
 }
+
 static int xmp_read(const char *path, char *buf, size_t size, off_t offset, struct fuse_file_info *fi)
 {
     int fd;
     int res;
     (void) fi;
+
+
     fd = open(path, O_RDONLY);
+
     if (fd == -1) return -errno;
+
     res = pread(fd, buf, size, offset);
+
     if (res == -1) res = -errno;
+
     close(fd);
+
     return res;
 }
+
 static struct fuse_operations xmp_oper = {
     .getattr = xmp_getattr,
     .readdir = xmp_readdir,
     .read = xmp_read,
 };
+
 int  main(int  argc, char *argv[])
 {
     umask(0);
@@ -421,66 +495,99 @@ Change your FUSE code to the following code:
 #include <dirent.h>
 #include <errno.h>
 #include <sys/time.h>
+
 static  const  char *dirpath = "/home/[user]/Documents";
+
 static  int  xmp_getattr(const char *path, struct stat *stbuf)
 {
     int res;
     char fpath[1000];
+
+
     sprintf(fpath,"%s%s",dirpath,path);
+
     res = lstat(fpath, stbuf);
+
     if (res == -1) return -errno;
+
     return 0;
 }
+
+
+
 static int xmp_readdir(const char *path, void *buf, fuse_fill_dir_t filler, off_t offset, struct fuse_file_info *fi)
 {
     char fpath[1000];
+
     if(strcmp(path,"/") == 0)
     {
         path=dirpath;
         sprintf(fpath,"%s",path);
     } else sprintf(fpath, "%s%s",dirpath,path);
+
     int res = 0;
     DIR *dp;
     struct dirent *de;
     (void) offset;
     (void) fi;
+
     dp = opendir(fpath);
+
     if (dp == NULL) return -errno;
+
     while ((de = readdir(dp)) != NULL) {
         struct stat st;
+
         memset(&st, 0, sizeof(st));
+
         st.st_ino = de->d_ino;
         st.st_mode = de->d_type << 12;
         res = (filler(buf, de->d_name, &st, 0));
+
         if(res!=0) break;
     }
+
     closedir(dp);
+
     return 0;
 }
+
 static int xmp_read(const char *path, char *buf, size_t size, off_t offset, struct fuse_file_info *fi)
 {
     char fpath[1000];
     if(strcmp(path,"/") == 0)
     {
         path=dirpath;
+
+
         sprintf(fpath,"%s",path);
     }
     else sprintf(fpath, "%s%s",dirpath,path);
+
     int res = 0;
     int fd = 0 ;
+
     (void) fi;
+
     fd = open(fpath, O_RDONLY);
+
     if (fd == -1) return -errno;
+
     res = pread(fd, buf, size, offset);
+
     if (res == -1) res = -errno;
+
     close(fd);
+
     return res;
 }
+
 static struct fuse_operations xmp_oper = {
     .getattr = xmp_getattr,
     .readdir = xmp_readdir,
     .read = xmp_read,
 };
+
 int  main(int  argc, char *argv[])
 {
     umask(0);
