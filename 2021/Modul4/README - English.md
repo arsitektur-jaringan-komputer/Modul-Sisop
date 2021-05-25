@@ -1,62 +1,61 @@
 
-# File System dan FUSE
+# File System and FUSE
 
 
 
 ## Objectives
 
-1. Peserta mengetahui _file system_
+1. Participants obtains knowledge of _file system_
 
-2. Peserta mengetahui dan mampu mengimplementasikan FUSE
+2. Participants obtains knowledge and is able to implement FUSE
 
 
-## Daftar Isi
+## List of Content
 
-- [File System dan FUSE](#file-system-dan-fuse)
+- [File System and FUSE](#file-system-and-fuse)
   - [Objectives](#objectives)
-  - [Daftar Isi](#daftar-isi)
+  - [List of Content](#list-of-content)
 - [File System](#file-system)
-  - [1. Tipe File System](#1-tipe-file-system)
+  - [1. Types of File System](#1-types-of-file-system)
   - [2. Virtual File System](#2-virtual-file-system)
   - [3. Dentry](#3-dentry)
   - [4. Superblock](#4-superblock)
   - [5. Inode](#5-inode)
 - [File System in Userspace (FUSE)](#file-system-in-userspace-fuse)
-  - [1. FUSE installation](#1-fuse-installation)
+  - [1. FUSE Installation](#1-fuse-installation)
   - [2. How FUSE Works](#2-how-fuse-works)
-  - [3. Membuat Program FUSE](#3-membuat-program-fuse)
+  - [3. Making a FUSE Program](#3-making-a-fuse-program)
     - [Tips](#tips)
   - [4. Unmount FUSE](#4-unmount-fuse)
-- [Soal Latihan](#soal-latihan)
+- [Excercises](#Excercises)
 - [References](#references)
 
 # File System
 
-_File system_ adalah struktur logika yang digunakan untuk mengendalikan akses data seperti bagaimana dia disimpan maupun diambil. _File system_ sendiri memiliki banyak jenis dengan penggunaan algoritma yang tentu berbeda. Setiap Sistem Operasi (OS) memiliki support file system yang berbeda-beda. File system digunakan untuk mengorganisir dan menyimpan file pada storage device.
+_File system_ is a logical structure used to control data access such as how it is stored or retrieved. _File system_ itself has many types with the use of different algorithms. Each Operating System (OS) has a different file system support. The file system is used to organize and store files on a storage device.
 
-_File system_ menyediakan cara untuk memisah-misahkan data pada drive menjadi bentuk tunggal yaitu file. _File system_ juga menyediakan cara untuk menyimpan data pada file, contohnya **filename**, **permission**, dan atribut lainnya. Pada File System, disediakan juga sebuah **index** yang berisi daftar file yang terletak pada suatu lokasi penyimpanan, sehingga Sistem Operasi dapat melihat ada apa saja pada lokasi penyimpanan tersebut.
-
+The _File system_ provides a way to separate the data on the drive into a single shape, namely files. _File system_ also provides a way to store data on files, for example **filename**, **permissions**, and other attributes. In a File System, there also exists an **index** which contains a list of files that exists in a storage location, so that the Operating System can see what is in the storage location.
 
 
 
 ![enter image description here](https://github.com/Armunz/sisop-modul-4/blob/master/img/linux-filesystem.png?raw=true)
 
 
-## 1. Tipe File System
+## 1. Types of File System
 
 **1. File System Disk**
 
-_File system disk_ adalah _file system_ yang didesain untuk menyimpan data pada sebuah media penyimpan data. Contohnya: FAT (FAT 12, FAT 16, FAT 320), NTFS, HFS, HFS+, ext2, ext3, ext4, ISO 9660, ODS-5 dan UDF.
+_File system disk_ is a _file system_ designed to store data in a data storage media. Example: FAT (FAT 12, FAT 16, FAT 320), NTFS, HFS, HFS+, ext2, ext3, ext4, ISO 9660, ODS-5 dan UDF.
 
- - FAT32 dan NTFS adalah File System di Windows.
+ - FAT32 and NTFS is a File System di Windows.
 
 ![enter image description here](https://github.com/Armunz/sisop-modul-4/blob/master/img/xformat-file-system-in-windows-disk-utility.png.pagespeed.gp+jp+jw+pj+ws+js+rj+rp+rw+ri+cp+md.ic._Lfdba02dY.png?raw=true)
 
- - Ext2, Ext3, Ext4 adalah File Sytem di Linux.
+ - Ext2, Ext3, Ext4 is a File Sytem in Linux.
 
 ![enter image description here](https://github.com/Armunz/sisop-modul-4/blob/master/img/648x463xgparted-showing-primary-extended-and-logical-partitions.png.pagespeed.ic.foZUIWymSb.png?raw=true)
 
-- APFS, HFS dan HFS+ adalah File System dari MacOS
+- APFS, HFS dan HFS+ is a File System from MacOS
 
 ![enter image description here](https://github.com/Armunz/sisop-modul-4/blob/master/img/xformat-drive.png.pagespeed.gp+jp+jw+pj+ws+js+rj+rp+rw+ri+cp+md.ic.GnI_H55kwh.png?raw=true)
 
@@ -65,12 +64,12 @@ _File system disk_ adalah _file system_ yang didesain untuk menyimpan data pada 
 **2. File System Flash**
 
 
-_File system flash_ adalah _file system_ yang didesain untuk menyimpan data pada media _flash memory_. Hal ini menjadi lazim ketika jumlah perangkat mobile semakin banyak dan kapasitas _memory flash_ yang semakin besar. Contohnya pada linux flash filesystems yaitu JFFS, JFFS2, YAFFS, UBIFS, LogFS, F2FS.
+_File system flash_ is a _file system_ yang didesain untuk menyimpan data pada media _flash memory_. Hal ini menjadi lazim ketika jumlah perangkat mobile semakin banyak dan kapasitas _memory flash_ yang semakin besar. Contohnya pada linux flash filesystems yaitu JFFS, JFFS2, YAFFS, UBIFS, LogFS, F2FS.
 
 
 **3. File System Database**
 
-Konsep baru untuk manajemen _file_ adalah konsep _file system_ berbasis _database_. Sebagai perbaikan bagi Manajemen terstruktur hirarkis, file diidentifikasi oleh karakteristiknya, seperti tipe _file_, topik, pembuat, atau metadata yang sama.
+A new concept for file management is the concept of database-based file system. As an improvement to hierarchical management structure, files are identified by their characteristics, such as _file_ type, topic, author, or the same metadata.
 
 ![enter image description here](https://github.com/Armunz/sisop-modul-4/blob/master/img/GUID-5E2B22F9-F87A-4A95-BD1B-AAC76C9F8462-default.gif?raw=true)
 
@@ -79,10 +78,9 @@ Konsep baru untuk manajemen _file_ adalah konsep _file system_ berbasis _databas
 
 **4. File System Transaksional**
 
-Beberapa program terkadang membutuhkan perubahan pada beberapa file. Jika pada proses perubahan tadi mengalami kegagalan, maka file akan kembali seperti semula (tidak ada perubahan). Contohnya adalah saat menginstall sebuah software, dimana menjalankan proses writing beberapa file, jika terjadi error selama proses writing, dan software tersebut dibiarkan menjadi **setengah terinstall**, maka software tersebut akan rusak atau tidak stabil.
+Some programs sometimes require changes to multiple files. If a process fails, changes will be reverted. An example is when installing a software which runs the writing process of several files. If an error occurs during the writing process, and the software is left **half installed**, then the **half installed** software will be damaged or unstable.
 
-Pada File System Transaksional, tidak akan membiarkan hal tersebut terjadi. File System ini menjamin bahwa jika ada suatu proses yang error, maka proses tersebut akan dibatalkan, dan file-file yang telah terbentuk selama proses tadi akan di roll back seperti semula. Contoh dari File System ini pada UNIX adalah Valor File System, Amino, LFS dan TFFS,
-
+Transactional File System won't let that happen. This file system guarantees that if an error occurs, the process will be canceled, and the files that have been created during the process will be rolled back to normal. Examples of this File System on UNIX are the Valor File System, Amino, LFS and TFFS,
 
 
 **5. Network File System**
@@ -205,6 +203,9 @@ $ sudo apt install libfuse*
 -  ```fuse_new()``` (lib/fuse.c) = creates a data structure containing the space used to store the file system data
 -  ```fuse_loop()``` (lib/fuse.c) = read file system calls from /dev/fuse
 
+
+## 2. How FUSE Works
+
 These are some of the functions provided by **FUSE**:
 
 ```c
@@ -265,7 +266,7 @@ int (*write) (const char *, const char *, size_t, off_t, struct fuse_file_info *
 //Write data to an open file
 ```
 
-## 3. Membuat Program FUSE
+## 3. Making a FUSE Program
 
 Fuse has a ```struct``` named ```fuse_operations``` which is defined as follows:
 
