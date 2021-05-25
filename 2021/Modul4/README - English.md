@@ -165,75 +165,53 @@ Following is the relationship between dentry, superblock, and inode on a Virtual
 
 # File System in Userspace (FUSE)
 
-FUSE (Filesystem in Userspace) adalah sebuah _interface_ dimana kita dapat membuat _file system_ sendiri pada _userspace_ pada linux.
+FUSE (Filesystem in Userspace) is an  interface where we could make our own file system inside a userspace on linux.
+
+The advantage of using FUSE is that we can use any available library to create your own file system without having to deeply understand what the file system is actually doing in the kernel space. This is done because the FUSE module can bridge the file system code in the userspace with the file system in the kernel space. Some of the other benefits of FUSE are as follows:
+
+- Can be loaded and installed by ordinary users, for network access, to get archived files, for removable media, etc.
+- If the FUSE system driver crashes, it will not affect the kernel.
+- FUSE can be deployed quickly, both because it does not require administrator intervention to install and because it can be easily accessed by any supported OS.
+- No license issues related to static connection with the kernel.
+
+![Fuse Illustration](https://github.com/Armunz/sisop-modul-4/blob/master/img/fuse.png?raw=true)
 
 
-
-Keuntungan menggunakan FUSE ialah kita dapat menggunakan _library_ apapun yang tersedia untuk membuat _file system_ sendiri tanpa perlu mengenali secara mendalam apa yang _file system_ sebenarnya lakukan di _kernel space_. Hal ini dilakukan karena modul FUSE yang dapat menjembatani antara kode _file system_ yang berada pada _userspace_ dengan _file system_ yang berada pada _kernel space_. Beberapa manfaat yang lain dari FUSE adalah sebagai berikut:
-
-- Dapat dimuat dan dipasang oleh pengguna biasa. Untuk akses jaringan, untuk mendapatkan file arsip, untuk removable media, dll.
-- Jika driver sistem FUSE mengalami crash, tidak akan mempengaruhi kernel.
-- FUSE dapat dideploy dengan cepat, baik karena tidak perlu intervensi administrator untuk menginstalnya dan karena dapat dengan mudah diakses oleh OS yang didukung.
-- Tidak ada masalah lisensi terkait dengan hubungan statis dengan kernel.
-
-
-
-![enter image description here](https://github.com/Armunz/sisop-modul-4/blob/master/img/fuse.png?raw=true)
-
-
-Salah satu contoh yang menarik dari FUSE adalah [GDFS][7bb7b7cc] (Google Drive File System), dimana GDFS ini memungkinkan kita untuk me-_mount Google Drive_ kita ke sistem linux dan menggunakannya seperti file linux biasa.
-
-
+One interesting example of FUSE is [GDFS][7bb7b7cc](Google Drive File System), where this GDFS allows us to mount our Google Drive to a linux system and use it like a regular linux file.
 
 [7bb7b7cc]: https://github.com/robin-thomas/GDFS  "GDFS"
 
 ![enter image description here](https://github.com/Armunz/sisop-modul-4/blob/master/img/google-drive-2.png?raw=true)
 
+To implement FUSE, we must create a program that is linked to the library `libfuse`. The purpose of this program is to specify how the file system responds to read/write/stat of a request and to mount the original file system (kernel space) to the file system new (userspace). So when a user deals with read/write/stat requests in the file system (userspace), the kernel will forward the input and output of the request to the FUSE program and the program will respond back to the user.
 
+For more details, let's try to create a FUSE program.
+## 1. FUSE installation
 
-Untuk mengimplementasikan FUSE ini, kita harus membuat sebuah program yang terhubung dengan *library*  ```libfuse```. Tujuan dari program yang dibuat ini adalah menspesifikkan bagaimana *file system* merespon *read/write/stat* dari sebuah *request* dan untuk me-*(mount)*  *file system* asli *(kernel space)* ke *file system* yang baru *(userspace)*. Jadi di saat *user* berurusan dengan *read/write/stat request* di *file system (userspace)*, kernel akan meneruskan *input output request* tersebut ke program FUSE dan program tersebut akan merespon kembali ke *user*.
-
-
-
-Untuk lebih jelasnya mari kita coba membuat program FUSE.
-
-
-
-## 1. FUSE Installation
-
-Pertama-tama kita harus memstikan bahwa FUSE sudah ter-install di perangkat anda
+First of all we have to make sure that FUSE is installed on your device.
 
 ```
 $ sudo apt update
 $ sudo apt install libfuse*
 ```
 
+## 2. How FUSE Works
+
+-  ```fuse_main()``` (lib/helper.c) = as the main (userspace) function, the user program calls the fuse_main() function then the fuse_mount() function is called.
+-  ```fuse_mount()``` (lib/mount.c) = creates a UNIX domain socket, then forks and creates a child process that runs fusermount
+-  ```fusermount()``` (util/fusermount.c) = to check whether the FUSE module has been loaded. Then open /dev/fuse and send the handling file via the UNIX domain socket back to the fuse_mount() function.
+-  ```fuse_new()``` (lib/fuse.c) = creates a data structure containing the space used to store the file system data
+-  ```fuse_loop()``` (lib/fuse.c) = read file system calls from /dev/fuse
 
 
 ## 2. How FUSE Works
 
-
-
--  ```fuse_main()``` (lib/helper.c) = sebagai fungsi main (userspace), program user memanggil fungsi fuse_main() kemudian fungsi fuse_mount() dipanggil.
-
--  ```fuse_mount()``` (lib/mount.c) = menciptakan UNIX domain socket, kemudian di fork dan menciptakan child process yang menjalankan fusermount
-
--  ```fusermount()``` (util/fusermount.c) = untuk mengecek apakah modul FUSE sudah di load. Kemudian membuka /dev/fuse dan mengirim file handle melalu UNIX domain socket kembali ke fungsi fuse_mount()
-
--  ```fuse_new()``` (lib/fuse.c) = menciptakan struktur data yang berisi ruang yang digukanan untuk menyimpan data file system
-
--  ```fuse_loop()``` (lib/fuse.c) = membaca file system calls dari /dev/fuse
-
-
-
-Ini adalah beberapa fungsi yang disediakan oleh **FUSE**:
+These are some of the functions provided by **FUSE**:
 
 ```c
 int (*getattr) (const char *, struct stat *);
 
 //Get file attributes.
-
-
 
 int (*readlink) (const char *, char *, size_t);
 
@@ -243,74 +221,50 @@ int (*mknod) (const char *, mode_t, dev_t);
 
 //Create a file node.
 
-
-
 int (*mkdir) (const char *, mode_t);
 
 //Create a directory.
-
-
 
 int (*unlink) (const char *);
 
 //Remove a file
 
-
-
 int (*rmdir) (const char *);
 
 //Remove a directory
-
-
 
 int (*rename) (const char *, const char *);
 
 //Rename a file
 
-
-
 int (*chmod) (const char *, mode_t);
 
 //Change the permission bits of a file
-
-
 
 int (*chown) (const char *, uid_t, gid_t);
 
 //Change the owner and group of a file
 
-
-
 int (*truncate) (const char *, off_t);
 
 //Change the size of a file
-
-
 
 int (*open) (const char *, struct fuse_file_info *);
 
 //File open operation.
 
-
-
 int (*readdir) (const char *, void *, fuse_fill_dir_t, off_t, struct fuse_file_info *);
 
 //Read directory
-
-
 
 int (*read) (const char *, char *, size_t, off_t, struct fuse_file_info *);
 
 //Read data from an open file
 
-
-
 int (*write) (const char *, const char *, size_t, off_t, struct fuse_file_info *);
 
 //Write data to an open file
 ```
-
-
 
 ## 3. Making a FUSE Program
 
