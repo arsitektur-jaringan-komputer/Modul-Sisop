@@ -7,6 +7,7 @@
 #include<sys/wait.h>
 
 pthread_t tid[3]; //inisialisasi array untuk menampung thread dalam kasus ini ada 2 thread
+pid_t child;
 
 int length=5; //inisialisasi jumlah untuk looping
 void* playandcount(void *arg)
@@ -16,22 +17,29 @@ void* playandcount(void *arg)
 	unsigned long i=0;
 	pthread_t id=pthread_self();
 	int iter;
-	if(pthread_equal(id,tid[0])) //thread untuk menjalankan counter
+	if(pthread_equal(id,tid[0])) //thread untuk clear layar
 	{
-		for(iter=0;iter<6;iter++)
+        child = fork();
+	    if (child==0) {
+		    execv("/usr/bin/clear", argv1);
+	    }
+		
+	}
+	else if(pthread_equal(id,tid[1])) // thread menampilkan counter
+	{
+        for(iter=0;iter<6;iter++)
 		{
 			printf("%d\n",iter);
 			fflush(stdout);
 			sleep(1);
 		}
 	}
-	else if(pthread_equal(id,tid[1])) // thread menampilkan gambar
+	else if(pthread_equal(id,tid[2])) // thread menampilkan gambar
 	{
-		execv("/usr/bin/xlogo", argv2);
-	}
-	else if(pthread_equal(id,tid[2])) // thread menutup gambar
-	{
-		execv("/usr/bin/pkill", argv2);
+        child = fork();
+        if (child==0) {
+		    execv("/usr/bin/xlogo", argv2);
+	    }
 	}
 
 	return NULL;
@@ -41,7 +49,7 @@ int main(void)
 {
 	int i=0;
 	int err;
-	while(i<2) // loop sejumlah thread
+	while(i<3) // loop sejumlah thread
 	{
 		err=pthread_create(&(tid[i]),NULL,&playandcount,NULL); //membuat thread
 		if(err!=0) //cek error

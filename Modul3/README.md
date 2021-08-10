@@ -9,8 +9,9 @@
   - [Objectives](#objectives)
   - [1. Thread](#1-thread)
     - [1.1 Thread](#11-thread)
-    - [1.2 Join Thread](#12-join-thread)
-    - [1.3 Mutual Exclusion](#13-mutual-exclusion)
+    - [1.2 Multiprocess vs Multithread](#12-multiprocess-vs-multithread)
+    - [1.3 Join Thread](#13-join-thread)
+    - [1.4 Mutual Exclusion](#14-mutual-exclusion)
   - [2. IPC (Interprocess Communication)](#2-ipc-interprocess-communication)
     - [2.1 IPC](#21-ipc)
     - [2.2 Pipes](#22-pipes)
@@ -102,6 +103,7 @@ Contoh membuat program menggunakan thread [playthread.c](playthread.c) :
 #include<sys/wait.h>
 
 pthread_t tid[3]; //inisialisasi array untuk menampung thread dalam kasus ini ada 2 thread
+pid_t child;
 
 int length=5; //inisialisasi jumlah untuk looping
 void* playandcount(void *arg)
@@ -111,22 +113,28 @@ void* playandcount(void *arg)
 	unsigned long i=0;
 	pthread_t id=pthread_self();
 	int iter;
-	if(pthread_equal(id,tid[0])) //thread untuk menjalankan counter
+	if(pthread_equal(id,tid[0])) //thread untuk clear layar
 	{
-		for(iter=0;iter<6;iter++)
+		child = fork();
+		if (child==0) {
+		    execv("/usr/bin/clear", argv1);
+	    	}
+	}
+	else if(pthread_equal(id,tid[1])) // thread menampilkan counter
+	{
+        for(iter=0;iter<6;iter++)
 		{
 			printf("%d\n",iter);
 			fflush(stdout);
 			sleep(1);
 		}
 	}
-	else if(pthread_equal(id,tid[1])) // thread menampilkan gambar
+	else if(pthread_equal(id,tid[2])) // thread menampilkan gambar
 	{
-		execv("/usr/bin/xlogo", argv2);
-	}
-	else if(pthread_equal(id,tid[2])) // thread menutup gambar
-	{
-		execv("/usr/bin/pkill", argv2);
+        child = fork();
+        if (child==0) {
+		    execv("/usr/bin/xlogo", argv2);
+	    }
 	}
 
 	return NULL;
@@ -136,7 +144,7 @@ int main(void)
 {
 	int i=0;
 	int err;
-	while(i<2) // loop sejumlah thread
+	while(i<3) // loop sejumlah thread
 	{
 		err=pthread_create(&(tid[i]),NULL,&playandcount,NULL); //membuat thread
 		if(err!=0) //cek error
@@ -161,7 +169,24 @@ int main(void)
 **Kesimpulan** :
 Terlihat ketika program menggunakan thread dapat menjalankan dua task secara bersamaan (task menampilkan gambar dan task timer).
 
-### 1.2 Join Thread
+
+### 1.2 Multiprocess Vs Multithread
+
+![multivsmulti](multiprocessing_multithreading.gif)
+
+Perbedaan multiprocess dan multithread
+Nomor | Multiprocess | Multithread
+--- | --- | ---
+1 | banyak proses dieksekusi secara konkuren | banyak thread dalam 1 proses dieksekusi secara konkuren
+2 | menambah CPU untuk menigkatkan kekuatan komputasi | membuat banyak thread dalam 1 proses untuk meningkatkan kekuatan komputasi
+3 | pembuatan proses membutuhkan waktu dan resource yang besar | pembuatan thread lebih ekonomis dalam segi waktu dan resource
+4 | bergantung pada object di memori untuk mengirim data ke proses lain | tidak bergantung pada object lain
+5 |child process sebagian besar bersifat interruptible / killable | multithreading tidak bersifat interruptible / killable
+
+
+
+
+### 1.3 Join Thread
 Join thread adalah fungsi untuk melakukan penggabungan dengan thread lain yang telah berhenti (*terminated*). Bila thread yang ingin di-join belum dihentikan, maka fungsi ini akan menunggu hingga thread yang diinginkan berstatus **`Terminated`**. Fungsi `pthread_join()` ini dapat dikatakan sebagai fungsi `wait()` pada proses, karena program (*task*) utama akan menunggu thread yang di-join-kan pada program utama tersebut. Kita tidak mengetahui program utama atau thread yang lebih dahulu menyelesaikan pekerjaannya.
 
 Contoh program C Join_Thread [thread_join.c](thread_join.c):
@@ -236,7 +261,7 @@ Pada program pertama tidak menjalankan fungsi `print_message_function` karena se
   ```
   Fungsi akan menunda pekerjaan sampai status pointer `rval_ptr` dari fungsi `pthread_exit()` mengembalikan nilainya.
 
-### 1.3 Mutual Exclusion
+### 1.4 Mutual Exclusion
 Disebut juga sebagai **Mutex**, yaitu suatu cara yang menjamin jika ada pekerjaan yang menggunakan variabel atau berkas digunakan juga oleh pekerjaan yang lain, maka pekerjaan lain tersebut akan mengeluarkan nilai dari pekerjaan sebelumnya.
 
 Contoh program Simple Mutual_Exclusion [threadmutex.c](threadmutex.c):
@@ -668,12 +693,11 @@ $ man fcntl
 ## Soal Latihan 
 
 #### Latihan 1
-Buatlah sebuah program multithreading yang dapat menyalin isi file baca.txt ke dalam file salin1.txt. Kemudian menyalin isi dari file salin1.txt ke dalam file salin2.txt!
+Buatlah sebuah program multithreading untuk menghitung perkalian matriks (isi dari matriks-nya didefinisikan di dalam kodingan).
+(Contoh : matriks A dengan dimensi 3x2 dan matriks B dengan dimensi 2x3, outputnya adalah hasil dari perkalian matriks A * B)
 
 #### Latihan 2
-Buatlah sebuah program multithreading yang dapat menampilkan bilangan prima dari 1-N. program akan dieksekusi menggunakan thread sebanyak T dimana setiap thread akan melakukan pencarian bilangan prima dengan range N/T (range tiap thread berbeda), kemudian tiap thread akan menampilkan hasilnya.
-
-misalkan N = 100 dan T=2; jadi thread 1 akan mencari bilangan prima dari 1-50 dan thread 2 akan mencari dari 51-100
+Buatlah sebuah program menggunakan socket dimana terdiri dari client dan server. Saat client mengetikkan "tambah" maka suatu angka yang ada pada server bertambah 1 dan server otomatis mengirimkan pesan ke client yang berisi "Penambahan berhasil". Perintah yang lainnya pada client adalah "cek", maka server akan mengirimkan pesan yang berisi jumlah terkini angka tersebut. Program ini dapat berjalan tanpa henti.
 
 #### Latihan 3  
 Buatlah sebuah program untuk menampilkan file diurutan ketiga dari sebuah direktori. Dengan ketentuan :  

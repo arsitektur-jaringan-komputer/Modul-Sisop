@@ -3,32 +3,30 @@
 #include <unistd.h>
 #include <stdio.h>
 
-void abjad_shift_1() {
+void func1() {
   int i;
-  for (i = 65; i < 78; i++) {
-    printf("%c\n", i);
+  for (i = 0; i < 50; i++) {
+    printf("%d\n", i);
   }
 }
 
-void abjad_shift_2() {
+void func2() {
   int i;
-  for (i = 78; i < 91; i++) {
-    printf("%c\n", i);
+  for (i = 51; i < 101; i++) {
+    printf("%d\n", i);
   }
 }
 
 int main() {
   pid_t child_id;
-
   child_id = fork();
-  
   if (child_id < 0) {
     exit(EXIT_FAILURE);
   }
 
   if (child_id == 0) {
-    abjad_shift_1();
+    func1();
   } else {
-    abjad_shift_2();
+    func2();
   }
 }
