@@ -43,7 +43,7 @@
 ### 1.1 Shell
 Sebuah sistem operasi terdiri dari dua komponen utama, yaitu **Kernel** dan **Shell**.
 
-![component](/images/component.png)
+![component](images/component.png)
 
 * **Kernel** adalah inti dari komputer. Komponen ini memungkinkan terjadinya komunikasi antara software dan hardware. Jika kernel adalah bagian terdalam dari sebuah sistem operasi, maka **shell** adalah bagian terluarnya.
 * **Shell** adalah program penerjemah perintah yang menjembatani user dengan kernel. Umumnya, shell menyediakan **prompt** sebagai user interface tempat user menginputkan perintah-perintah yang diinginkan, baik berupa perintah internal maupun eksternal. Setelah menerima input dari user dan menjalankan program/perintah berdasarkan input tersebut, shell akan mengeluarkan output. Shell dapat diakses melalui **Terminal**.
@@ -143,7 +143,7 @@ Ada 2 tipe shell utama di Unix/Linux, yaitu:
     ```
 4. Eksekusi file script dengan cara `./nama_file.sh` atau `bash nama_file.sh`.
 
-    ![ss-1](/images/ss-1.png)
+    ![ss-1](images/ss-1.png)
 
 ### 1.5 Variabel
 * Beberapa hal yang perlu diperhatikan dalam mendefinisikan variabel:
@@ -197,12 +197,12 @@ Ada 2 tipe shell utama di Unix/Linux, yaitu:
   ```
   Output:
 
-  ![ss-6](/images/ss-6.png)
+  ![ss-6](images/ss-6.png)
     
   Catatan:
   * Syntax array diatas hanya dapat dieksekusi oleh **bash**, sehingga harus dieksekusi dengan cara `bash nama_file.sh` atau `bash ./nama_file.sh`. Jika menggunakan `./nama_file.sh` saja akan muncul error:
     
-    ![ss-3](/images/ss-3.png)
+    ![ss-3](images/ss-3.png)
 
 #### 1.5.1 Special Variable
 * Beberapa special variable yang sering dipakai:
@@ -231,7 +231,7 @@ Ada 2 tipe shell utama di Unix/Linux, yaitu:
   ```
   Output:
 
-  ![ss-2](/images/ss-2.png)
+  ![ss-2](images/ss-2.png)
 
 ### 1.6 Input Output
 
@@ -317,7 +317,7 @@ Ada 2 tipe shell utama di Unix/Linux, yaitu:
 
   Output:
 
-  ![ss-4](/images/ss-4.png)
+  ![ss-4](images/ss-4.png)
 
 
 * **Backslash Character**
@@ -390,7 +390,7 @@ Ada 2 tipe shell utama di Unix/Linux, yaitu:
   
   Output:
 
-  ![ss-8](/images/ss-8.png)
+  ![ss-8](images/ss-8.png)
 
 #### 1.8.2 Operator Relasional
 
@@ -506,7 +506,7 @@ Ada 2 tipe shell utama di Unix/Linux, yaitu:
   ```
   Output:
 
-  ![ss-9](/images/ss-9.png)
+  ![ss-9](images/ss-9.png)
 
 ### 1.10 Loop
 * **Loop** digunakan untuk mengeksekusi serangkaian perintah berulang kali. Ada beberapa macam shell loops:
@@ -643,7 +643,7 @@ Ada 2 tipe shell utama di Unix/Linux, yaitu:
     ```
     Output:
 
-    ![ss-10](/images/ss-10.png)
+    ![ss-10](images/ss-10.png)
 
 #### 1.10.5 Nesting Loops
 * Semua jenis loop di atas mendukung konsep nesting, artinya kita dapat menempatkan satu loop ke dalam loop lain, baik loop yang sejenis maupun berbeda jenis
@@ -708,7 +708,7 @@ Ada 2 tipe shell utama di Unix/Linux, yaitu:
   ```
   Output:
 
-  ![ss-11](/images/ss-11.png)
+  ![ss-11](images/ss-11.png)
 
 #### 1.11.1 Nested Functions
 ```bash
