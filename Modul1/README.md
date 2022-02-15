@@ -924,12 +924,18 @@ Clemongs sangat tertarik sekali dengan pengaturan server. Cita-citanya adalah me
 
 1. Server Ojol Orange sering sekali dibobol dengan cara bruteforce melalui akses SSH. Clemongs diminta untuk melindungi server tersebut dari serangan bruteforce itu dengan menggunakan aplikasi fail2ban. Dikarenakan port akses SSH server Ojol Orange yang dibuka sangat banyak, serta server Ojol Orange sangat banyak, maka jokilah Clemongs untuk membuat script bash yang dapat membantu instalasi fail2ban dengan jumlah port yang lebih dari satu. 
 
-a.Konfigurasi yang digunakan adalah:
-b.`maxretry` sebanyak 3 kali
-c.`bantime` selama 2 jam
-d.`logpath` berada pada /var/log/auth.log
-e.File konfigurasi fail2ban diletakkan pada /etc/fail2ban/jail.local
-Port dipisahkan dengan ‘,’ (koma) dan tanpa spasi
+Konfigurasi yang digunakan adalah:
+
+a. `maxretry` sebanyak 3 kali
+
+b. `bantime` selama 2 jam
+
+c. `logpath` berada pada /var/log/auth.log
+
+d. File konfigurasi fail2ban diletakkan pada /etc/fail2ban/jail.local
+
+e. Port dipisahkan dengan ‘,’ (koma) dan tanpa spasi
+
 Contoh: 22,6969,7979
     
 Script tersebut dapat dijalankan dengan cara
