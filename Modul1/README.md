@@ -924,22 +924,22 @@ Clemongs sangat tertarik sekali dengan pengaturan server. Cita-citanya adalah me
 
 1. Server Ojol Orange sering sekali dibobol dengan cara bruteforce melalui akses SSH. Clemongs diminta untuk melindungi server tersebut dari serangan bruteforce itu dengan menggunakan aplikasi fail2ban. Dikarenakan port akses SSH server Ojol Orange yang dibuka sangat banyak, serta server Ojol Orange sangat banyak, maka jokilah Clemongs untuk membuat script bash yang dapat membantu instalasi fail2ban dengan jumlah port yang lebih dari satu. 
 
-Konfigurasi yang digunakan adalah:
-`maxretry` sebanyak 3 kali
-`bantime` selama 2 jam
-`logpath` berada pada /var/log/auth.log
-File konfigurasi fail2ban diletakkan pada /etc/fail2ban/jail.local
+a.Konfigurasi yang digunakan adalah:
+b.`maxretry` sebanyak 3 kali
+c.`bantime` selama 2 jam
+d.`logpath` berada pada /var/log/auth.log
+e.File konfigurasi fail2ban diletakkan pada /etc/fail2ban/jail.local
 Port dipisahkan dengan ‘,’ (koma) dan tanpa spasi
 Contoh: 22,6969,7979
     
-    Script tersebut dapat dijalankan dengan cara
-    `bash fail2ban.sh <port SSH yang terbuka>`
-    
-    contoh : `bash fail2ban.sh 22 6969 7979`
+Script tersebut dapat dijalankan dengan cara
+`bash fail2ban.sh <port SSH yang terbuka>`
 
-    Script fail2ban.sh juga digunakan untuk melakukan restart service fail2ban dan memerika status fail2ban setelah dilakukan konfigurasi.
+contoh : `bash fail2ban.sh 22 6969 7979`
 
-    Note: Silakan gunakan Google untuk mencari cara instalasi fail2ban
+Script fail2ban.sh juga digunakan untuk melakukan restart service fail2ban dan memerika status fail2ban setelah dilakukan konfigurasi.
+
+Note: Silakan gunakan Google untuk mencari cara instalasi fail2ban
 
 2. Aplikasi Ojol Orange menggunakan Laravel sebagai backend service-nya yang terletak pada /www/backend-ojol-orange-nih-boss/. Terdapat sebuah Scheduler yang berfungsi untuk melakukan update status pengiriman pada database setiap 30 menit pada jam 10.00 hingga 17.00. Status 0 berarti belum dikirim. Status 1 berarti sedang dalam pengiriman. Status 2 berarti pengiriman selesai. Berikut merupakan scheduler yang digunakan:
     
@@ -988,6 +988,6 @@ Contoh:
 Sultan karena malas dengan membuka file tersebut pada server Ojol Orange, dia meminta Clemongs untuk mengirimkan file tersebut ke transfer.sh dan linknya diberikan ke Sultan. Bantulah Clemongs untuk membuat bash script dengan nama file findingMentee.sh untuk mencari path home dan mengirimkan file pathmenteemunihboss.haha ke transfer.sh!
 
 Note: 
-Kamu harus pake AWK dan AWK Function ya 😊
-Pengiriman file ke transfer.sh hanya boleh menggunakan curl
-https://transfer.sh/ adalah sebuah website file hosting gratis
+1. Kamu harus pake AWK dan AWK Function ya 😊
+2. Pengiriman file ke transfer.sh hanya boleh menggunakan curl
+3. https://transfer.sh/ adalah sebuah website file hosting gratis
