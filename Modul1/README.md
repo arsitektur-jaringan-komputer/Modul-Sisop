@@ -920,6 +920,10 @@ Cara menginstal Ranger sendiri cukup sederhana:
 * [https://tldp.org/LDP/abs/html/localvar.html](https://tldp.org/LDP/abs/html/localvar.html)
 
 ## Latihan
+
+![image](https://user-images.githubusercontent.com/61197343/154196648-9791bee2-0187-4774-9469-5768fdf17d9f.png)
+
+
 Clemongs sangat tertarik sekali dengan pengaturan server. Cita-citanya adalah menjadi Security Engineer di Ojol Orange. Suatu hari, dia diterima menjadi salah satu Security Engineer di Ojol Orange. Dalam masa probation nya, dia diberikan beberapa tasks. Tetapi Clemongs masih proses dalam pengerjaan Tugas Akhir. Sehingga Clemongs meminta kamu untuk menjadi joki dari tasknya. Berikut task yang diberikan ke Clemongs
 
 1. Server Ojol Orange sering sekali dibobol dengan cara bruteforce melalui akses SSH. Clemongs diminta untuk melindungi server tersebut dari serangan bruteforce itu dengan menggunakan aplikasi fail2ban. Dikarenakan port akses SSH server Ojol Orange yang dibuka sangat banyak, serta server Ojol Orange sangat banyak, maka jokilah Clemongs untuk membuat script bash yang dapat membantu instalasi fail2ban dengan jumlah port yang lebih dari satu. 
