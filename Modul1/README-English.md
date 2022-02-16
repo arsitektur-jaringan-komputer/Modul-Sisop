@@ -980,16 +980,84 @@ Installing Ranger is quite simple:
 * [https://tldp.org/LDP/abs/html/localvar.html](https://tldp.org/LDP/abs/html/localvar.html)
 
 ## Exercise
-1. Create a bash script program that can process the numbers inputted as arguments! If the number of arguments entered is odd, display the sum of these numbers. If it is even, display "You have not been lucky, try again."
-Contoh :
-```bash
-$ bash script.sh 4 1 1
-Output: 6
-$ bash script.sh 3 3
-Output: You have not been lucky, try again.
+
+![image](https://user-images.githubusercontent.com/61197343/154196648-9791bee2-0187-4774-9469-5768fdf17d9f.png)
+
+
+Clemongs sangat tertarik sekali dengan pengaturan server. Cita-citanya adalah menjadi Security Engineer di Ojol Orange. Suatu hari, dia diterima menjadi salah satu Security Engineer di Ojol Orange. Dalam masa probation nya, dia diberikan beberapa tasks. Tetapi Clemongs masih proses dalam pengerjaan Tugas Akhir. Sehingga Clemongs meminta kamu untuk menjadi joki dari tasknya. Berikut task yang diberikan ke Clemongs
+
+1. Server Ojol Orange sering sekali dibobol dengan cara bruteforce melalui akses SSH. Clemongs diminta untuk melindungi server tersebut dari serangan bruteforce itu dengan menggunakan aplikasi fail2ban. Dikarenakan port akses SSH server Ojol Orange yang dibuka sangat banyak, serta server Ojol Orange sangat banyak, maka jokilah Clemongs untuk membuat script bash yang dapat membantu instalasi fail2ban dengan jumlah port yang lebih dari satu. 
+
+Konfigurasi yang digunakan adalah:
+
+a. `maxretry` sebanyak 3 kali
+
+b. `bantime` selama 2 jam
+
+c. `logpath` berada pada /var/log/auth.log
+
+d. File konfigurasi fail2ban diletakkan pada /etc/fail2ban/jail.local
+
+e. Port dipisahkan dengan ‘,’ (koma) dan tanpa spasi
+
+Contoh: 22,6969,7979
+    
+Script tersebut dapat dijalankan dengan cara
+`bash fail2ban.sh <port SSH yang terbuka>`
+
+contoh : `bash fail2ban.sh 22 6969 7979`
+
+Script fail2ban.sh juga digunakan untuk melakukan restart service fail2ban dan memerika status fail2ban setelah dilakukan konfigurasi.
+
+Note: Silakan gunakan Google untuk mencari cara instalasi fail2ban
+
+2. Aplikasi Ojol Orange menggunakan Laravel sebagai backend service-nya yang terletak pada /www/backend-ojol-orange-nih-boss/. Terdapat sebuah Scheduler yang berfungsi untuk melakukan update status pengiriman pada database setiap 30 menit pada jam 10.00 hingga 17.00. Status 0 berarti belum dikirim. Status 1 berarti sedang dalam pengiriman. Status 2 berarti pengiriman selesai. Berikut merupakan scheduler yang digunakan:
+    
+```php
+<?php
+ 
+namespace App\Console;
+ 
+use Illuminate\Console\Scheduling\Schedule;
+use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use Illuminate\Support\Facades\DB;
+ 
+class Kernel extends ConsoleKernel
+{
+    /**
+     * Define the application's command schedule.
+     *
+     * @param  \Illuminate\Console\Scheduling\Schedule  $schedule
+     * @return void
+     */
+    protected function schedule(Schedule $schedule)
+    {
+        $schedule->call(function () {
+            $sedangPengirimans = $DB::table('pengiriman')->where(‘status’, 1)->get();
+            $sedangPengirimans->each(fn($sedangPengiriman, $key) => {
+            $sedangPengiriman->update(‘status’, 2);
+            $sedangPengiriman->save();
+          })
+        };
+    }
+}
 ```
-2. Make a task scheduler using crontab to create logs containing the sizes of the /home/\<user>/Downloads directory in human readable format. The task runs every 15 minutes from 8 to 17 o'clock. The log files are stored in the /home/\<user>/log/ directory with the name format of the `date` command.
 
-![soal-2](gambar/soal-2.png)
+Scheduler tersebut harus dijalankan pada server Ojol Orange dalam sebuah cronjob agar scheduler tersebut selalu dieksekusi. Buatlah cron configuration agar Scheduler tersebut dapat berjalan sebagaimana mestinya pada aplikasi Laravel Ojol Orange.
 
-3. Run the command `wget https://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data` to download a dataset. Create an awk program that can display __multiplication result__ from the '__petal length in cm__' and '__petal width in cm__' columns with the accuracy of __2 decimal places__, only for records with column '__class__' __which contains the string 'Iris-setosa'__ and has the value of __'sepal length in cm'__ more than __5.4__ based on that dataset! Display the result in the format "Area of petals on row n is y.yy" where "n" is the row to which record is and "y.yy" is the product of the multiplication. Attribute information can be accessed at https://archive.ics.uci.edu/ml/datasets/iris/
+Note: Bacalah dokumentasi Laravel 😊
+
+3. Clemongs dipercaya oleh mentornya, Sultan dan Yohan. Sehingga mereka membutuhkan daftar path home dari setiap user yang berada pada server Ojol Orange karena dia takut ada joki pada masa probation dari setiap mentee nya. Informasi path tersebut berada pada /etc/passwd. File informasi tersebut disimpan dalam sebuah file pathmenteemunihboss.haha. 
+
+Yohan meminta format penulisan dari setiap user sebagai berikut:
+`Menteemu nama_mentee ada di path_home`
+
+Contoh:
+`Menteemu Clemongs ada di /clemongs/huahaha/`
+
+Sultan karena malas dengan membuka file tersebut pada server Ojol Orange, dia meminta Clemongs untuk mengirimkan file tersebut ke transfer.sh dan linknya diberikan ke Sultan. Bantulah Clemongs untuk membuat bash script dengan nama file findingMentee.sh untuk mencari path home dan mengirimkan file pathmenteemunihboss.haha ke transfer.sh!
+
+Note: 
+1. Kamu harus pake AWK dan AWK Function ya 😊
+2. Pengiriman file ke transfer.sh hanya boleh menggunakan curl
+3. https://transfer.sh/ adalah sebuah website file hosting gratis
