@@ -1,0 +1,57 @@
+[   67.353385] wlan0: deauthenticated from e0:99:71:c0:a5:d6 (Reason: 2=PREV_AUTH_NOT_VALID)
+[   67.391649] cfg80211: World regulatory domain updated:
+[   67.391653] cfg80211:  DFS Master region: unset
+[   67.391654] cfg80211:   (start_freq - end_freq @ bandwidth), (max_antenna_gain, max_eirp), (dfs_cac_time)
+[   67.391657] cfg80211:   (2402000 KHz - 2472000 KHz @ 40000 KHz), (300 mBi, 2000 mBm), (N/A)
+[   67.391658] cfg80211:   (2457000 KHz - 2482000 KHz @ 40000 KHz), (300 mBi, 2000 mBm), (N/A)
+[   67.391660] cfg80211:   (2474000 KHz - 2494000 KHz @ 20000 KHz), (300 mBi, 2000 mBm), (N/A)
+[   67.391661] cfg80211:   (5170000 KHz - 5250000 KHz @ 40000 KHz), (300 mBi, 2000 mBm), (N/A)
+[   67.391663] cfg80211:   (5735000 KHz - 5835000 KHz @ 40000 KHz), (300 mBi, 2000 mBm), (N/A)
+[   68.585959] systemd-hostnamed[2364]: Warning: nss-myhostname is not installed. Changing the local hostname might make it unresolveable. Please install nss-myhostname!
+[  119.041065] wlan0: authenticate with e0:99:71:c0:a5:d6
+[  119.059266] wlan0: send auth to e0:99:71:c0:a5:d6 (try 1/3)
+[  119.216868] wlan0: authenticated
+[  119.219929] wlan0: associate with e0:99:71:c0:a5:d6 (try 1/3)
+[  119.516017] wlan0: RX AssocResp from e0:99:71:c0:a5:d6 (capab=0x8431 status=0 aid=8)
+[  119.516122] wlan0: associated
+[  123.526323] wlan0: deauthenticated from e0:99:71:c0:a5:d6 (Reason: 2=PREV_AUTH_NOT_VALID)
+[  123.562031] cfg80211: World regulatory domain updated:
+[  123.562034] cfg80211:  DFS Master region: unset
+[  123.562036] cfg80211:   (start_freq - end_freq @ bandwidth), (max_antenna_gain, max_eirp), (dfs_cac_time)
+[  123.562038] cfg80211:   (2402000 KHz - 2472000 KHz @ 40000 KHz), (300 mBi, 2000 mBm), (N/A)
+[  123.562040] cfg80211:   (2457000 KHz - 2482000 KHz @ 40000 KHz), (300 mBi, 2000 mBm), (N/A)
+[  123.562042] cfg80211:   (2474000 KHz - 2494000 KHz @ 20000 KHz), (300 mBi, 2000 mBm), (N/A)
+[  123.562043] cfg80211:   (5170000 KHz - 5250000 KHz @ 40000 KHz), (300 mBi, 2000 mBm), (N/A)
+[  123.562044] cfg80211:   (5735000 KHz - 5835000 KHz @ 40000 KHz), (300 mBi, 2000 mBm), (N/A)
+[  170.234958] wlan0: authenticate with 4c:5e:0c:9d:fb:ff
+[  170.256708] wlan0: send auth to 4c:5e:0c:9d:fb:ff (try 1/3)
+[  170.258645] wlan0: authenticated
+[  170.262327] wlan0: associate with 4c:5e:0c:9d:fb:ff (try 1/3)
+[  170.277803] wlan0: RX AssocResp from 4c:5e:0c:9d:fb:ff (capab=0x431 status=0 aid=7)
+[  170.277896] wlan0: associated
+[  170.307274] wlan0: deauthenticating from 4c:5e:0c:9d:fb:ff by local choice (Reason: 2=PREV_AUTH_NOT_VALID)
+[  170.315628] wlan0: authenticate with 4c:5e:0c:9d:fb:ff
+[  170.330290] wlan0: send auth to 4c:5e:0c:9d:fb:ff (try 1/3)
+[  170.330472] cfg80211: World regulatory domain updated:
+[  170.330475] cfg80211:  DFS Master region: unset
+[  170.330476] cfg80211:   (start_freq - end_freq @ bandwidth), (max_antenna_gain, max_eirp), (dfs_cac_time)
+[  170.330479] cfg80211:   (2402000 KHz - 2472000 KHz @ 40000 KHz), (300 mBi, 2000 mBm), (N/A)
+[  170.330481] cfg80211:   (2457000 KHz - 2482000 KHz @ 40000 KHz), (300 mBi, 2000 mBm), (N/A)
+[  170.330482] cfg80211:   (2474000 KHz - 2494000 KHz @ 20000 KHz), (300 mBi, 2000 mBm), (N/A)
+[  170.330484] cfg80211:   (5170000 KHz - 5250000 KHz @ 40000 KHz), (300 mBi, 2000 mBm), (N/A)
+[  170.330485] cfg80211:   (5735000 KHz - 5835000 KHz @ 40000 KHz), (300 mBi, 2000 mBm), (N/A)
+[  170.332962] wlan0: authenticated
+[  170.334354] wlan0: associate with 4c:5e:0c:9d:fb:ff (try 1/3)
+[  170.346964] wlan0: RX AssocResp from 4c:5e:0c:9d:fb:ff (capab=0x431 status=0 aid=7)
+[  170.347057] wlan0: associated
+[  175.543184] audit: type=1400 audit(1506517262.437:37): apparmor="STATUS" operation="profile_load" profile="unconfined" name="docker-default" pid=3215 comm="apparmor_parser"
+[  175.610404] aufs 4.x-rcN-20160111
+[  175.822216] Bridge firewalling registered
+[  175.875934] Initializing XFRM netlink socket
+[  175.883015] Netfilter messages via NETLINK v0.30.
+[  175.885291] ctnetlink v0.93: registering with nfnetlink.
+[  175.935227] IPv6: ADDRCONF(NETDEV_UP): docker0: link is not ready
+[  176.290981] aufs au_opts_verify:1597:dockerd[3203]: dirperm1 breaks the protection by the permission bits on the lower branch
+[  603.387210] audit: type=1400 audit(1506517690.293:38): apparmor="STATUS" operation="profile_replace" profile="unconfined" name="/usr/lib/cups/backend/cups-pdf" pid=4504 comm="apparmor_parser"
+[  603.387217] audit: type=1400 audit(1506517690.293:39): apparmor="STATUS" operation="profile_replace" profile="unconfined" name="/usr/sbin/cupsd" pid=4504 comm="apparmor_parser"
+[ 2254.568162] perf interrupt took too long (2506 > 2500), lowering kernel.perf_event_max_sample_rate to 50000
