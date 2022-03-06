@@ -678,9 +678,12 @@ int main()
 # Soal Latihan
 
 [Daftar Isi](#daftar-isi)
-1. Modifikasi code [soal1.c](soal1.c) agar output nya menjadi angka urut dari 0 sampai 100, tanpa menghapus fungsi yang sudah ada dan menggunakan **wait**.
-2. Buatlah sebuah program yang dapat mengcopy folder beserta semua isi dari folder di */home/{USER}/Downloads* ke dalam sebuah folder dengan format nama *tanggal-bulan-tahun_jam:menit:detik* (contoh: 26-03-2021_16:22:09). **Gunakan fork, exec, dan wait**.
-3. Buatlah sebuah daemon yang berjalan setiap 10 detik yang dapat melakukan backup isi dari file *error.txt* yang disimpan dalam file *error.log.{no}* (contoh: error.log.1 , error.log.2, … ) lalu menghapus isi *error.txt* tersebut sehingga file tersebut kosong kembali. **Tidak diperbolehkan menggunakan exec dan system.**
+
+1. Karena kesibukannya bekerja di Ojol Orange, Clemongs tidak memiliki waktu untuk bermain. Suatu ketika, Clemongs menjadi sangat bosan dengan rutinitasnya. Ia pun melihat-lihat kode yg ditulis oleh Deka yang merupakan teman sekaligus Security Engineer di Ojol Hijau. Ia merasa kode yang ditulis oleh deka masih belum sempurna karena **tidak mampu memberikan output secara urut dari A-Z**. Bantulah Clemong untuk memperbaiki [kode](deka.c) yg ditulis Deka tanpa merubah fungsi yang sudah ada! **(Hint: Gunakan fungsi wait)**
+   
+2. Karena sering bermain-main, Clemongs pun mendapatkan hukuman dari mentornya. Hukumannya ialah meng-*copy* tiap baris yang mengandung string **wlan0** pada file [dmesg.log](dmesg.log) dan meletakkannya pada folder **wlan_log** dan dengan nama file **wlan0.log.{no}** (wlan0.log.1, wlan0.log.2, dst) **tanpa menggunakan fungsi system**. Bantulah Clemongs menuntaskan hukumannya!
+
+3. Selain hukuman diatas, mentor Clemongs ternyata ingin menambahkan hukuman lagi. Hukuman kedua untuk Clemong adalah membuat program **daemon** yang berfungsi **menghapus file dengan ekstensi .trash** yang ada pada folder `/tmp/trash` dan berjalan setiap **30 detik**. Namun ada kondisi dimana ketika ada file **stop.trash**, programnya berhenti. Bantulah Clemongs membuat program untuk dapat memuaskan mentornya!
 
 ## Referensi
 * https://notes.shichao.io/apue/ch8/
