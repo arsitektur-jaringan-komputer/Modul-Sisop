@@ -1,6 +1,6 @@
 # sisop-modul-2
 
-# Daemon dan Proses
+# Proses dan Daemon
 
 Menggunakan:
 * Linux
