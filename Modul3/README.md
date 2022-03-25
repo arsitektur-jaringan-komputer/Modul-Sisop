@@ -769,22 +769,39 @@ $ man fcntl
 ```
 
 ## Soal Latihan 
-1. Buatlah program C yang bisa menghitung faktorial secara parallel lalu menampilkan hasilnya secara berurutan.  
+1. Mentor Clemongs sangat senang memberi tugas tambahan pada Clemongs. Karena sudah lelah mengerjakannya, Clemongs meminta bantuan kamu untuk mengerjakan tugas-tugas yang diberikan oleh mentornya.
+Ia diminta membuat program multithreading untuk mengecek apakah suatu angka merupakan bilangan prima atau bukan.
 Contoh: 
 ```bash
 ## input
-./faktorial 5 3 4
+./prime 12 43 49
 ```
 ```bash
 ### output
-3! = 6  
-4! = 24  
-5! = 120
+12 bukan prima
+43 prima
+49 bukan prima
 ```
 
-2. Buatlah sebuah program untuk menampilkan file pada urutan ketiga dari sebuah direktori, dengan menggunakan pipe dan command ls, head, tail.
+2. Clemongs juga diminta membuat sebuah program untuk menampilkan path directory yang sedang aktif saat program dijalankan dan print 3 file pertama dari directory tersebut. Program harus memanfaatkan fork dan pipe!
 
-3. Buatlah sebuah program menggunakan socket dimana terdiri dari client dan server. Saat client mengetikkan "tambah" maka suatu angka yang ada pada server bertambah 1 dan server otomatis mengirimkan pesan ke client yang berisi "Penambahan berhasil" dan ketika mengetikan perintah “kurang” maka suatu angka yang ada pada server berkurang 1 dan server otomatis mengirimkan pesan ke client yang berisi "Pengurangan berhasil". Perintah yang lainnya pada client adalah "cek", maka server akan mengirimkan pesan yang berisi jumlah terkini angka tersebut, selain perintah tersebut server akan mengirimkan pesan “command tidak sesuai”. Program ini dapat berjalan tanpa henti. (Nilai awal angka pada server adalah 5).
+3. Terakhir, Clemongs harus membuat program client dan server menggunakan socket pada bahasa C. Server bisa menerima 2 perintah yaitu GET dan POST. Saat melakukan perintah POST, client memberikan satu angka tambahan untuk disimpan di server. Sedangkan perintah GET akan meminta server untuk mengirim semua angka yang sudah tersimpan dan hasilnya akan diprint di client. Cukup gunakan array saja untuk menyimpan angka di server. Server juga bisa memberikan peringatan "Bad request" jika command yang digunakan client tidak sesuai.
+
+Contoh: 
+```bash
+## input
+POST
+5
+POST
+3
+GET
+```
+```bash
+### output
+Penambahan angka berhasil
+Penambahan angka berhasil
+5 3
+```
 
 ### References 
 - https://notes.shichao.io/apue/  
