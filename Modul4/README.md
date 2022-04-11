@@ -1,7 +1,4 @@
-
 # File System dan FUSE
-
-
 
 ## Objectives
 
@@ -629,8 +626,50 @@ fusermount -u [direktori tujuan]
 
 # Soal Latihan
 
-1. Buat sebuah file system yang mengarah ke /home/[user]/Downloads, file sistem bernama JagoFS, sehingga nama file yang ada pada folder tersebut akan ditampilkan Jago_[nama_file]. Sebagai contoh contohfile.txt menjadi Jago_contohfile.txt. File system ini hanya memiliki akses read. Contoh lainnya Jago_contohkedua.txt menjadi Jago_Jago_contohkedua.txt.
-2. Buat sebuah file system yang mengarah ke /home/[user]/Documents. File system ini memiliki fitur pencatatan, dimana ketika file pada folder tersebut dimodifikasi, kejadian perubahan tersebut akan dicatat pada suatu file log dengan format <namafile>.<time:date>.<ekstensi>. Jika file log belum ada, maka secara otomatis akan membuat file log sebelum dicatat.
+1. Clemong adalah orang yang suka membalikkan ~fakta~ kata sehingga ia ingin memiliki file system bernama ClemOS yang membalikkan nama-nama file yang ada dalam direktori /home/[user]/Documents. Namun file system tersebut hanya membalikkan nama file saja (tidak termasuk extension/format file) jika berada di dalam folder Clem_[nama folder]. Untuk memudahkannya, anggap bahwa semua string setelah titik terakhir adalah extension. Perhatikan contoh agar lebih jelas:
+
+```
+/
+│
+└───Clem_SisopEZ
+│   │   Cheatsheet.sisop.zip
+|   |   Daftar_Gebetan.xlsx
+│   │   index.html
+│   └───modul 4 ez
+│       |   bocoransoal.pdf
+|
+└───Probstat
+    │   Praktikum.r.zip
+    │   kata-penyemangat.txt
+```
+Menjadi:
+```
+/
+│
+└───Clem_SisopEZ
+│   │   posis.teehstaehC.zip
+|   |   natebeG_ratfaD.xlsx
+│   │   xedni.html
+│   └───ze 4 ludom
+│       |   laosnarocob.pdf
+|
+└───Probstat
+    │   Praktikum.r.zip
+    │   kata-penyemangat.txt
+```
+
+Catatan: 
+- Root pada ClemOS adalah folder /home/[user]/Documents, sehingga yang ditampillkan adalah semua file dan folder di folder Documents.
+- Nama file yang dibalik hanya jika terdapat di dalam folder Clem_[nama folder], berapapun kedalamannya.
+- Cobalah buat folder Clem_[nama folder] untuk menguji.
+
+
+2. Buat sebuah file system yang mengarah ke /home/[user]/Downloads. File system ini memiliki fitur pencatatan, dimana ketika folder pada file system tersebut diakses, pengaksesan tersebut akan ditulis pada file log.log dengan format `"%.3s %.3s%3d %.2d:%.2d:%.2d %d: %s\n", hari, bulan, tanggal, jam, menit, detik, tahun, folder`. Misalnya: `Mon Apr 11 20:12:47 2022: /sample`.
+
+Catatan:
+  - Gunakan dan modifikasi fungsi `ctime` agar sesuai dengan format.
+  - Bisa digabung dengan latihan soal nomor 1 (mengakses folder Documents/Downloads saja).
+  - Folder yang dicatat pada log adalah path dari file system.
 
 # References
 
