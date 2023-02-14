@@ -1,31 +1,37 @@
 ## Modul 1 Sistem Operasi 
-# Shell Scripting, Cron, dan AWK
+# **Shell Scripting, Cron, dan AWK**
 ## Prasyarat
 
-1. Menginstall OS Linux
-2. Memahami CLI (_Command Line Interface_) [Modul Pengenalan CLI](https://github.com/AZakyH/Modul-Pelatihan-Linux-2018/tree/master/CLI)
+1. Melakukan instalasi OS Linux.
+2. Mengenal OS Linux secara umum, termasuk juga mengenai ragam distro yang ada saat ini serta struktur direktorinya pada Modul LBE AJK Linux [Modul Pengenalan OS Linux](https://github.com/arsitektur-jaringan-komputer/lbe-ajk-2022/tree/master/Modul%201).
+3. Memahami CLI (_Command Line Interface_) pada [Modul Pengenalan CLI](https://github.com/AZakyH/Modul-Pelatihan-Linux-2018/tree/master/CLI).
+
+</br>
 
 ## Daftar Isi
 
-- [Shell Scripting, Cron, dan AWK](#shell-scripting-cron-dan-awk)
+- [**Shell Scripting, Cron, dan AWK**](#shell-scripting-cron-dan-awk)
   - [Prasyarat](#prasyarat)
   - [Daftar Isi](#daftar-isi)
-- [1. Shell Scripting](#1-shell-scripting)
-  - [1.1 Shell](#11-shell)
+- [**Intermezzo**](#intermezzo)
+  - [Navigasi di Linux](#navigasi-di-linux)
+  - [Konsep *User* dan *Permission* di Linux](#konsep-user-dan-permission-di-linux)
+  - [Pengenalan Teks Editor (Nano dan Vim)](#pengenalan-teks-editor-nano-dan-vim)
+- [**1. Shell *Scripting***](#1-shell-scripting)
+  - [1.1 Apa itu Shell?](#11-apa-itu-shell)
   - [1.2 Pemrograman Shell](#12-pemrograman-shell)
   - [1.3 Perintah Dasar Shell](#13-perintah-dasar-shell)
   - [1.4 Simple Shell Script](#14-simple-shell-script)
   - [1.5 Variabel](#15-variabel)
     - [1.5.1 Special Variable](#151-special-variable)
-    - [1.5.2 Local Variable](#152-local-variable)
-  - [1.6 Input Output](#16-input-output)
+  - [1.6 Input dan Output](#16-input-dan-output)
   - [1.7 Quoting](#17-quoting)
   - [1.8 Operator Dasar](#18-operator-dasar)
     - [1.8.1 Operator Aritmatika](#181-operator-aritmatika)
     - [1.8.2 Operator Relasional](#182-operator-relasional)
   - [1.9 Conditional Statements](#19-conditional-statements)
-    - [1.9.1 If...Else](#191-ifelse)
-    - [1.9.2 Case](#192-case)
+    - [1.9.1 If Else](#191-if-else)
+    - [1.9.2 Switch Case](#192-switch-case)
   - [1.10 Loop](#110-loop)
     - [1.10.1 While loop](#1101-while-loop)
     - [1.10.2 For loop](#1102-for-loop)
@@ -33,75 +39,92 @@
     - [1.10.4 Select loop](#1104-select-loop)
     - [1.10.5 Nesting Loops](#1105-nesting-loops)
   - [1.11 Function](#111-function)
-    - [1.11.1 Nested Functions](#1111-nested-functions)
-- [2. Cron](#2-cron)
-  - [2.1 Membuat atau mengubah cron jobs](#21-membuat-atau-mengubah-cron-jobs)
+    - [1.11.1 Nested Function](#1111-nested-function)
+    - [1.11.2 Konsep Local dan Global Variabel](#1112-konsep-local-dan-global-variabel)
+- [2. Cron Jobs](#2-cron-jobs)
+  - [2.1 Apa itu Cron Jobs?](#21-apa-itu-cron-jobs)
+  - [2.2 Membuat atau mengubah cron jobs](#22-membuat-atau-mengubah-cron-jobs)
 - [3. AWK](#3-awk)
-  - [3.1 Menjalankan Program AWK](#31-menjalankan-program-awk)
+  - [3.1 Apa itu AWK?](#31-apa-itu-awk)
+  - [3.2 Menjalankan Program AWK](#32-menjalankan-program-awk)
     - [Cara Kerja AWK](#cara-kerja-awk)
   - [3.2 Special Rules](#32-special-rules)
-- [Extras](#extras)
+- [Extras (Bacaan Santai)](#extras-bacaan-santai)
   - [Ranger](#ranger)
     - [How to Install](#how-to-install)
     - [How to Use](#how-to-use)
   - [Referensi](#referensi)
   - [Latihan](#latihan)
 
-# 1. Shell Scripting
-## 1.1 Shell
-Sistem operasi dibagi menjadi tiga komponen penting, yaitu Kernel, Shell, dan Program Utility.
+</br>
+
+# **Intermezzo**
+## Navigasi di Linux
+
+
+## Konsep *User* dan *Permission* di Linux
+
+
+## Pengenalan Teks Editor (Nano dan Vim)
+
+</br>
+
+# **1. Shell *Scripting***
+## 1.1 Apa itu Shell?
+Sistem operasi dibagi menjadi tiga komponen penting, yaitu Kernel, Shell, dan *Program Utility* yang dapat ditunjukkan seperti ilustrasi berikut.
 
 ![Komponen Sistem Operasi](gambar/component.png)
 
-- __Kernel__ adalah inti dari komputer. Komponen ini memungkinkan terjadinya komunikasi antara software dan hardware. Jika kernel adalah bagian terdalam dari sebuah sistem operasi, maka __shell__ adalah bagian terluarnya.
-- __Shell__ adalah program penerjemah perintah yang menjembatani user dengan kernel. Umumnya, shell menyediakan __prompt__ sebagai user interface tempat user menginputkan perintah-perintah yang diinginkan, baik berupa perintah internal maupun eksternal. Setelah menerima input dari user dan menjalankan program/perintah berdasarkan input tersebut, shell akan mengeluarkan output. Shell dapat diakses melalui __Terminal__.
-- __Program Utility__ adalah system software yang menjalankan tugas-tugas maintenance. Program utility ini dibuat secara khusus untuk melakukan fungsi tertentu pada suatu area komputasi secara spesifik, seperti memformat harddisk, atau melakukan pengecekan konektivitas jaringan dll.
+- **Kernel** adalah inti dari komputer. Komponen ini memungkinkan terjadinya komunikasi antara *software* dan *hardware*. Jika Kernel adalah bagian terdalam dari sebuah sistem operasi, maka Shell adalah bagian terluarnya.
+- **Shell** adalah program penerjemah perintah yang menjembatani *user* dengan Kernel. Umumnya, Shell menyediakan *prompt* sebagai *user* *interface* tempat *user* menginputkan perintah-perintah yang diinginkan, baik berupa perintah internal maupun eksternal. Setelah menerima input dari *user* dan menjalankan program atau perintah berdasarkan input tersebut, Shell akan mengeluarkan *output*. Shell dapat diakses melalui Terminal.
+- ***Program Utility*** adalah *system* *software* yang menjalankan tugas-tugas *maintenance*. *Program* *utility* ini dibuat secara khusus untuk melakukan fungsi tertentu pada suatu area komputasi secara spesifik, seperti melakukan *format* harddisk, melakukan pengecekan konektivitas jaringan, dan lainnya.
+  
 
-` Catatan: Coba buka terminal di Linux, maka kamu akan menemukan prompt shell (biasanya $). Disitu, kamu dapat mengetik input berupa perintah, kemudian mengeksekusinya dengan menekan tombol "Enter". Output akan ditampilkan di terminal. `
+> Catatan: Coba buka terminal di Linux, maka kamu akan menemukan *prompt* Shell (biasanya `$`). Di situ, kamu dapat mengetik *input* berupa perintah, kemudian mengeksekusinya dengan menekan tombol "Enter". *Output* akan ditampilkan di Terminal.
 
-Ada 2 tipe shell utama di Unix/Linux, yaitu:
+Ada 2 tipe Shell utama di Unix atau Linux, yaitu:
 
-1. Bourne Shell - Prompt untuk shell ini adalah $ 
+1. Bourne Shell - *Prompt* untuk Shell ini adalah `$`. 
     - Bourne Shell (sh)
     - POSIX Shell (sh)
     - Korn Shell (ksh)
-    - Bourne Again SHell (bash)
-2. C Shell - Prompt untuk shell ini adalah %
+    - Bourne Again Shell (bash)
+2. C Shell - Prompt untuk Shell ini adalah `%`.
     - C Shell (csh)
     - TENEX/TOPS C Shell (tcsh)
 ## 1.2 Pemrograman Shell
-Pemrograman shell adalah menyusun beberapa perintah shell (internal maupun eksternal) menjadi serangkaian perintah untuk melakukan tugas tertentu.
-Kelebihan shell di Linux adalah memungkinkan user untuk menyusun serangkaian perintah seperti halnya bahasa pemrograman interpreter, yakni melakukan proses input output, menyeleksi kondisi (decision making), looping, membuat fungsi, dsb.
+Pemrograman Shell adalah menyusun beberapa perintah Shell (internal maupun eksternal) menjadi serangkaian perintah untuk melakukan tugas tertentu.
+Kelebihan Shell di Linux adalah memungkinkan *user* untuk menyusun serangkaian perintah seperti halnya bahasa pemrograman interpreter, yakni melakukan proses input output, menyeleksi kondisi (*decision* *making*), *looping*, membuat fungsi, dan sebagainya.
 
-Pemrograman shell di Unix/Linux juga disebut dengan shell scripting. Untuk memudahkan, shell script dapat disimpan ke dalam sebuah file yang dapat dieksekusi kapanpun kita inginkan.
+Pemrograman Shell di Unix atau Linux juga disebut dengan Shell *scripting*. Untuk memudahkan, Shell *script* dapat disimpan ke dalam sebuah *file* yang dapat dieksekusi kapanpun kita inginkan.
     
-Manfaat belajar shell scripting:
+Manfaat belajar Shell *scripting*:
 
-- Dapat bekerja secara efektif dan efisien karena tidak perlu mengetik serangkaian perintah secara berulang-ulang, cukup menulis dan mengeksekusi satu file saja
+- Dapat bekerja secara efektif dan efisien karena tidak perlu mengetik serangkaian perintah secara berulang-ulang, cukup menulis dan mengeksekusi satu file saja.
 
-- Dapat menjalankan beberapa perintah sebagai satu perintah
+- Dapat menjalankan beberapa perintah sebagai satu perintah.
 
-- Dapat menjalankan perintah secara otomatis
+- Dapat menjalankan perintah secara otomatis.
 ## 1.3 Perintah Dasar Shell
-Pada modul ini jenis shell yang digunakan adalah Bash (_Bourne Again SHell_) karena bash paling banyak digunakan dalam distro Linux. Untuk mengecek shell apa yang sedang kalian gunakan, bisa dengan menggunakan 
+Pada modul ini, jenis Shell yang digunakan adalah Bash (_Bourne Again Shell_) karena Bash paling banyak digunakan dalam distro Linux. Untuk mengecek Shell apa yang sedang kalian gunakan, bisa dengan menggunakan *script* berikut ini.
 
 ```bash
 $ echo $SHELL
 ```
 
-Shell memiliki perintah internal (built-in shell) dan perintah eksternal. Untuk lebih jelasnya :
-- Perintah internal (built-in shell) : Perintah yang dibangun di dalam shell. Eksekusi tidak harus mencari perintah dari variabel PATH yang di ada di shell
-- Perintah eksternal : Perintah yang tidak ada di dalam shell. Ketika perintah dijalankan, shell akan mencari perintah tersebut dalam variable PATH seperti `/usr/bin` dan `/bin`.
+Shell memiliki perintah internal (*built*-*in* Shell) dan perintah eksternal. Untuk lebih jelasnya yaitu:
+- Perintah internal (*built-in* Shell), yaitu perintah yang dibangun di dalam Shell. Eksekusi tidak harus mencari perintah dari variabel `PATH` yang di ada di Shell.
+- Perintah eksternal, yaitu perintah yang tidak ada di dalam Shell. Ketika perintah dijalankan, Shell akan mencari perintah tersebut dalam variable `PATH` seperti `/usr/bin` dan `/bin`.
 
-Untuk mengecek apakah sebuah perintah termasuk internal atau eksternal, gunakan perintah type
+Untuk mengecek apakah sebuah perintah termasuk internal atau eksternal, gunakan perintah *type* sebagai berikut.
 
 ```bash
 $ type cd
-cd is a shell builtin
+cd is a Shell builtin
 $ type bash
 bash is /bin/bash
 $ type read
-read is a shell builtin 
+read is a Shell builtin 
 $ type chmod
 chmod is /bin/chmod
 ```
@@ -115,7 +138,7 @@ chmod is /bin/chmod
     cat, cut, paste, chmod, lpr,.... 
 
 
-Selain itu, terdapat beberapa karakter yang cukup penting untuk digunakan dalam shell:
+Selain itu, terdapat beberapa karakter yang cukup penting untuk digunakan dalam Shell:
 
 - __Redirection__ (mengirim output ke file atau menerima input dari file) menggunakan operator redirect >, >>, <, 2>> contoh:
 
@@ -149,7 +172,7 @@ ls a?a
 ls [re]*
 #tampilkan file yang dimulai dengan salah satu karakter r atau e
 ```
-Untuk melihat informasi selengkapnya tentang bash shell, silahkan membuka manual bash dengan cara:
+Untuk melihat informasi selengkapnya tentang bash Shell, silahkan membuka manual bash dengan cara:
 
 ```bash
 $ man bash
@@ -194,7 +217,7 @@ Eksekusi file script dengan cara ./nama_file.sh atau bash nama_file.sh.
     
     ii.  Nama variabel dimulai dengan huruf atau underscore
     
-    iii. Tidak boleh menggunakan karakter spesial seperti !, *, $, #, -, dll karena karakter tersebut punya makna khusus untuk shell
+    iii. Tidak boleh menggunakan karakter spesial seperti !, *, $, #, -, dll karena karakter tersebut punya makna khusus untuk Shell
 
     iv. Bersifat case sensitive (membedakan huruf besar dan kecil)
 
@@ -253,7 +276,7 @@ Beberapa special variable yang sering dipakai:
 |   $#   | Jumlah argumen yang diinput pada script
 |   $*   | Semua argumen $n
 |   $?   | Status exit dari perintah terakhir yang dijalankan
-|   $$   | Proses ID (PID) shell saat ini
+|   $$   | Proses ID (PID) Shell saat ini
 
 
 Contoh:
@@ -272,34 +295,7 @@ Output:
 
 ![special](gambar/special.png)
 
-### 1.5.2 Local Variable
-Ketika menggunakan bash, variabel akan otomatis menjadi variabel global jika di-assign secara langsung seperti `bulan=6`. Tetapi kita bisa membuat variabel lokal untuk fungsi di bash dengan menggunakan keyword `local`. Variabel lokal yang terbuat tidak akan menjadi variabel global.
-
-Contoh:
-
-```bash
-#!/bin/bash
-
-fac_func() {
-    angka=2
-    local tmp=10
-    echo "Global Variable di Dalam Fungsi : $angka"
-    echo "Local Variable di Dalam Fungsi : $tmp"
-}
-
-fac_func
-
-echo "Global Variable di Luar Fungsi : $angka"
-echo "Local Variable di Luar Fungsi : $tmp"
-```
-
-Output:
-
-![local-variable](gambar/local-variable.png)
-
-Dari gambar terlihat bahwa ketika kita mencoba melakukan print local variable ke terminal tidak bisa keluar.
-
-## 1.6 Input Output
+## 1.6 Input dan Output
 - read digunakan untuk mengambil input dari keyboard dengan syntax sebagai berikut:
 
     `read nama_var`
@@ -348,7 +344,7 @@ Output:
 ![printf](gambar/printf.png)
 
 ## 1.7 Quoting
-Shell Unix/Linux memiliki beberapa karakter spesial yang disebut dengan **metakarakter**. Karakter tersebut punya makna khusus jika digunakan di dalam shell script. Beberapa macam metakarakter:
+Shell Unix/Linux memiliki beberapa karakter spesial yang disebut dengan **metakarakter**. Karakter tersebut punya makna khusus jika digunakan di dalam Shell script. Beberapa macam metakarakter:
 ```bash
 * ? [ ] ' " \ $ ; & ( ) | ^ < > new-line space tab
 ```
@@ -388,7 +384,7 @@ Output:
 Lebih banyak dapat dilihat sendiri di `man bash`
 
 ## 1.8 Operator Dasar
-Ada beberapa jenis operator yang didukung oleh shell, yaitu:
+Ada beberapa jenis operator yang didukung oleh Shell, yaitu:
   1. Operator Aritmatika
   2. Operator Relasional
   3. Operator Boolean
@@ -481,11 +477,11 @@ Output:
 
 ## 1.9 Conditional Statements
 **Conditional statements** digunakan untuk memungkinkan program dapat membuat keputusan yang benar dengan memilih tindakan tertentu berdasarkan syarat/kondisi tertentu.
-Ada 2 jenis conditional statements dalam Unix shell, yaitu:
+Ada 2 jenis conditional statements dalam Unix Shell, yaitu:
 1. **if...else**
 2. **case**
   
-### 1.9.1 If...Else
+### 1.9.1 If Else
 Syntax:
 ```bash
 if [ kondisi1 ]
@@ -523,7 +519,7 @@ Output:
 cintaku lebih besar dari cintanya
 ```
 
-### 1.9.2 Case
+### 1.9.2 Switch Case
 Syntax:
 ```bash
 case var in
@@ -568,7 +564,7 @@ Output:
 ![hasil-case](gambar/hasil-case.png)
 
 ## 1.10 Loop
-**Loop** digunakan untuk mengeksekusi serangkaian perintah berulang kali. Ada beberapa macam shell loops:
+**Loop** digunakan untuk mengeksekusi serangkaian perintah berulang kali. Ada beberapa macam Shell loops:
   1. While loop
   2. For loop
   3. Until loop
@@ -765,7 +761,7 @@ reply
 Output:   
 ![hasil-fungsi](gambar/hasil-fungsi.png)
 
-### 1.11.1 Nested Functions
+### 1.11.1 Nested Function
 Sama halnya dengan loop, function juga bisa menerapkan konsep nested. Dimana kita bisa memanggil sebuah fungsi di dalam fungsi.
 ```bash
 #!/bin/bash
@@ -786,8 +782,37 @@ ask_name
 Output:   
 ![hasil-fungsi](gambar/hasil-fungsi.png)
 
-# 2. Cron
-Cron adalah sebuah service daemon yang memungkinkan user Linux dan Unix untuk menjalankan perintah atau _script_ pada waktu tertentu secara otomatis. Perintah-perintah dan/atau script-script yang dijalankan cron disebut cron jobs.
+
+### 1.11.2 Konsep Local dan Global Variabel
+Ketika menggunakan bash, variabel akan otomatis menjadi variabel global jika di-assign secara langsung seperti `bulan=6`. Tetapi kita bisa membuat variabel lokal untuk fungsi di bash dengan menggunakan keyword `local`. Variabel lokal yang terbuat tidak akan menjadi variabel global.
+
+Contoh:
+
+```bash
+#!/bin/bash
+
+fac_func() {
+    angka=2
+    local tmp=10
+    echo "Global Variable di Dalam Fungsi : $angka"
+    echo "Local Variable di Dalam Fungsi : $tmp"
+}
+
+fac_func
+
+echo "Global Variable di Luar Fungsi : $angka"
+echo "Local Variable di Luar Fungsi : $tmp"
+```
+
+Output:
+
+![local-variable](gambar/local-variable.png)
+
+Dari gambar terlihat bahwa ketika kita mencoba melakukan print local variable ke terminal tidak bisa keluar.
+
+
+# 2. Cron Jobs
+Cron jobs adalah sebuah service daemon yang memungkinkan user Linux dan Unix untuk menjalankan perintah atau _script_ pada waktu tertentu secara otomatis. Perintah-perintah dan/atau script-script yang dijalankan cron disebut cron jobs.
 Syntax crontab :
 `crontab [-u user] [-l | -r | -e] [-i]`
 Penjelasan :
@@ -795,7 +820,10 @@ Penjelasan :
 * `-r` untuk menghapus file crontab
 * `-e` untuk mengubah atau membuat file crontab jika belum ada
 * `-i` untuk memberikan pertanyaan konfirmasi terlebih dahulu sebelum menghapus file crontab
-## 2.1 Membuat atau mengubah cron jobs
+
+## 2.1 Apa itu Cron Jobs?
+
+## 2.2 Membuat atau mengubah cron jobs
 1. Ketikkan `crontab -e`
 2. Ketikkan perintah crontab sesuai aturan parameter crontab   
 ![parameter crontab](gambar/syntax-crontab.png "parameter crontab")   
@@ -819,7 +847,9 @@ FYI: awk versi baru dinamakan gawk, tapi biasanya tetap disebut awk.
 
 Awk adalah bahasa scripting yang digunakan untuk memanipulasi data dan menghasilkan laporan. Bahasa pemrograman perintah awk tidak memerlukan kompilasi, dan memungkinkan pengguna untuk menggunakan variabel, fungsi numerik, fungsi string, dan operator logika. Awk sebagian besar digunakan untuk pemindaian dan pemrosesan pola.
 
-## 3.1 Menjalankan Program AWK
+## 3.1 Apa itu AWK?
+
+## 3.2 Menjalankan Program AWK
 Syntax:
 ```bash
 awk options 'selection _criteria {action }' input-file > output-file
@@ -885,7 +915,7 @@ Ada berapa "732"?
 ```
 Pada contoh di atas, rule kedua hanya memiliki action untuk melakukan perhitungan berapa jumlah baris yang mengandung "732", namun tidak ada action untuk menampilkan (print).
 
-# Extras
+# Extras (Bacaan Santai)
 ## Ranger
 ![ranger](gambar/ranger.png)
 
@@ -905,19 +935,20 @@ Cara menginstal Ranger sendiri cukup sederhana:
 - Gunakan key `j` untuk mengarahkan cursor ke bawah
 - Gunakan key `k` untuk mengarahkan cursor ke atas
 - Gunakan key `q` untuk keluar
-- Gunakan key `!` atau `s` untuk mengeksekusi command shell, contoh `! touch my_text.txt`, lalu tambahakan `-w` sebelum command untuk melihat output dari command tersebut
+- Gunakan key `!` atau `s` untuk mengeksekusi command Shell, contoh `! touch my_text.txt`, lalu tambahakan `-w` sebelum command untuk melihat output dari command tersebut
 
 ## Referensi
 * [https://www.tutorialspoint.com/unix/shell_scripting.htm](https://www.tutorialspoint.com/unix/shell_scripting.htm)
-* [https://pemula.linux.or.id/programming/bash-shell.html](https://pemula.linux.or.id/programming/bash-shell.html)
+* [https://pemula.linux.or.id/programming/bash-Shell.html](https://pemula.linux.or.id/programming/bash-Shell.html)
 * [https://www.computerhope.com/unix/ucrontab.htm](https://www.computerhope.com/unix/ucrontab.htm)
 * [https://www.codepolitan.com/memahami-perintah-perintah-crontab-paling-lengkap-59f69445130a0](https://www.codepolitan.com/memahami-perintah-perintah-crontab-paling-lengkap-59f69445130a0)
 * [https://vpswp.blogspot.com/2015/06/definisi-dan-6-contoh-fungsi-perintah-awk-linux.html](https://vpswp.blogspot.com/2015/06/definisi-dan-6-contoh-fungsi-perintah-awk-linux.html)
 * [https://www.codepolitan.com/belajar-bash-mencoba-bash-untuk-pertama-kali-57bbca3c28e54-17341](https://www.codepolitan.com/belajar-bash-mencoba-bash-untuk-pertama-kali-57bbca3c28e54-17341)
-* [https://pemula.linux.or.id/programming/bash-shell.html](https://pemula.linux.or.id/programming/bash-shell.html)
+* [https://pemula.linux.or.id/programming/bash-Shell.html](https://pemula.linux.or.id/programming/bash-Shell.html)
 * [https://github.com/ranger/ranger](https://github.com/ranger/ranger)
 * [https://www.geeksforgeeks.org/internal-and-external-commands-in-linux/#:~:text=The%20UNIX%20system%20is%20command,are%20built%20into%20the%20shell.&text=External%20Commands%20%3A%20Commands%20which%20aren't%20built%20into%20the%20shell](https://www.geeksforgeeks.org/internal-and-external-commands-in-linux/#:~:text=The%20UNIX%20system%20is%20command,are%20built%20into%20the%20shell.&text=External%20Commands%20%3A%20Commands%20which%20aren't%20built%20into%20the%20shell)
 * [https://tldp.org/LDP/abs/html/localvar.html](https://tldp.org/LDP/abs/html/localvar.html)
+
 
 ## Latihan
 
