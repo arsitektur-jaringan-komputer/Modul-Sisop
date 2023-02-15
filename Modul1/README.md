@@ -1,23 +1,31 @@
 ## Modul 1 Sistem Operasi 
-# **Shell Scripting, Cron, dan AWK**
-## Prasyarat
+# Shell Scripting, Cron, dan AWK
+# Prasyarat
 
 1. Melakukan instalasi OS Linux.
-2. Mengenal OS Linux secara umum, termasuk juga mengenai ragam distro yang ada saat ini serta struktur direktorinya pada Modul LBE AJK Linux [Modul Pengenalan OS Linux](https://github.com/arsitektur-jaringan-komputer/lbe-ajk-2022/tree/master/Modul%201).
+2. Mengenal OS Linux secara umum, termasuk juga mengenai ragam distro yang ada saat ini serta struktur direktorinya pada [Modul Pengenalan OS Linux](https://github.com/arsitektur-jaringan-komputer/lbe-ajk-2022/tree/master/Modul%201).
 3. Memahami CLI (_Command Line Interface_) pada [Modul Pengenalan CLI](https://github.com/AZakyH/Modul-Pelatihan-Linux-2018/tree/master/CLI).
 
 </br>
 
-## Daftar Isi
+# Daftar Isi
 
-- [**Shell Scripting, Cron, dan AWK**](#shell-scripting-cron-dan-awk)
-  - [Prasyarat](#prasyarat)
-  - [Daftar Isi](#daftar-isi)
-- [**Intermezzo**](#intermezzo)
-  - [Navigasi di Linux](#navigasi-di-linux)
+- [Shell Scripting, Cron, dan AWK](#shell-scripting-cron-dan-awk)
+- [Prasyarat](#prasyarat)
+- [Daftar Isi](#daftar-isi)
+- [Intermezzo](#intermezzo)
+  - [Perintah dan Navigasi di Linux](#perintah-dan-navigasi-di-linux)
   - [Konsep *User* dan *Permission* di Linux](#konsep-user-dan-permission-di-linux)
+    - [User (Pengguna)](#user-pengguna)
+    - [Permission (Izin)](#permission-izin)
+    - [Pengaturan Berkaitan dengan User dan Permission](#pengaturan-berkaitan-dengan-user-dan-permission)
   - [Pengenalan Teks Editor (Nano dan Vim)](#pengenalan-teks-editor-nano-dan-vim)
-- [**1. Shell *Scripting***](#1-shell-scripting)
+    - [1. Nano](#1-nano)
+    - [2. Vim](#2-vim)
+      - [Install Vim Teks Editor](#install-vim-teks-editor)
+      - [Membuat dan Melakukan Insert Teks](#membuat-dan-melakukan-insert-teks)
+      - [Keluar dari Teks Editor Vim](#keluar-dari-teks-editor-vim)
+- [1. Shell *Scripting*](#1-shell-scripting)
   - [1.1 Apa itu Shell?](#11-apa-itu-shell)
   - [1.2 Pemrograman Shell](#12-pemrograman-shell)
   - [1.3 Perintah Dasar Shell](#13-perintah-dasar-shell)
@@ -43,7 +51,7 @@
     - [1.11.2 Konsep Local dan Global Variabel](#1112-konsep-local-dan-global-variabel)
 - [2. Cron Jobs](#2-cron-jobs)
   - [2.1 Apa itu Cron Jobs?](#21-apa-itu-cron-jobs)
-  - [2.2 Membuat atau mengubah cron jobs](#22-membuat-atau-mengubah-cron-jobs)
+  - [2.2 Membuat atau Mengubah Cron Jobs](#22-membuat-atau-mengubah-cron-jobs)
 - [3. AWK](#3-awk)
   - [3.1 Apa itu AWK?](#31-apa-itu-awk)
   - [3.2 Menjalankan Program AWK](#32-menjalankan-program-awk)
@@ -58,18 +66,203 @@
 
 </br>
 
-# **Intermezzo**
-## Navigasi di Linux
+# Intermezzo
+## Perintah dan Navigasi di Linux
 
+Pada Linux, terdapat beberapa perintah (command) dan juga navigasi yang umum digunakan sebagai berikut.
+
+**Command Navigasi File dan Direktori:**
+
+| Command      | Deskripsi |
+| ----------- | ----------- |
+| cd | untuk masuk ke direktori |
+| ls | untuk melihat direktori |
+| ll | untuk melihat direktori dengan detail |
+| pwd | untuk melihat direktori aktif |
+| find `<nama file>` | untuk mencari file |
+| locate | untuk mencari file |
+
+**Command Operasi File (Hapus, Buat, Edit File):**
+
+| Command      | Deskripsi |
+| ----------- | ----------- |
+| cp `<asal> <tujuan>` | untuk menyalin file |
+| mv `<asal> <tujuan>` | untuk memindahkan folder |
+| rm `<file>` | untuk menghapus file |
+| mkdir `<nama folder>` | untuk membuat folder |
+| cat | untuk melihat isi file |
+| echo | untuk menampilkan baris teks |
+| sed | untuk melakukan filter teks |
+| awk | untuk memindahkan teks |
+
+**Command Untuk User dan Permission:**
+
+| Command      | Deskripsi |
+| ----------- | ----------- |
+| sudo | untuk super user |
+| su | untuk mengganti user id |
+| passwd | untuk mengganti password |
+| who | untuk menampilkan user |
+| chmod | untuk mengganti hak akses |
+| chown | mengganti hak milik |
+| chgrp | untuk mengganti hak grup |
+
+**Command Advance Lain:**
+
+| Command      | Deskripsi |
+| ----------- | ----------- |
+| history | untuk melihat riwayat |
+| grep | untuk mencari kata |
+| sort | untuk mengurutkan |
+| ps | untuk menampilkan snapshot |
+| kill | untuk menghentikan program |
+| tar | untuk mengumpulkan file |
+| zip | untuk mengkompres file |
+| unzip | untuk mengekstrak file |
+| ssh | untuk akses jarak jauh |
+| fdisk | untuk menampilkan partisi |
+| mount | untuk melampirkan file |
+| umount | untuk melakukan unmount |
+| du | untuk menampilkan ukuran file |
+| df | untuk menampilkan disk space |
+| quota | menampilkan sisa disk space |
+| jobs `<id program>` | menampilkan identitas proses |
+| ifconfig | untuk melihat ip |
+| date | untuk menampilkan tanggal |
+| top | melihat proses secara urut |
+| clear | membersihkan terminal |
+| dpkg -i `<namapackage>.deb` | instalasi paket |
+| uname | melihat versi kernel |
 
 ## Konsep *User* dan *Permission* di Linux
+Di Linux, konsep user dan permission sangat penting untuk keamanan sistem dan untuk memungkinkan pengguna untuk mengakses dan memanipulasi berbagai file dan direktori pada sistem.
 
+### User (Pengguna)
+
+Di Linux, setiap aksi dijalankan oleh pengguna tertentu. Setiap pengguna diberikan sebuah username dan ID pengguna (UID) yang unik. Pengguna dapat memiliki password, dan mereka dapat dikonfigurasi untuk memiliki hak akses tertentu terhadap file dan direktori di sistem.
+
+Ketika pengguna masuk ke sistem, mereka harus memasukkan nama pengguna dan kata sandi mereka untuk mengautentikasi diri mereka. Setelah pengguna berhasil masuk, mereka akan masuk ke sesi shell atau antarmuka grafis yang sesuai dengan hak akses yang telah ditentukan untuk akun pengguna tersebut.
+
+### Permission (Izin)
+
+Setiap file dan direktori di Linux memiliki tiga jenis izin: read (baca), write (tulis), dan execute (jalankan). Izin ini dapat dikonfigurasi untuk setiap pengguna dan grup pengguna yang ada di sistem.
+
+Ketika suatu aksi dilakukan pada file atau direktori, sistem operasi akan mengecek izin pengguna dan grup pengguna yang terkait dengan file atau direktori tersebut. Jika pengguna atau grup pengguna tidak memiliki izin yang sesuai, maka sistem akan menolak aksi tersebut.
+
+Beberapa contoh tindakan yang memerlukan izin adalah:
+
+- Read: membaca isi file atau direktori
+- Write: menulis atau membuat perubahan pada file atau direktori
+- Execute: menjalankan atau memulai sebuah file atau direktori
+
+Izin juga dapat diberikan pada level sistem, seperti pada kernel atau modul, dan dapat dikonfigurasi menggunakan perintah-perintah tertentu di terminal.
+
+Dalam Linux, administrator sistem (atau root) memiliki hak akses penuh ke semua file dan direktori di sistem. Ini memungkinkan administrator untuk mengelola pengguna dan grup pengguna, serta mengkonfigurasi hak akses untuk setiap file dan direktori di sistem.
+
+### Pengaturan Berkaitan dengan User dan Permission
+
+**chmod**
+
+`chmod` adalah singkatan dari "change mode" dan merupakan perintah di Linux yang digunakan untuk mengubah izin (permission) file atau direktori. Perintah ini memungkinkan pengguna untuk menetapkan hak akses untuk owner (pemilik file), group, dan other (pengguna lain) pada file atau direktori.
+
+Format dari perintah chmod adalah sebagai berikut:
+
+``` bash
+chmod [mode] [file/directory]
+```
+
+Di mana mode merupakan kombinasi dari tiga digit yang mewakili izin baca, tulis, dan eksekusi. Digit pertama mewakili izin untuk owner, digit kedua untuk group, dan digit ketiga untuk other.
+
+Untuk memberikan hak akses pada file atau direktori, Anda dapat menambahkan digit 4, 2, dan/atau 1 pada mode, masing-masing mewakili izin read (baca), write (tulis), dan execute (jalankan). Contohnya, chmod 755 file.txt akan memberikan hak baca, tulis, dan eksekusi untuk owner dan read serta execute untuk group dan other.
+
+**chown**
+
+`chown` adalah perintah di Linux yang digunakan untuk mengubah pemilik (owner) file atau direktori. Ketika Anda ingin mengubah hak akses file atau direktori, Anda harus mengetahui siapa pemiliknya, sehingga perintah chown sangat penting.
+
+Format dari perintah chown adalah sebagai berikut:
+
+``` bash
+chown [owner]:[group] [file/directory]
+```
+
+Di mana owner adalah username pemilik yang baru dan group adalah grup pemilik yang baru. Jika Anda tidak ingin mengubah grup pemilik, cukup abaikan bagian ini. Contohnya, chown john:staff file.txt akan mengubah pemilik file.txt menjadi john dan grup pemiliknya menjadi staff.
+
+**su dan sudo**
+
+su (singkatan dari "switch user") dan sudo (singkatan dari "superuser do") adalah perintah Linux yang digunakan untuk beralih ke user lain dengan hak akses tertentu.
+
+Perintah su digunakan untuk beralih ke user lain dengan hak akses root. Ketika perintah ini dijalankan, pengguna akan diminta memasukkan password root. Setelah berhasil memasukkan password, pengguna akan beralih ke user root.
+
+Perintah sudo digunakan untuk menjalankan perintah sebagai superuser (root) dengan hak akses tertentu. Pengguna harus memasukkan password mereka sendiri (bukan password root) untuk menjalankan perintah ini. Contohnya, sudo apt-get update akan menjalankan perintah apt-get update dengan hak akses root.
 
 ## Pengenalan Teks Editor (Nano dan Vim)
 
+### 1. Nano
+Nano atau *Nano's ANOther editor* merupakan teks editor yang dikembangkan mirip dengan teks editor *Pico* yang menjadi editor default dari Pine. Nano termasuk teks editor yang *user-friendly* karena adanya *shortcut* pada bagian bawah editor sehingga memudahkan pengguna dalam menggunakan teks editor ini.
+
+Syntax yang biasa digunakan adalah sebagai berikut.
+
+```sh
+$ nano [nama-file]
+```  
+
+![nano1](gambar/nanoo.png)
+
+Command tersebut akan memunculkan default nano-screen.
+
+![nano2](gambar/nano2.png)
+
+Untuk melihat list dari shortcut-shortcut yang ada tekan `Ctrl+G`.
+
+![nano3](gambar/nano3.png)
+
+Ketika `Ctrl+X` ditekan untuk keluar dari editor, pada bagian bawah di baris ketiga dari bawah akan muncul pertanyaan *Save modified buffer?* Tekan `Y` untuk menyimpan perubahan dari file, dan `N` untuk keluar dari teks editor nano tanpa menyimpan perubahan. 
+
+Selain itu sebelum benar-benar keluar dari teks editor nano, kita juga dapat merubah nama file yang baru saja kita buat tadi. Cukup dengan mengganti nama file sebelumnya yang tertera pada bagian bawah teks editor dimana terdapat tulisan *File name to write: ...* lalu tekan Enter.   
+
+![nano4](gambar/nano4.png)
+
+### 2. Vim
+Vim merupakan singkatan dari "Vi IMprovised" dan merupakan salah satu teks editor pada OS Linux yang dapat digunakan untuk mengedit jenis teks apapun, termasuk suatu program komputer. Vim diupgrade dari teks editor vi, yang memiliki beberapa peningkatan dari vi, beberapa diantaranya adalah syntax highlighting, on-line help, multi-windows dan buffers, dll. Untuk lebih jelas perbedaan antara vim dan vi  https://github.com/vim/vim/blob/master/runtime/doc/vi_diff.txt.
+#### Install Vim Teks Editor
+```sh
+$ sudo apt update
+```
+```sh
+$ sudo apt install -y vim
+```
+#### Membuat dan Melakukan Insert Teks 
+Syntax yang biasa digunakan adalah `vim [nama-file]`. Setelah command tersebut dijalankan akan terlihat lambang `~` pada tiap baris yang kosong. 
+
+```sh
+$ vim nyoba.txt
+```
+
+![vim3](gambar/vim3.png)
+
+Vim sekarang dalam *mode normal*. Untuk menginsertkan teks, maka ketik `i` untuk masuk ke *mode insert* dan diikuti dengan mengetikkan teks yang diinginkan.
+
+Ketika kita menekan `i` untuk menginsertkan teks, karakter yang kita inputkan akan terketik sesuai dengan posisi kursor saat itu. Agar karakter yang kita inputkan terketik pada sebelah kanan posisi kursor, maka kembalikan vim pada mode normal, dan tekan `a`. Maka karakter yang kita inputkan akan terketik pada sebelah kanan posisi kursor saat itu.
+
+Jika sudah selesai menginputkan teks, tekan `esc` dan vim akan kembali ke mode normal. Dalam mode normal, tekan `h` untuk bergerak ke kiri, `l` untuk ke kanan, `j` untuk bergerak ke atas dan `k` untuk ke bawah.  
+![vim4](gambar/vim4.png)
+
+
+#### Keluar dari Teks Editor Vim
+1. Keluar ketika dalam mode insert tanpa menyimpan perubahan apa-apa dengan mengetikkan `:q!`
+2. Keluar ketika dalam mode insert dengan menyimpan perubahan yang dilakukan `:wq`
+3. Keluar dan menyimpan perubahan dilakukan pada mode normal dengan mengetikkan `ZZ`
+
+Untuk mengeksplorasi lebih lanjut mengenai teks editor vim, terdapat tutorial vim yang bisa diakses melalui terminal.
+
+```sh
+$ vimtutor
+```
+
+
 </br>
 
-# **1. Shell *Scripting***
+# 1. Shell *Scripting*
 ## 1.1 Apa itu Shell?
 Sistem operasi dibagi menjadi tiga komponen penting, yaitu Kernel, Shell, dan *Program Utility* yang dapat ditunjukkan seperti ilustrasi berikut.
 
@@ -113,8 +306,8 @@ $ echo $SHELL
 ```
 
 Shell memiliki perintah internal (*built*-*in* Shell) dan perintah eksternal. Untuk lebih jelasnya yaitu:
-- Perintah internal (*built-in* Shell), yaitu perintah yang dibangun di dalam Shell. Eksekusi tidak harus mencari perintah dari variabel `PATH` yang di ada di Shell.
-- Perintah eksternal, yaitu perintah yang tidak ada di dalam Shell. Ketika perintah dijalankan, Shell akan mencari perintah tersebut dalam variable `PATH` seperti `/usr/bin` dan `/bin`.
+- Perintah internal (*built-in* Shell), yaitu perintah yang dibangun di dalam Shell. Eksekusi tidak harus mencari perintah dari variabel `PATH` yang di ada di Shell. Contoh perintah internal adalah `cd`, `pwd`, `times`, `alias`, `umask`, `exit`, `logout`, `fg`, `bg`, `ls`, `mkdir`, `rmdir`, `mv`, `cp`, `rm`, `clear`, dan lain sebagainya.
+- Perintah eksternal, yaitu perintah yang tidak ada di dalam Shell. Ketika perintah dijalankan, Shell akan mencari perintah tersebut dalam variable `PATH` seperti `/usr/bin` dan `/bin`. Contoh perintah eksternal adalah `cat`, `cut`, `paste`, `chmod`, `lpr`, dan lain sebagainya.
 
 Untuk mengecek apakah sebuah perintah termasuk internal atau eksternal, gunakan perintah *type* sebagai berikut.
 
@@ -129,18 +322,9 @@ $ type chmod
 chmod is /bin/chmod
 ```
 
-- Contoh perintah internal: 
-
-    cd, pwd, times, alias, umask, exit, logout, fg, bg, ls, mkdir, rmdir, mv, cp, rm, clear, ...
-
-- Contoh perintah eksternal: 
-
-    cat, cut, paste, chmod, lpr,.... 
-
-
 Selain itu, terdapat beberapa karakter yang cukup penting untuk digunakan dalam Shell:
 
-- __Redirection__ (mengirim output ke file atau menerima input dari file) menggunakan operator redirect >, >>, <, 2>> contoh:
+- __Redirection__ (mengirim *output* ke *file* atau menerima *input* dari *file*) menggunakan operator *redirect* `>`, `>>`, `<`, `2>>` . Implementasinya sebagai berikut.
 
 ```bash
 ls /home/Documents > test.txt
@@ -156,12 +340,14 @@ bash script.sh 2>> error.log
 #Jika terdapat error saat menjalankan script.sh, pesan error akan masuk ke error.log
 ```
 
-- __Pipe__ (output suatu perintah menjadi input perintah lain) menggunakan operator |, contoh:
+- __Pipe__ (*output* suatu perintah menjadi *input* perintah lain) menggunakan operator `|`. Implementasinya sebagai berikut.
+  
 ```bash
 ls -l | sort -s
 #ouput perintah ls -l menjadi input perintah sort -s (urutkan secara descending)
 ```
-- __Wildcard__ menggunakan karakter *, ?, [ ], contoh:
+- __Wildcard__ menggunakan karakter `*`, `?`, `[ ]`. Implementasinya sebagai berikut.
+  
 ```bash
 ls a*
 #tampilkan semua file yang dimulai dengan a
@@ -172,14 +358,15 @@ ls a?a
 ls [re]*
 #tampilkan file yang dimulai dengan salah satu karakter r atau e
 ```
-Untuk melihat informasi selengkapnya tentang bash Shell, silahkan membuka manual bash dengan cara:
+
+Untuk melihat informasi selengkapnya tentang Bash Shell, silahkan membuka manual bash dengan cara sebagai berikut.
 
 ```bash
 $ man bash
 ```
 
 ## 1.4 Simple Shell Script
-Buatlah sebuah file berekstensi .sh menggunakan editor apapun, misalnya nano, vi, atau gedit.
+Buatlah sebuah *file* berekstensi `.sh` menggunakan editor apapun, misalnya Nano, Vi, atau Gedit.
 
 ```bash
 $ nano nama_file.sh
@@ -192,45 +379,51 @@ $ nano hello.sh
 
 Tulis beberapa baris perintah disana, diawali dengan shebang `#!/bin/bash`. 
 
-Shebang berfungsi untuk memberitahu sistem bahwa perintah-perintah yg ada di dalam file tersebut harus dijalankan oleh Bash.
+Shebang berfungsi untuk memberitahu sistem bahwa perintah-perintah yg ada di dalam *file* tersebut harus dijalankan oleh Bash.
 
 ```bash
 #!/bin/bash
 echo "Hello, world!"
 ```
 
-Simpan dan ubah permission file script agar dapat dieksekusi.
+Simpan dan ubah *permission* *file* *script* agar dapat dieksekusi.
+
 ```bash
 $ chmod +x hello.sh
 ```
-Eksekusi file script dengan cara ./nama_file.sh atau bash nama_file.sh.
+
+Eksekusi *file script* dengan cara `./nama_file.sh` atau `bash nama_file.sh`.
 
 ![hello world](gambar/1.4.png)
 
 ## 1.5 Variabel
-- Beberapa hal yang perlu diperhatikan dalam mendefinisikan variabel:
+- Beberapa hal yang perlu diperhatikan dalam mendefinisikan variabel adalah sebagai berikut.
 
     i. Nama variabel hanya boleh terdiri dari:
-    - Huruf (a-z dan A-Z)
-    - Angka (0-9)
-    - Karakter underscore (_)
+    - Huruf (a-z dan A-Z).
+    - Angka (0-9).
+    - Karakter *underscore* (_).
     
-    ii.  Nama variabel dimulai dengan huruf atau underscore
+    ii.  Nama variabel dimulai dengan huruf atau *underscore*.
     
-    iii. Tidak boleh menggunakan karakter spesial seperti !, *, $, #, -, dll karena karakter tersebut punya makna khusus untuk Shell
+    iii. Tidak boleh menggunakan karakter spesial seperti !, *, $, #, -, dll karena karakter tersebut punya makna khusus untuk Shell.
 
-    iv. Bersifat case sensitive (membedakan huruf besar dan kecil)
+    iv. Bersifat *case* *sensitive* (membedakan huruf besar dan kecil).
 
-- Syntax
+- *Syntax*
 
     - Mendefinisikan variabel
+  
     ```
     nama_var=nilai
     ```
+
     - Mengakses variabel
+  
     ```
     $nama_var
     ```
+
 - Tipe-Tipe Variabel
     - String
     ```
@@ -296,11 +489,11 @@ Output:
 ![special](gambar/special.png)
 
 ## 1.6 Input dan Output
-- read digunakan untuk mengambil input dari keyboard dengan syntax sebagai berikut:
+- `read` digunakan untuk mengambil input dari keyboard dengan syntax sebagai berikut.
 
     `read nama_var`
 
-- echo digunakan untuk menampilkan output dengan syntax sebagai berikut:
+- `echo` digunakan untuk menampilkan output dengan syntax sebagai berikut.
 
     #Menampilkan teks biasa
 
@@ -310,9 +503,9 @@ Output:
 
     `echo $nama_var`
 
-Catatan:
-
-Jika ingin menggunakan new line character (\n) pada echo, gunakan echo -e "teks\n teks"
+> Catatan:
+>
+> Jika ingin menggunakan new line character (\n) pada echo, gunakan `echo -e "teks\n teks"`
 
 Contoh:
 ```bash
@@ -407,9 +600,9 @@ Namun yang akan dibahas lebih jauh hanyalah operator **aritmatika** dan **relasi
 | 8 | != | Membandingkan 2 nilai yang tidak sama |
 
 Ada 3 cara yang dapat digunakan untuk melakukan operasi matematika, yaitu:
-1. Menggunakan perintah built-in **let**
-2. Menggunakan perintah eksternal **expr** 
-3. Menggunakan perintah subtitusi ` $((ekspresi))`
+1. Menggunakan perintah built-in **let**.
+2. Menggunakan perintah eksternal **expr** .
+3. Menggunakan perintah subtitusi ` $((ekspresi))`.
 
 Contoh:   
 ```bash
@@ -476,10 +669,7 @@ Output:
 ```
 
 ## 1.9 Conditional Statements
-**Conditional statements** digunakan untuk memungkinkan program dapat membuat keputusan yang benar dengan memilih tindakan tertentu berdasarkan syarat/kondisi tertentu.
-Ada 2 jenis conditional statements dalam Unix Shell, yaitu:
-1. **if...else**
-2. **case**
+**Conditional statements** digunakan untuk memungkinkan program dapat membuat keputusan yang benar dengan memilih tindakan tertentu berdasarkan syarat/kondisi tertentu. Ada 2 jenis conditional statements dalam Unix Shell, yaitu **If else** dan **Switch case**.
   
 ### 1.9.1 If Else
 Syntax:
@@ -811,19 +1001,25 @@ Output:
 Dari gambar terlihat bahwa ketika kita mencoba melakukan print local variable ke terminal tidak bisa keluar.
 
 
+</br>
+
+
 # 2. Cron Jobs
-Cron jobs adalah sebuah service daemon yang memungkinkan user Linux dan Unix untuk menjalankan perintah atau _script_ pada waktu tertentu secara otomatis. Perintah-perintah dan/atau script-script yang dijalankan cron disebut cron jobs.
-Syntax crontab :
-`crontab [-u user] [-l | -r | -e] [-i]`
-Penjelasan :
-* `-l` untuk menampilkan isi file crontab
-* `-r` untuk menghapus file crontab
-* `-e` untuk mengubah atau membuat file crontab jika belum ada
-* `-i` untuk memberikan pertanyaan konfirmasi terlebih dahulu sebelum menghapus file crontab
 
 ## 2.1 Apa itu Cron Jobs?
+Cron jobs adalah sebuah service daemon yang memungkinkan user Linux dan Unix untuk menjalankan perintah atau _script_ pada waktu tertentu secara otomatis. Perintah-perintah dan/atau script-script yang dijalankan cron disebut cron jobs.
+Syntax crontab adalah sebagai berikut.
+```bash
+crontab [-u user] [-l | -r | -e] [-i]
+```
 
-## 2.2 Membuat atau mengubah cron jobs
+Penjelasan:
+* `-l` untuk menampilkan isi file crontab.
+* `-r` untuk menghapus file crontab.
+* `-e` untuk mengubah atau membuat file crontab jika belum ada.
+* `-i` untuk memberikan pertanyaan konfirmasi terlebih dahulu sebelum menghapus file crontab.
+
+## 2.2 Membuat atau Mengubah Cron Jobs
 1. Ketikkan `crontab -e`
 2. Ketikkan perintah crontab sesuai aturan parameter crontab   
 ![parameter crontab](gambar/syntax-crontab.png "parameter crontab")   
@@ -838,16 +1034,19 @@ Penjelasan :
 Untuk belajar lebih lanjut perintah-perintah crontab bisa mengakses website [crontab guru](https://crontab.guru/).   
 ![web crontab guru](gambar/crontab-guru.png "web crontab guru")
 
+
+</br>
+
 # 3. AWK
-__awk__ merupakan sebuah program yang bisa digunakan untuk mengambil catatan/record tertentu dalam sebuah file dan melakukan sebuah/beberapa operasi terhadap catatan/record tersebut.
+
+## 3.1 Apa itu AWK?
+__Awk__ merupakan sebuah program yang bisa digunakan untuk mengambil catatan/record tertentu dalam sebuah file dan melakukan sebuah/beberapa operasi terhadap catatan/record tersebut.
 
 Fungsi dasar awk adalah memeriksa sebuah file per barisnya (atau satuan teks lain) yang mengandung pola tertentu. Ketika sebuah baris cocok dengan salah satu pola, awk akan melakukan action tertentu pada baris tersebut. awk melanjutkan proses sampai menemui end of file pada file yang menjadi masukan tadi.
 
-FYI: awk versi baru dinamakan gawk, tapi biasanya tetap disebut awk.
+> FYI: awk versi baru dinamakan gawk, tapi biasanya tetap disebut awk.
 
 Awk adalah bahasa scripting yang digunakan untuk memanipulasi data dan menghasilkan laporan. Bahasa pemrograman perintah awk tidak memerlukan kompilasi, dan memungkinkan pengguna untuk menggunakan variabel, fungsi numerik, fungsi string, dan operator logika. Awk sebagian besar digunakan untuk pemindaian dan pemrosesan pola.
-
-## 3.1 Apa itu AWK?
 
 ## 3.2 Menjalankan Program AWK
 Syntax:
@@ -886,10 +1085,12 @@ Secara default awk akan print semua baris pada file masukan:
 Print baris yang mengandung pola yang dimasukkan:
 `awk '/sanjaya/ {print}' kerajaan.txt`  
 Maka hasilnya adalah sebagai berikut:
+
 ```
 mataram sanjaya 732 760
 tarumanegara sanjaya 732 754
 ```
+
 Dalam setiap baris, awk akan membagi setiap kata yang dipisahkan oleh spasi dan menyimpannya pada variabel $n. Jika terdapat 4 kata pada satu baris, maka kata pertama akan disimpan pada variabel $1, kata kedua pada variabel $2, dan seterusnya. $0 merepresentasikan semua kata yang ada pada satu baris.
 
 `awk '/ken/ {print $1,$2}' kerajaan.txt`  
@@ -901,19 +1102,26 @@ Catatan: Dalam rule program awk boleh menghilangkan hanya salah satu di antara a
 
 ## 3.2 Special Rules
 Program awk memiliki rule yang memiliki kelakuan khusus. Di antaranya adalah BEGIN dan END. Rule BEGIN hanya dieksekusi satu kali, yaitu sebelum input dibaca. Rule END pun juga dieksekusi satu kali, hanya setelah semua input selesai dibaca. Contoh:
+
 ```bash
 awk '
 BEGIN { print "Ada berapa \"732\"?" }
 /732/  { ++n }
 END   { print "\"732\" muncul", n, "kali." }' kerajaan.txt
 ```
+
 Maka hasilnya adalah sebagai berikut:
+
 ```
 Ada berapa "732"?
 
 "732" muncul 2 kali.
 ```
+
 Pada contoh di atas, rule kedua hanya memiliki action untuk melakukan perhitungan berapa jumlah baris yang mengandung "732", namun tidak ada action untuk menampilkan (print).
+
+
+</br>
 
 # Extras (Bacaan Santai)
 ## Ranger
@@ -927,15 +1135,17 @@ Cara menginstal Ranger sendiri cukup sederhana:
 - Dengan menggunakan PyPI, menggunakan command `pip install ranger-fm`.
 
 ### How to Use
-- Buka terminal
-- Ketik `ranger`
-- Maka interface untuk Ranger akan langsung terbuka
-- Gunakan key `h` untuk pergi ke directory sebelumnya
-- Gunakan key `l` untuk pergi ke directory selanjutnya dan membuka file
-- Gunakan key `j` untuk mengarahkan cursor ke bawah
-- Gunakan key `k` untuk mengarahkan cursor ke atas
-- Gunakan key `q` untuk keluar
-- Gunakan key `!` atau `s` untuk mengeksekusi command Shell, contoh `! touch my_text.txt`, lalu tambahakan `-w` sebelum command untuk melihat output dari command tersebut
+- Buka terminal.
+- Ketik `ranger`.
+- Maka interface untuk Ranger akan langsung terbuka.
+- Gunakan key `h` untuk pergi ke directory sebelumnya.
+- Gunakan key `l` untuk pergi ke directory selanjutnya dan membuka file.
+- Gunakan key `j` untuk mengarahkan cursor ke bawah.
+- Gunakan key `k` untuk mengarahkan cursor ke atas.
+- Gunakan key `q` untuk keluar.
+- Gunakan key `!` atau `s` untuk mengeksekusi command Shell, contoh `! touch my_text.txt`, lalu tambahakan `-w` sebelum command untuk melihat output dari command tersebut.
+
+</br>
 
 ## Referensi
 * [https://www.tutorialspoint.com/unix/shell_scripting.htm](https://www.tutorialspoint.com/unix/shell_scripting.htm)
@@ -949,6 +1159,8 @@ Cara menginstal Ranger sendiri cukup sederhana:
 * [https://www.geeksforgeeks.org/internal-and-external-commands-in-linux/#:~:text=The%20UNIX%20system%20is%20command,are%20built%20into%20the%20shell.&text=External%20Commands%20%3A%20Commands%20which%20aren't%20built%20into%20the%20shell](https://www.geeksforgeeks.org/internal-and-external-commands-in-linux/#:~:text=The%20UNIX%20system%20is%20command,are%20built%20into%20the%20shell.&text=External%20Commands%20%3A%20Commands%20which%20aren't%20built%20into%20the%20shell)
 * [https://tldp.org/LDP/abs/html/localvar.html](https://tldp.org/LDP/abs/html/localvar.html)
 
+
+</br>
 
 ## Latihan
 
