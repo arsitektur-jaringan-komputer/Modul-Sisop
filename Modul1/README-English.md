@@ -2,26 +2,40 @@
 # Shell Scripting, Cron, and AWK
 ## Precondition
 
-1. Have Linux OS Installed
-2. Have basic understannding of CLI (_Command Line Interface_) [Introduction to CLI](https://github.com/AZakyH/Modul-Pelatihan-Linux-2018/tree/master/CLI)
+1. Perform a Linux OS installation.
+2. Get to know Linux OS in general, including the various distros that exist today and their directory structure in the [Linux OS Introduction Module](https://github.com/arsitektur-jaringan-komputer/lbe-ajk-2022/tree/master/Modul%201).
+3. Understand the CLI *(Command Line Interface)* in the CLI [Introduction Module](https://github.com/AZakyH/Modul-Pelatihan-Linux-2018/tree/master/CLI).
+
+</br>
 
 ## List of Content
 
-- [Shell Scripting, Cron, dan AWK](#shell-scripting-cron-dan-awk)
+- [Shell Scripting, Cron, and AWK](#shell-scripting-cron-and-awk)
   - [Precondition](#precondition)
   - [List of Content](#list-of-content)
+- [Intermezzo](#intermezzo)
+  - [Commands and Navigation in Linux](#commands-and-navigation-in-linux)
+  - [The concept of *User* and *Permission* in Linux](#the-concept-of-user-and-permission-in-linux)
+    - [User](#user)
+    - [Permission](#permission)
+    - [Settings Related to Users and Permissions](#settings-related-to-users-and-permissions)
+  - [Introduction to Text Editors (Nano and Vim)](#introduction-to-text-editors-nano-and-vim)
+    - [1. Nano](#1-nano)
+    - [2. Vim](#2-vim)
+      - [Install Vim Teks Editor](#install-vim-teks-editor)
+      - [Create and Insert Text](#create-and-insert-text)
+      - [Exit Vim Text Editor](#exit-vim-text-editor)
 - [1. Shell Scripting](#1-shell-scripting)
   - [1.1 Shell](#11-shell)
   - [1.2 Shell Programming](#12-shell-programming)
   - [1.3 Basic Shell Command](#13-basic-shell-command)
   - [1.4 Simple Shell Script](#14-simple-shell-script)
   - [1.5 Variable](#15-variable)
-    - [1.5.1 Special Variable](#151-special-variable)
-    - [1.5.2 Local Variable](#152-local-variable)
-  - [1.6 Input Output](#16-input-output)
-  - [1.7 Quoting](#17-quoting)
+  - [1.5.1 Special Variable](#151-special-variable)
+- [1.6 Input Output](#16-input-output)
+- [1.7 Quoting](#17-quoting)
   - [1.8 Basic Operators](#18-basic-operators)
-    - [1.8.1 Arithmetic Operators](#181-arithmetic-operators)
+    - [Arithmetic Operators](#arithmetic-operators)
     - [1.8.2 Relational Operators](#182-relational-operators)
   - [1.9 Conditional Statements](#19-conditional-statements)
     - [1.9.1 If...Else](#191-ifelse)
@@ -34,11 +48,14 @@
     - [1.10.5 Nesting Loops](#1105-nesting-loops)
   - [1.11 Function](#111-function)
     - [1.11.1 Nested Functions](#1111-nested-functions)
-- [2. Cron](#2-cron)
-  - [2.1 Create or modify a cron jobs](#21-create-or-modify-a-cron-jobs)
+    - [1.11.2 Local Variable](#1112-local-variable)
+- [2. Cron Jobs](#2-cron-jobs)
+  - [2.1 What is Cron Jobs?](#21-what-is-cron-jobs)
+  - [2.2 Create or Modify a Cron Jobs](#22-create-or-modify-a-cron-jobs)
 - [3. AWK](#3-awk)
-  - [3.1 Running AWK program](#31-running-awk-program)
-    - [How the AWK works](#how-the-awk-works)
+  - [3.1 What is AWK?](#31-what-is-awk)
+  - [3.2 Running AWK Program](#32-running-awk-program)
+    - [How the AWK Works](#how-the-awk-works)
   - [3.2 Special Rules](#32-special-rules)
 - [Extras](#extras)
   - [Ranger](#ranger)
@@ -47,8 +64,213 @@
   - [References](#references)
   - [Exercise](#exercise)
 
+
+</br>
+
+# Intermezzo
+## Commands and Navigation in Linux
+
+In Linux, there are some commonly used commands and navigation as follows.
+
+**File and Directory Navigation Command:**
+
+| Command | Description
+| ----------- | ----------- |
+| cd | to enter a directory
+| ls | to view the directory
+| ll | to view the directory in detail |
+| pwd | to view the active directory
+| find `<file name>` | to search for files |
+| locate | to search for files |
+
+**File Operation Command (Delete, Create, Edit File):**
+
+| Command | Description
+| ----------- | ----------- |
+| cp `<source> <destination>` | to copy a file |
+| mv `<source> <destination>` | to move a folder |
+| rm `<file>` | to delete files |
+| mkdir `<folder name>` | to create a folder |
+| cat | to view the contents of a file
+| echo | to display a line of text
+| sed | to perform a text filter
+| awk | to move text
+
+**Command for User and Permission:**
+
+| Command | Description
+| ----------- | ----------- |
+| sudo | for super user |
+| su | to change user id
+| passwd | to change password
+| who | to show user
+| chmod | to change permissions
+| chown | to change property rights
+| chgrp | to override group privileges |
+
+**Other Command Advance:**
+
+| Command | Description
+| ----------- | ----------- |
+| history to view history
+| grep | to search for words
+| sort | to sort
+| ps | to display a snapshot
+| kill | to stop the program |
+| tar | to collect files
+| zip | to compress files |
+| unzip | to extract files |
+| ssh | for remote access |
+| fdisk | to display partitions
+| mount | to attach files
+| umount | to perform an unmount
+| du | to display file size
+| df | to display disk space
+| quota | to display the remaining disk space
+| jobs `<program id>` | display the process identity |
+| ifconfig | to view ip
+| date | to display the date |
+| top | view processes in order
+| clear | clean the terminal
+| dpkg -i `<namapackage>.deb` | package installation |
+| uname | view kernel version
+
+## The concept of *User* and *Permission* in Linux
+
+In Linux, the concept of users and permissions is essential for system security and to allow users to access and manipulate various files and directories on the system.
+
+### User
+
+In Linux, each action is executed by a specific user. Each user is assigned a username and a unique user ID (UID). Users can have passwords, and they can be configured to have certain access rights to files and directories on the system.
+
+When users log into the system, they must enter their username and password to authenticate themselves. Once the user has successfully logged in, they will enter a shell session or graphical interface that corresponds to the access rights that have been defined for that user account.
+
+### Permission 
+
+Every file and directory in Linux has three types of permissions: read, write, and execute. These permissions can be configured for each user and user group on the system.
+
+When an action is performed on a file or directory, the operating system will check the permissions of the users and user groups associated with the file or directory. If the user or user group does not have the appropriate permissions, the system will reject the action.
+
+Some examples of actions that require permissions are:
+
+- Read: read the contents of a file or directory
+- Write: write or make changes to a file or directory
+- Execute: run or start a file or directory
+
+Permissions can also be granted at the system level, such as in the kernel or modules, and can be configured using certain commands in the terminal.
+
+In Linux, the system administrator (or root) has full access rights to all files and directories on the system. This allows the administrator to manage users and user groups, as well as configure access rights for every file and directory on the system.
+
+### Settings Related to Users and Permissions
+
+**chmod**
+
+`chmod` stands for "change mode" and is a Linux command used to change the permissions of a file or directory. This command allows users to assign owner, group, and other permissions to a file or directory.
+
+The format of the chmod command is as follows:
+
+``` bash
+chmod [mode] [file/directory]
+```
+
+Where mode is a combination of three digits that represent read, write, and execute permissions. The first digit represents permission for owner, the second digit for group, and the third digit for other.
+
+To grant access rights to a file or directory, you can add digits 4, 2, and/or 1 to mode, representing read, write, and execute permissions, respectively. For example, chmod 755 file.txt will grant read, write, and execute for owner and read and execute for group and other.
+
+**chown**
+
+`chown` is a Linux command used to change the owner of a file or directory. When you want to change the access rights of a file or directory, you need to know who the owner is, so the chown command is very important.
+
+The format of the chown command is as follows:
+
+``` bash
+chown [owner]:[group] [file/directory]
+```
+
+Where owner is the new owner username and group is the new owner group. If you don't want to change the owner group, simply ignore this section. For example, chown john:staff file.txt will change the owner of file.txt to john and the owner group to staff.
+
+**su dan sudo**
+
+su (short for "switch user") and sudo (short for "superuser do") are Linux commands used to switch to another user with certain access rights.
+
+The su command is used to switch to another user with root privileges. When this command is executed, the user will be prompted to enter the root password. After successfully entering the password, the user will switch to the root user.
+
+The sudo command is used to run commands as a superuser (root) with certain access rights. Users must enter their own password (not the root password) to run this command. For example, sudo apt-get update will run the apt-get update command with root privileges.
+
+## Introduction to Text Editors (Nano and Vim)
+
+### 1. Nano
+Nano or *Nano's ANOther editor* is a text editor developed similar to the *Pico* text editor which is the default editor of Pine. Nano is a *user-friendly* text editor because there are *shortcuts* at the bottom of the editor, making it easier for users to use this text editor.
+
+The commonly used syntax is as follows.
+
+```sh
+$ nano [nama-file]
+```  
+
+![nano1](gambar/nanoo.png)
+
+The command will bring up the default nano-screen.
+
+![nano2](gambar/nano2.png)
+
+To see the list of shortcuts press `Ctrl+G`.
+
+![nano3](gambar/nano3.png)
+
+When `Ctrl+X` is pressed to exit the editor, at the bottom on the third line from the bottom the question *Save modified buffer?* Press `Y` to save the changes to the file, and `N` to exit the nano text editor without saving the changes. 
+
+Also before actually exiting the nano text editor, we can also rename the file we just created. Simply change the previous file name listed at the bottom of the text editor where it says *File name to write: ...* then press Enter.
+
+![nano4](gambar/nano4.png)
+
+### 2. Vim
+Vim stands for "Vi IMprovised" and is a text editor on Linux OS that can be used to edit any type of text, including a computer program. Vim is an upgrade of the vi text editor, which has several improvements over vi, including syntax highlighting, on-line help, multi-windows and buffers, etc. For more details on the differences between vim and vi https://github.com/vim/vim/blob/master/runtime/doc/vi_diff.txt.
+#### Install Vim Teks Editor
+
+```sh
+$ sudo apt update
+```
+```sh
+$ sudo apt install -y vim
+```
+
+#### Create and Insert Text 
+The usual syntax is `vim [file-name]`. After the command is executed, you will see the symbol `~` on each empty line.
+
+```sh
+$ vim nyoba.txt
+```
+
+![vim3](gambar/vim3.png)
+
+Vim is now in *normal mode*. To insert text, type `i` to enter *insert mode* and then type the desired text.
+
+When we press `i` to insert text, the character we input will be typed according to the current cursor position. To have the character we input typed to the right of the cursor position, then return vim to normal mode, and press `a`. Then the character we input will be typed to the right of the current cursor position.
+
+When you have finished inputting text, press `esc` and vim will return to normal mode. In normal mode, press `h` to move left, `l` to move right, `j` to move up and `k` to move down.
+
+![vim4](gambar/vim4.png)
+
+
+#### Exit Vim Text Editor
+
+1. Exit while in insert mode without saving any changes by typing `:q!`
+2. Exit when in insert mode with changes saved by typing `:wq`
+3. Exit and save changes made in normal mode by typing `ZZ`
+
+To explore more about the vim text editor, there is a vim tutorial that can be accessed through the terminal.
+
+```sh
+$ vimtutor
+```
+
+
+</br>
+
 # 1. Shell Scripting
 ## 1.1 Shell
+
 Operating system have 3 major component. They are Kernel, Shell, and Program.
 
 ![Komponen Sistem Operasi](gambar/component.png)
@@ -57,9 +279,9 @@ Operating system have 3 major component. They are Kernel, Shell, and Program.
 - __Shell__ is a command translator program which connects user and kernel. Generally, shell provides __prompt__ as user interface which is how user input the commands, eiter internal command or external command. After receiving input from the user and executing it according to the inputs, shell will outputs something. Shell can be accessed from the __Terminal__.
 - __Program Utility__ is software system which execute maintenence tasks. Utility Program is made spesifically to do special task on spesific computer aread, Such as formatting harddisk, or network connectifity check, etc.
 
-` Note : Try open a terminal on Linux, the you can find prompt shell (generally $). There, you can enter input such as commands, then execute it using "Enter" key . Output will be shown on the terminal. `
+> Note : Try open a terminal on Linux, the you can find prompt shell (generally $). There, you can enter input such as commands, then execute it using "Enter" key . Output will be shown on the terminal.
 
-There are 2 types of shell in Unix/Linux, That is :
+There are 2 types of shell in Unix/Linux, That is:
 
 1. Bourne Shell - Prompt for this shell is $ 
     - Bourne Shell (sh)
@@ -88,9 +310,9 @@ On this module, we will use Bash as our shell (_Bourne Again SHell_) because bas
 $ echo $SHELL
 ```
 
-Shell have internal command (build-in shell) and external command.
-- Internal Command (built-in shell) : Command that are built-in to the shell. Executing set commands require no lookup to the PATH variable in shell. 
-- External Command : Commands that are not integrated to the shell. When set command is executed, shell will find set commands on the PATH variable such as `/usr/bin` and `/bin`.
+Shell has internal commands (*built*-*in* Shell) and external commands. For more details, they are:
+- Internal commands (*built-in* Shell), which are commands built into the Shell. Execution does not have to search for commands from the `PATH` variable in the Shell. Examples of internal commands are `cd`, `pwd`, `times`, `alias`, `umask`, `exit`, `logout`, `fg`, `bg`, `ls`, `mkdir`, `rmdir`, `mv`, `cp`, `rm`, `clear`, and so on.
+- External commands, which are commands that do not exist in Shell. When the command is executed, Shell will look for the command in `PATH` variables such as `/usr/bin` and `/bin`. Examples of external commands are `cat`, `cut`, `paste`, `chmod`, `lpr`, and so on.
 
 To check if a command is internal or external, use the type command.
 
@@ -104,15 +326,6 @@ read is a shell builtin
 $ type chmod
 chmod is /bin/chmod
 ```
-
-- Internal Command Examples: 
-
-    cd, pwd, times, alias, umask, exit, logout, fg, bg, ls, mkdir, rmdir, mv, cp, rm, clear, ...
-
-- External Command Examples: 
-
-    cat, cut, paste, chmod, lpr,.... 
-
 
 Other than that, there are a few characters that are important to use in a shell:
 
@@ -274,31 +487,6 @@ Output:
 
 ![](https://raw.githubusercontent.com/arsitektur-jaringan-komputer/Modul-Sisop/master/2021/Modul1/gambar/special.png)
 
-## 1.5.2 Local Variable
-When using bash, the variable will automatically become a global variable if you assign it directly like month = 6. But we can create local variables for the function in bash using the local keyword. The created local variable will not be a global variable.
-
-Example:
-```
-#!/bin/bash
-
-fac_func() {
-    number=2
-    local tmp=10
-    echo "The global var in this function : $number"
-    echo "The local var in this function : $tmp"
-}
-
-fac_func
-
-echo "The global var outside the function : $number"
-echo "The local var outside the function : $tmp"
-```
-
-Output:
-
-![](https://raw.githubusercontent.com/arsitektur-jaringan-komputer/Modul-Sisop/master/2021/Modul1/gambar/local-variable.png)
-
-From the picture, it can be seen that when we try to print local variables to the terminal it can't get out.
 
 # 1.6 Input Output
 - Read is used to take input from the keyboard with the following syntax:
@@ -846,8 +1034,40 @@ ask_name
 Output:   
 ![hasil-fungsi](gambar/hasil-fungsi.png)
 
-# 2. Cron
+### 1.11.2 Local Variable
+
+When using bash, the variable will automatically become a global variable if you assign it directly like month = 6. But we can create local variables for the function in bash using the local keyword. The created local variable will not be a global variable.
+
+Example:
+```
+#!/bin/bash
+
+fac_func() {
+    number=2
+    local tmp=10
+    echo "The global var in this function : $number"
+    echo "The local var in this function : $tmp"
+}
+
+fac_func
+
+echo "The global var outside the function : $number"
+echo "The local var outside the function : $tmp"
+```
+
+Output:
+
+![](https://raw.githubusercontent.com/arsitektur-jaringan-komputer/Modul-Sisop/master/2021/Modul1/gambar/local-variable.png)
+
+From the picture, it can be seen that when we try to print local variables to the terminal it can't get out.
+
+</br>
+
+# 2. Cron Jobs
+
+## 2.1 What is Cron Jobs?
 Cron is a daemon service which allows Linux and Unix user to run a certain command or _script_ at a any given time automatically. Commands or scripts which is executed is called cron jobs.
+
 Crontab syntax :
 `crontab [-u user] [-l | -r | -e] [-i]`
 Penjelasan :
@@ -855,7 +1075,8 @@ Penjelasan :
 * `-r` to delete a crontab file
 * `-e` to modify or create a crontab file if it does not already exist
 * `-i` to give a confirmation before deleting a crontab file
-## 2.1 Create or modify a cron jobs
+
+## 2.2 Create or Modify a Cron Jobs
 1. Type `crontab -e`
 2. Type the crontab command according to crontab's parameter rules
 ![parameter crontab](gambar/syntax-crontab.png "parameter crontab")
@@ -870,7 +1091,11 @@ Penjelasan :
 To learn more about crontab's commands, you can access this website [crontab guru](https://crontab.guru/).   
 ![web crontab guru](gambar/crontab-guru.png "web crontab guru")
 
+</br>
+
 # 3. AWK
+
+## 3.1 What is AWK?
 __awk__ is a program that can be used to retrive certain records in a file and perform one or several operation on those records.
 
 The basic function of awk is examine a file line by line (or other unit of text) that contains a certain pattern. When a line matches a pattern, awk will perform certain action on that line. Awk continues the process until it meets the end of line in the inputed file.
@@ -879,12 +1104,12 @@ FYI: the new version of awk is called gawk, but is usually still called awk.
 
 awk is a scripting language used to process data and generate reports. The awk language does not required compilation, and allows user to use variables, numeric function, string function, and logical operator. awk is mostly used for scanning and pattern processing.
 
-## 3.1 Running AWK program
+## 3.2 Running AWK Program
 Syntax:
 ```bash
 awk options 'selection _criteria {action }' input-file > output-file
 ```
-### How the AWK works
+### How the AWK Works
 - Awk read the lines in a file.
 
 - Awk matches patterns to lines in the file. If the patterns matches, the next action can be made, such a printing the line.
@@ -945,6 +1170,8 @@ How many "732" are there?
 ```
 In the example above, the second rule only has an action to calculate how many rows contain "732", but there is not action to display (print).
 
+</br>
+
 # Extras
 ## Ranger
 ![ranger](gambar/ranger.png)
@@ -981,83 +1208,17 @@ Installing Ranger is quite simple:
 
 ## Exercise
 
-![image](https://user-images.githubusercontent.com/61197343/154196648-9791bee2-0187-4774-9469-5768fdf17d9f.png)
+![ojol](gambar/ojol.jpg)
 
+Fredryn Samba uhuk uhuk sangat tertarik sekali dengan pengaturan server. Cita-citanya adalah menjadi Security Engineer di JhonOjol. Suatu hari, dia diterima menjadi salah satu Security Engineer di JhonOjol. Dalam masa probation-nya, dia diberikan beberapa tasks. Tetapi Fredryn Samba masih proses dalam pengerjaan Tugas Akhir. Sehingga Fredryn Samba meminta kamu untuk menjadi joki dari tasknya. Berikut task yang diberikan ke Fredryn Samba.
 
-Clemongs sangat tertarik sekali dengan pengaturan server. Cita-citanya adalah menjadi Security Engineer di Ojol Orange. Suatu hari, dia diterima menjadi salah satu Security Engineer di Ojol Orange. Dalam masa probation nya, dia diberikan beberapa tasks. Tetapi Clemongs masih proses dalam pengerjaan Tugas Akhir. Sehingga Clemongs meminta kamu untuk menjadi joki dari tasknya. Berikut task yang diberikan ke Clemongs
+1. Server JhonOjol sering diakses rekan se-divisinya, sehingga ia diminta oleh atasannya untuk mecatat setiap user yang melakukan login ke server beserta command atau perintah yang diinputkan.
+    Konfigurasi yang digunakan adalah:
+    - file script diletakan di direktori `root’
+    - File log disimpan di /var/log
+    - file log disimpan dengan ektensi `.txt`, nama file harus unique dengan kombinasi `date +%Y%m%d_%H%M%S. Contoh:
+    - 20230222_110401_log.txt.
+    - Untuk file lognya hanya menyimpan 50 command yang dinputkan, jika belum genap 50 command maka file log yang baru tidak akan dibuat.
+    - Script dijalankan atau dieksekusi setiap menit menggunakan cron job.
 
-1. Server Ojol Orange sering sekali dibobol dengan cara bruteforce melalui akses SSH. Clemongs diminta untuk melindungi server tersebut dari serangan bruteforce itu dengan menggunakan aplikasi fail2ban. Dikarenakan port akses SSH server Ojol Orange yang dibuka sangat banyak, serta server Ojol Orange sangat banyak, maka jokilah Clemongs untuk membuat script bash yang dapat membantu instalasi fail2ban dengan jumlah port yang lebih dari satu. 
-
-Konfigurasi yang digunakan adalah:
-
-a. `maxretry` sebanyak 3 kali
-
-b. `bantime` selama 2 jam
-
-c. `logpath` berada pada /var/log/auth.log
-
-d. File konfigurasi fail2ban diletakkan pada /etc/fail2ban/jail.local
-
-e. Port dipisahkan dengan ‘,’ (koma) dan tanpa spasi
-
-Contoh: 22,6969,7979
-    
-Script tersebut dapat dijalankan dengan cara
-`bash fail2ban.sh <port SSH yang terbuka>`
-
-contoh : `bash fail2ban.sh 22 6969 7979`
-
-Script fail2ban.sh juga digunakan untuk melakukan restart service fail2ban dan memerika status fail2ban setelah dilakukan konfigurasi.
-
-Note: Silakan gunakan Google untuk mencari cara instalasi fail2ban
-
-2. Aplikasi Ojol Orange menggunakan Laravel sebagai backend service-nya yang terletak pada /www/backend-ojol-orange-nih-boss/. Terdapat sebuah Scheduler yang berfungsi untuk melakukan update status pengiriman pada database setiap 30 menit pada jam 10.00 hingga 17.00. Status 0 berarti belum dikirim. Status 1 berarti sedang dalam pengiriman. Status 2 berarti pengiriman selesai. Berikut merupakan scheduler yang digunakan:
-    
-```php
-<?php
- 
-namespace App\Console;
- 
-use Illuminate\Console\Scheduling\Schedule;
-use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
-use Illuminate\Support\Facades\DB;
- 
-class Kernel extends ConsoleKernel
-{
-    /**
-     * Define the application's command schedule.
-     *
-     * @param  \Illuminate\Console\Scheduling\Schedule  $schedule
-     * @return void
-     */
-    protected function schedule(Schedule $schedule)
-    {
-        $schedule->call(function () {
-            $sedangPengirimans = $DB::table('pengiriman')->where(‘status’, 1)->get();
-            $sedangPengirimans->each(fn($sedangPengiriman, $key) => {
-            $sedangPengiriman->update(‘status’, 2);
-            $sedangPengiriman->save();
-          })
-        };
-    }
-}
-```
-
-Scheduler tersebut harus dijalankan pada server Ojol Orange dalam sebuah cronjob agar scheduler tersebut selalu dieksekusi. Buatlah cron configuration agar Scheduler tersebut dapat berjalan sebagaimana mestinya pada aplikasi Laravel Ojol Orange.
-
-Note: Bacalah dokumentasi Laravel 😊
-
-3. Clemongs dipercaya oleh mentornya, Sultan dan Yohan. Sehingga mereka membutuhkan daftar path home dari setiap user yang berada pada server Ojol Orange karena dia takut ada joki pada masa probation dari setiap mentee nya. Informasi path tersebut berada pada /etc/passwd. File informasi tersebut disimpan dalam sebuah file pathmenteemunihboss.haha. 
-
-Yohan meminta format penulisan dari setiap user sebagai berikut:
-`Menteemu nama_mentee ada di path_home`
-
-Contoh:
-`Menteemu Clemongs ada di /clemongs/huahaha/`
-
-Sultan karena malas dengan membuka file tersebut pada server Ojol Orange, dia meminta Clemongs untuk mengirimkan file tersebut ke transfer.sh dan linknya diberikan ke Sultan. Bantulah Clemongs untuk membuat bash script dengan nama file findingMentee.sh untuk mencari path home dan mengirimkan file pathmenteemunihboss.haha ke transfer.sh!
-
-Note: 
-1. Kamu harus pake AWK dan AWK Function ya 😊
-2. Pengiriman file ke transfer.sh hanya boleh menggunakan curl
-3. https://transfer.sh/ adalah sebuah website file hosting gratis
+2. Jhon LBF (pemilik JhonOjol), mentornya meminta Fredryn Samba untuk membuat user baru yang nantinya digunakan oleh rekan-rekannya dengan username Admin dan passwordnya bebas, dimana user ini memiliki akes yang mirip dengan dengan superuser atau root namun tidak bisa menggunakan command `su`, `rm`, dan `rmdir`. 

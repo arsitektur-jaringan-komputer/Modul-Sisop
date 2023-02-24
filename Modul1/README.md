@@ -135,6 +135,7 @@ Pada Linux, terdapat beberapa perintah (command) dan juga navigasi yang umum dig
 | uname | melihat versi kernel |
 
 ## Konsep *User* dan *Permission* di Linux
+
 Di Linux, konsep user dan permission sangat penting untuk keamanan sistem dan untuk memungkinkan pengguna untuk mengakses dan memanipulasi berbagai file dan direktori pada sistem.
 
 ### User (Pengguna)
@@ -264,6 +265,7 @@ $ vimtutor
 
 # 1. Shell *Scripting*
 ## 1.1 Apa itu Shell?
+
 Sistem operasi dibagi menjadi tiga komponen penting, yaitu Kernel, Shell, dan *Program Utility* yang dapat ditunjukkan seperti ilustrasi berikut.
 
 ![Komponen Sistem Operasi](gambar/component.png)
@@ -373,9 +375,9 @@ $ nano nama_file.sh
 ```
 Misalnya:
 
-`
+```
 $ nano hello.sh
-`
+```
 
 Tulis beberapa baris perintah disana, diawali dengan shebang `#!/bin/bash`. 
 
@@ -1163,3 +1165,18 @@ Cara menginstal Ranger sendiri cukup sederhana:
 </br>
 
 ## Latihan
+
+![ojol](gambar/ojol.jpg)
+
+Fredryn Samba uhuk uhuk sangat tertarik sekali dengan pengaturan server. Cita-citanya adalah menjadi Security Engineer di JhonOjol. Suatu hari, dia diterima menjadi salah satu Security Engineer di JhonOjol. Dalam masa probation-nya, dia diberikan beberapa tasks. Tetapi Fredryn Samba masih proses dalam pengerjaan Tugas Akhir. Sehingga Fredryn Samba meminta kamu untuk menjadi joki dari tasknya. Berikut task yang diberikan ke Fredryn Samba.
+
+1. Server JhonOjol sering diakses rekan se-divisinya, sehingga ia diminta oleh atasannya untuk mecatat setiap user yang melakukan login ke server beserta command atau perintah yang diinputkan.
+    Konfigurasi yang digunakan adalah:
+    - file script diletakan di direktori `root’
+    - File log disimpan di /var/log
+    - file log disimpan dengan ektensi `.txt`, nama file harus unique dengan kombinasi `date +%Y%m%d_%H%M%S. Contoh:
+    - 20230222_110401_log.txt.
+    - Untuk file lognya hanya menyimpan 50 command yang dinputkan, jika belum genap 50 command maka file log yang baru tidak akan dibuat.
+    - Script dijalankan atau dieksekusi setiap menit menggunakan cron job.
+
+2. Jhon LBF (pemilik JhonOjol), mentornya meminta Fredryn Samba untuk membuat user baru yang nantinya digunakan oleh rekan-rekannya dengan username Admin dan passwordnya bebas, dimana user ini memiliki akes yang mirip dengan dengan superuser atau root namun tidak bisa menggunakan command `su`, `rm`, dan `rmdir`. 
