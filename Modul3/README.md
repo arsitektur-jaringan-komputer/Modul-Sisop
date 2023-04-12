@@ -529,7 +529,13 @@ int main()
 
 <!-- TAMBAH KETERANGAN LEBIH DALAM BUAT MESSAGE QUEUES -->
 ### 2.4 Message Queues
-Merupakan komunikasi antar proses dimana proses tersebut menciptakan internal linked-list pada alamat kernel Sistem Operasi. Pesannya disebut sebagai *queue* sedangkan pengenalnya disebut *queue* ID. *Queue* ID berguna sebagai *key* untuk menandai pesan mana yang akan dikirim dan tujuan pengiriman pesannya.
+Message queue merupakan suatu mekanisme *interprocess communication (IPC)* yang memungkinkan suatu proses untuk melakukan pertukaran data berupa pesan diantara dua proses. Mekanisme ini memungkinkan proses untuk berkomunikasi secara asinkron dengan mengirim pesan satu sama lain. Pesan yang dikirim akan disimpan ke dalam suatu antrian, menunggu untuk diproses, kemudian dihapus setelah proses selesai berjalan.
+
+Ilustrasi:
+
+![ilustrasi-message-queue](https://static.javatpoint.com/operating-system/images/ipc-using-message-queues.png)
+
+Message queue menggunakan prinsip FIFO (First In First Out) tidak terbatas yang tidak dapat diakses oleh dua thread yang berbeda. Dalam melakukan write pesan, banyak tasks dapat menulis pesan ke dalam queue, tetapi hanya satu tasks yang dapat membaca pesan secara sekaligus dari sebuah queue. Pembaca akan menunggu antrian pesan sampai ada pesan yang akan diproses.
 
 
 <!-- TAMBAH KETERANGAN LEBIH DALAM BUAT SEMAPHORES -->
