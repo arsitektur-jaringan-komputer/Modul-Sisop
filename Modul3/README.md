@@ -1,16 +1,17 @@
 # Thread dan IPC
-
 ## Objectives
-1. Peserta mengetahui thread
-2. Peserta memahami bagaimana thread bekerja
-3. Peserta memahami bagaimana cara membuat thread
+1. Peserta memahami IPC sebagai bagian dari bahasan process sebelumnya
+2. Peserta mengetahui apa itu thread
+3. Peserta memahami bagaimana thread bekerja
+4. Peserta memahami bagaimana cara membuat thread
 
 - [Thread dan IPC](#thread-dan-ipc)
   - [Objectives](#objectives)
   - [1. Thread](#1-thread)
     - [1.1 Thread](#11-thread)
     - [1.2 Multiprocess Vs Multithread](#12-multiprocess-vs-multithread)
-    - [1.3 Join Thread](#13-join-thread)
+    - [1.3 Pembuatan Thread](#13-pembuatan-thread)
+    - [1.4 Join Thread](#14-join-thread)
     - [1.4 Mutual Exclusion](#14-mutual-exclusion)
   - [2. IPC (Interprocess Communication)](#2-ipc-interprocess-communication)
     - [2.1 IPC](#21-ipc)
@@ -30,15 +31,43 @@
 
 
 ## 1. Thread 
+
 ### 1.1 Thread
-Thread merupakan unit terkecil dalam suatu proses yang dapat dijadwalkan oleh sistem operasi. Thread juga sering disebut sebagai Lightweight Processes. Thread biasanya terbentuk oleh `fork` yang berjalan pada suatu script atau program untuk sebuah proses. Minimal terdapat sebuah thread yang berjalan dalam suatu proses, walau biasanya terdapat lebih dari satu thread dalam proses tersebut. Thread akan berbagi memori dan menggunakan informasi (nilai) dari variabel-variabel pada suatu proses tersebut. Penggambaran thread pada sebuah proses dapat dilihat sebagai berikut.
+
+Thread merupakan unit terkecil dalam suatu proses yang dapat dijadwalkan oleh sistem operasi. Thread juga sering disebut sebagai Lightweight Processes. Thread biasanya secara tidak langsung terbentuk karena adanya kegiatan `fork` pada proses yang berjalan. 
+
+Dalam suatu proses, minimal terdapat sebuah thread yang berjalan, walau biasanya terdapat lebih dari satu thread dalam proses tersebut. Thread akan berbagi memori dan menggunakan informasi (nilai) dari variabel-variabel pada suatu proses tersebut. Penggambaran thread pada sebuah proses dapat dilihat sebagai berikut.
 
 ![thread](img/thread2.png)
 
-Untuk melihat thread yang sedang berjalan, gunakan perintah :
+Untuk melihat thread yang sedang berjalan, gunakan perintah sebagai berikut.
 ```bash
 top -H
 ```
+
+<!-- KASIH GAMBAR SS HASIL DARI top -H, KASIH KETERANGANNYA JUGA MANA YANG THREAD DARI HASIL ITU -->
+
+
+### 1.2 Multiprocess Vs Multithread
+
+![multivsmulti](multiprocessing_multithreading.gif)
+
+Perbedaan multiprocess dan multithread
+Nomor | Multiprocess | Multithread
+--- | --- | ---
+1 | banyak proses dieksekusi secara konkuren | banyak thread dalam 1 proses dieksekusi secara konkuren
+2 | menambah CPU untuk menigkatkan kekuatan komputasi | membuat banyak thread dalam 1 proses untuk meningkatkan kekuatan komputasi
+3 | pembuatan proses membutuhkan waktu dan resource yang besar | pembuatan thread lebih ekonomis dalam segi waktu dan resource
+4 | bergantung pada object di memori untuk mengirim data ke proses lain | tidak bergantung pada object lain
+5 |child process sebagian besar bersifat interruptible / killable | multithreading tidak bersifat interruptible / killable
+
+<!-- JELASIN MAKSUD DARI POIN 5 -->
+
+<!-- TAMBAHKAN ANALOGI ATAU CONTOH MULTIPROCESS DAN MULTITHREAD (BISA DARI WINDOWS) SEPERTI PROCESS CHROME, DAN THREAD PADA GAME -->
+
+
+
+### 1.3 Pembuatan Thread
 
 Thread dapat dibuat menggunakan fungsi pada program berbahasa C :
 ```c
@@ -51,11 +80,17 @@ int pthread_create(pthread_t *restrict tidp,
 
 /* Jika berhasil mengembalikan nilai 0, jika error mengembalikan nilai 1 */
 ```
+
 Penjelasan Syntax:
 - Pointer `tidp` digunakan untuk menunjukkan alamat memori dengan thread ID dari thread baru.
 - Argumen `attr` digunakan untuk menyesuaikan atribut yang digunakan oleh thread. nilai `attr` di-set `NULL` ketika thread menggunakan atribut *default*.
 - Thread yang baru dibuat akan berjalan dimulai dari fungsi `start_rtn` dalam fungsi thread.
 - Pointer `arg` digunakan untuk memberikan sebuah argumen ke fungsi `start_rtn`, jika tidak diperlukan argumen, maka `arg` akan di-set `NULL`.
+
+
+<!-- DI SINI TAMBAHIN KODE YANG DARI PAK BAS, THREADING SEDERHANA -->
+
+<!-- KODE DI BAWAH INI PERLU DIREVISI, JANGAN PAKAI EXEC UNTUK THREADING -->
 
 Contoh membuat program tanpa menggunakan thread [playtanpathread.c](playtanpathread.c):
 
@@ -170,24 +205,10 @@ int main(void)
 **Kesimpulan** :
 Terlihat ketika program menggunakan thread dapat menjalankan dua task secara bersamaan (task menampilkan gambar dan task timer).
 
-
-### 1.2 Multiprocess Vs Multithread
-
-![multivsmulti](multiprocessing_multithreading.gif)
-
-Perbedaan multiprocess dan multithread
-Nomor | Multiprocess | Multithread
---- | --- | ---
-1 | banyak proses dieksekusi secara konkuren | banyak thread dalam 1 proses dieksekusi secara konkuren
-2 | menambah CPU untuk menigkatkan kekuatan komputasi | membuat banyak thread dalam 1 proses untuk meningkatkan kekuatan komputasi
-3 | pembuatan proses membutuhkan waktu dan resource yang besar | pembuatan thread lebih ekonomis dalam segi waktu dan resource
-4 | bergantung pada object di memori untuk mengirim data ke proses lain | tidak bergantung pada object lain
-5 |child process sebagian besar bersifat interruptible / killable | multithreading tidak bersifat interruptible / killable
+<!-- TAMBAHKAN FUNFACT TENTANG PERBEDAAN KONSUMSI CPU -->
 
 
-
-
-### 1.3 Join Thread
+### 1.4 Join Thread
 Join thread adalah fungsi untuk melakukan penggabungan dengan thread lain yang telah berhenti (*terminated*). Bila thread yang ingin di-join belum dihentikan, maka fungsi ini akan menunggu hingga thread yang diinginkan berstatus **`Terminated`**. Fungsi `pthread_join()` ini dapat dikatakan sebagai fungsi `wait()` pada proses, karena program (*task*) utama akan menunggu thread yang di-join-kan pada program utama tersebut. Kita tidak mengetahui program utama atau thread yang lebih dahulu menyelesaikan pekerjaannya.
 
 Contoh program C Join_Thread [thread_join.c](thread_join.c):
@@ -242,6 +263,8 @@ void *print_message_function( void *ptr )
 
 ```
 
+<!-- SECTION DI BAWAH INI DIBUAT HIDDEN DEFAULTNYA, BIAR MEREKA COBA DULU -->
+
 Keterangan :
 - Pada program di atas, jika kita *comment* baris `pthread_join`, maka hasil yang didapat tidak akan memunculkan tulisan **Thread 1** dan **Thread 2**.
 - Jika pemanggilan fungsi `pthread_join` di-uncomment, maka program yang kita buat akan memunculkan tulisan **Thread 1** dan **Thread 2**.
@@ -262,8 +285,14 @@ Pada program pertama tidak menjalankan fungsi `print_message_function` karena se
   ```
   Fungsi akan menunda pekerjaan sampai status pointer `rval_ptr` dari fungsi `pthread_exit()` mengembalikan nilainya.
 
+<!-- SAMPE SINI BATAS AKHIRNYA -->
+
+
+
 ### 1.4 Mutual Exclusion
 Disebut juga sebagai **Mutex**, yaitu suatu cara yang menjamin jika ada pekerjaan yang menggunakan variabel atau berkas digunakan juga oleh pekerjaan yang lain, maka pekerjaan lain tersebut akan mengeluarkan nilai dari pekerjaan sebelumnya.
+
+<!-- TAMBAH KETERANGAN KALAU INI PENGGAMBARAN MUTEX SEDERHANA DENGAN MENGGUNAKAN FLAG BERUPA VARIABEL STATUS. PENGGUNAAN STL BISA MENGGUNAKAN pthread_mutex_... -->
 
 Contoh program Simple Mutual_Exclusion [threadmutex.c](threadmutex.c):
 ```c
@@ -322,9 +351,11 @@ Keterangan :
 Karena kita tidak mengetahui *thread* mana yang lebih dahulu mengeksekusi sebuah variable atau sumber daya pada program, kegunaan dari **Mutex** adalah untuk menjaga sumber daya suatu thread agar tidak digunakan oleh thread lain sebelum ia menyelesaikan pekerjaannya.
 
 
+
 ## 2. IPC (Interprocess Communication)
 ### 2.1 IPC
 IPC (*Interprocess Communication*) adalah cara atau mekanisme pertukaran data antara satu proses dengan proses lain, baik pada komputer yang sama atau komputer jarak jauh yang terhubung melalui suatu jaringan.
+<!-- TAMBAHKAN PENGERTIAN LEBIH LENGKAP -->
 
 ### 2.2 Pipes
 Pipe merupakan komunikasi sequensial antar proses yang saling terelasi. Kelemahannya, hanya dapat digunakan untuk proses yang saling berhubungan dan secara sequensial.
@@ -337,6 +368,8 @@ $ ls | less
 Diagram :
 
 ![alt](img/pipe.png "Diagram Pipe")  
+
+<!-- TAMBAHKAN PENJELASAN TENTANG FDS (FILE DESCRIPTOR). SAMA KAYA PID, TAPI BUAT PIPING -->
 
 Syntax in C languange :
 ```
@@ -497,7 +530,7 @@ int main()
 
 ```
 
-
+<!-- SOCKET  JADIIN EXTRAS (BAHAN BACAAN TAMBAHAN) SAMA KAYA ASYNCRONUS (DI BAWAH) -->
 ### 2.3 Sockets
 *Socket* merupakan sebuah *end-point* dalam sebuah proses yang saling berkomunikasi. Biasanya *socket* digunakan untuk komunikasi antar proses pada komputer yang berbeda, namun dapat juga digunakan dalam komputer yang sama.
 
@@ -606,14 +639,20 @@ int main(int argc, char const *argv[]) {
 ```
 Jalankan proses server dulu, kemudian jalankan clientnya. Dan amati apa yang terjadi.
 
+
+<!-- TAMBAH KETERANGAN LEBIH DALAM BUAT MESSAGE QUEUES -->
 ### 2.4 Message Queues
 Merupakan komunikasi antar proses dimana proses tersebut menciptakan internal linked-list pada alamat kernel Sistem Operasi. Pesannya disebut sebagai *queue* sedangkan pengenalnya disebut *queue* ID. *Queue* ID berguna sebagai *key* untuk menandai pesan mana yang akan dikirim dan tujuan pengiriman pesannya.
 
+
+<!-- TAMBAH KETERANGAN LEBIH DALAM BUAT SEMAPHORES -->
 ### 2.5 Semaphores
 Semaphore berbeda dengan jenis-jenis IPC yang lain. Pada pengaplikasiannya, semaphore merupakan sebuah counter yang digunakan untuk controlling resource oleh beberapa proses secara bersamaan.
 - Jika suatu counter block memory memiliki nilai positif, semaphore dapat menggunakan resource untuk prosesnya, dan mengurangi nilai counter block dengan 1 untuk menandai bahwa suatu block memory tengah digunakan.
 - Sebaliknya, jika semaphore bernilai 0, proses akan masuk pada mode sleep sampai semaphore bernilai lebih besar dari 0.
+ 
 
+<!-- TAMBAH KETERANGAN LEBIH DALAM BUAT SHARED MEMORY -->
 ### 2.6 Shared Memory
 Sebuah mekanisme *mapping area(segments)* dari suatu blok *memory* untuk digunakan bersama oleh beberapa proses. Sebuah proses akan menciptakan *segment memory*, kemudian proses lain yang diijinkan dapat mengakses *memory* tersebut. *Shared memory* merupakan cara yang efektif untuk melakukan pertukaran data antar program.
 
@@ -683,6 +722,8 @@ Program 1 : 10
 Program 1 : 30
 ```
 
+
+<!-- JADIIN EXTRAS (BAHAN BACAAN TAMBAHAN) -->
 ## 3. Asynchronous Programming
 
 Kita sudah mengenal bagaimana cara menggunakan thread dan memproses perintah secara terpisah-pisah dan bersamaan. Di tingkatan selanjutnya, kita akan belajar bagaimana suatu proses menerima suatu perintah tanpa terblok oleh proses yang lain. Disinilah kita akan belajar tentang Asynchronous Programming dimana kita tidak perlu menunggu sesuatu terlalu lama dan kita membiarkan tugas lainnya dikerjakan oleh core processor yang lain. Berikut adalah beberapa perintah yang bisa digunakan untuk menerapkan Asynchronous Programming di C.
