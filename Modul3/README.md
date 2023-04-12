@@ -557,7 +557,21 @@ Gambar di atas menunjukkan ilustrasi dari semaphore, yaitu terdapat critical sec
 
 <!-- TAMBAH KETERANGAN LEBIH DALAM BUAT SHARED MEMORY -->
 ### 2.6 Shared Memory
-Sebuah mekanisme *mapping area(segments)* dari suatu blok *memory* untuk digunakan bersama oleh beberapa proses. Sebuah proses akan menciptakan *segment memory*, kemudian proses lain yang diijinkan dapat mengakses *memory* tersebut. *Shared memory* merupakan cara yang efektif untuk melakukan pertukaran data antar program.
+Sebuah mekanisme *mapping area (segments)* dari suatu blok *memory* untuk digunakan bersama oleh beberapa proses. Sebuah proses akan menciptakan *segment memory*, kemudian proses lain yang diijinkan dapat mengakses *memory* tersebut. *Shared memory* merupakan cara yang efektif untuk melakukan pertukaran data antar program. Dalam hal ini, apabila suatu proses melakukan perubahan, maka proses lain dapat melihatnya.
+
+![shared-memory](https://static.javatpoint.com/operating-system/images/ipc-through-shared-memory.png)
+
+Shared memory merupakan mekanisme IPC yang paling cepat. Suatu sistem operasi akan memetakan memory segment pada suatu address space dari beberapa proces untuk melakukan read and write di segmen memori tersebut tanpa memanggil fungsi dari sistem operasi. Shared memory ini merupakan mekanisme yang superior untuk melakukan pertukaran data dengan ukuran sangat besar.
+
+Langkah-langkah menggunakan shared memory:
+1. Melakukan request memory segment pada operating system yang bisa digunakan secara bersamaan oleh suatu proses
+2. Melakukan asosiasi dari sebagian atau seluruh memory dengan address space dari proses yang dimaksud.
+
+Ilustrasi
+![shared-mem](https://static.javatpoint.com/operating-system/images/ipc-through-shared-memory2.png)
+
+* Sebagai catatan, alamat memory dari suatu shared memory pada masing-masing proses belum tentu sama. Dalam hal ini, kita dapat menggunakan semaphore untuk melakukan sinkronisasi.
+
 
 Example: [Proses 1](proses1.c) [Proses 2](proses2.c)
 
