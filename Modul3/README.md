@@ -12,22 +12,19 @@
     - [1.2 Multiprocess Vs Multithread](#12-multiprocess-vs-multithread)
     - [1.3 Pembuatan Thread](#13-pembuatan-thread)
     - [1.4 Join Thread](#14-join-thread)
-    - [1.4 Mutual Exclusion](#14-mutual-exclusion)
+    - [1.5 Mutual Exclusion](#15-mutual-exclusion)
   - [2. IPC (Interprocess Communication)](#2-ipc-interprocess-communication)
     - [2.1 IPC](#21-ipc)
     - [2.2 Pipes](#22-pipes)
-    - [2.3 Sockets](#23-sockets)
     - [2.4 Message Queues](#24-message-queues)
     - [2.5 Semaphores](#25-semaphores)
     - [2.6 Shared Memory](#26-shared-memory)
-  - [3. Asynchronous Programming](#3-asynchronous-programming)
-    - [3.1 select](#31-select)
-    - [3.2 poll](#32-poll)
-    - [3.3 epoll](#33-epoll)
-  - [Appendix](#appendix)
-    - [Libraries documentation (and functions)](#libraries-documentation-and-functions)
-  - [Soal Latihan](#soal-latihan)
-    - [References](#references)
+  - [**3. Extras (Bahan Bacaan Tambahan)**](#3-extras-bahan-bacaan-tambahan)
+    - [**3.1 Asynchronous Programming**](#31-asynchronous-programming)
+    - [**3.2 Socket Programming**](#32-socket-programming)
+    - [**3.3 Libraries Docs (and functions)**](#33-libraries-docs-and-functions)
+  - [**Soal Latihan**](#soal-latihan)
+    - [**References**](#references)
 
 
 ## 1. Thread 
@@ -289,7 +286,7 @@ Pada program pertama tidak menjalankan fungsi `print_message_function` karena se
 
 
 
-### 1.4 Mutual Exclusion
+### 1.5 Mutual Exclusion
 Disebut juga sebagai **Mutex**, yaitu suatu cara yang menjamin jika ada pekerjaan yang menggunakan variabel atau berkas digunakan juga oleh pekerjaan yang lain, maka pekerjaan lain tersebut akan mengeluarkan nilai dari pekerjaan sebelumnya.
 
 <!-- TAMBAH KETERANGAN KALAU INI PENGGAMBARAN MUTEX SEDERHANA DENGAN MENGGUNAKAN FLAG BERUPA VARIABEL STATUS. PENGGUNAAN STL BISA MENGGUNAKAN pthread_mutex_... -->
@@ -530,8 +527,181 @@ int main()
 
 ```
 
-<!-- SOCKET  JADIIN EXTRAS (BAHAN BACAAN TAMBAHAN) SAMA KAYA ASYNCRONUS (DI BAWAH) -->
-### 2.3 Sockets
+<!-- TAMBAH KETERANGAN LEBIH DALAM BUAT MESSAGE QUEUES -->
+### 2.4 Message Queues
+Merupakan komunikasi antar proses dimana proses tersebut menciptakan internal linked-list pada alamat kernel Sistem Operasi. Pesannya disebut sebagai *queue* sedangkan pengenalnya disebut *queue* ID. *Queue* ID berguna sebagai *key* untuk menandai pesan mana yang akan dikirim dan tujuan pengiriman pesannya.
+
+
+<!-- TAMBAH KETERANGAN LEBIH DALAM BUAT SEMAPHORES -->
+### 2.5 Semaphores
+Semaphore berbeda dengan jenis-jenis IPC yang lain. Pada pengaplikasiannya, semaphore merupakan sebuah counter yang digunakan untuk controlling resource oleh beberapa proses secara bersamaan.
+- Jika suatu counter block memory memiliki nilai positif, semaphore dapat menggunakan resource untuk prosesnya, dan mengurangi nilai counter block dengan 1 untuk menandai bahwa suatu block memory tengah digunakan.
+- Sebaliknya, jika semaphore bernilai 0, proses akan masuk pada mode sleep sampai semaphore bernilai lebih besar dari 0.
+ 
+
+<!-- TAMBAH KETERANGAN LEBIH DALAM BUAT SHARED MEMORY -->
+### 2.6 Shared Memory
+Sebuah mekanisme *mapping area(segments)* dari suatu blok *memory* untuk digunakan bersama oleh beberapa proses. Sebuah proses akan menciptakan *segment memory*, kemudian proses lain yang diijinkan dapat mengakses *memory* tersebut. *Shared memory* merupakan cara yang efektif untuk melakukan pertukaran data antar program.
+
+Example: [Proses 1](proses1.c) [Proses 2](proses2.c)
+
+Proses 1
+```c
+#include <stdio.h>
+#include <sys/ipc.h>
+#include <sys/shm.h>
+#include <unistd.h>
+
+void main()
+{
+        key_t key = 1234;
+        int *value;
+
+        int shmid = shmget(key, sizeof(int), IPC_CREAT | 0666);
+        value = shmat(shmid, NULL, 0);
+
+        *value = 10;
+
+        printf("Program 1 : %d\n", *value);
+
+        sleep(5);
+
+        printf("Program 1: %d\n", *value);
+        shmdt(value);
+        shmctl(shmid, IPC_RMID, NULL);
+}
+```
+Proses 2
+```c
+#include <stdio.h>
+#include <sys/ipc.h>
+#include <sys/shm.h>
+#include <unistd.h>
+
+void main()
+{
+        key_t key = 1234;
+        int *value;
+
+        int shmid = shmget(key, sizeof(int), IPC_CREAT | 0666);
+        value = shmat(shmid, NULL, 0);
+
+        printf("Program 1 : %d\n", *value);
+	*value = 30;
+
+        sleep(5);
+
+        printf("Program 1: %d\n", *value);
+        shmdt(value);
+        shmctl(shmid, IPC_RMID, NULL);
+}
+```
+Jalankan proses 1 terlebih dahulu, lalu proses 2. 
+Hasilnya
+Proses 1
+```
+Program 1 : 10
+Program 1 : 30
+```
+Proses 2
+```
+Program 1 : 10
+Program 1 : 30
+```
+
+
+
+
+</br>
+
+
+## **3. Extras (Bahan Bacaan Tambahan)**
+
+### **3.1 Asynchronous Programming**
+
+Kita sudah mengenal bagaimana cara menggunakan thread dan memproses perintah secara terpisah-pisah dan bersamaan. Di tingkatan selanjutnya, kita akan belajar bagaimana suatu proses menerima suatu perintah tanpa terblok oleh proses yang lain. Disinilah kita akan belajar tentang Asynchronous Programming dimana kita tidak perlu menunggu sesuatu terlalu lama dan kita membiarkan tugas lainnya dikerjakan oleh core processor yang lain. Berikut adalah beberapa perintah yang bisa digunakan untuk menerapkan Asynchronous Programming di C.
+
+- **select**
+
+    Select memberikan kita kemampuan untuk memonitor jumlah socket yang cukup besar, dan tiap socket tidak terblok oleh socket yang lain. Mungkin kita bisa mengakali menggunakan thread, hanya saja jika jumlah socket sangat besar seperti 1024, memiliki 1024 thread bukanlah solusi yang tepat dan penggunaan select akan lebih memudahkan pekerjaan.
+
+    Fungsi select() ditunjukkan dalam potongan kode sebagai berikut.
+    ```c
+    int select(int nfds, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, struct timeval *timeout);
+
+    struct timeval {
+        long int tv_sec;    /* Value in seconds */
+        long int tv_usec;   /* Value in milli-seconds */
+    };
+    ```
+
+    Penjelasan untuk parameter yang digunakan adalah sebagai berikut.
+    - nfds  :   Jumlah file descriptor tertinggi + 1, bisa menggunakan `FD_SETSIZE` yang berisi angka 1024
+    - readfds : File descriptor untuk pembacaan
+    - writefds : File descriptor untuk penulisan
+    - exceptfds :   File descriptor untuk exception
+    - timeout   :   Timeout jika aplikasi menginginkan ada timeout
+
+    Contoh penggunaan dapat dilihat pada [file server](select-server.c) dan [file client](select-client.c) yang ada pada modul. Lakukan seperti di [Subbab 2.3 Sockets](#23-sockets) untuk testing.
+
+
+- **poll**
+
+    `poll()` sendiri melakukan sesuatu yang sama dengan `select()` yaitu menunggu salah satu dari file descriptor untuk siap melakukan operasi. Tetapi `poll()` sendiri diciptakan untuk mengatasi permasalahan pending yang dimiliki oleh `select()`
+
+    Fungsi `poll()`
+    ```c
+    #include <poll.h> 
+
+    int poll(struct pollfd *fds, int nfds, int timeout);
+
+    struct pollfd {
+        int   fd;         /* file descriptor */
+        short events;     /* requested events */
+        short revents;    /* returned events */
+    };
+    ```
+
+    Penjelasan Parameter :
+    - fds   :   Array dari file descriptor
+    - nfds  :   Jumlah file descriptor
+    - timeout   :    Timeout untuk program
+    - events & revents : Bisa membaca sumber yang ada di referensi karena cukup banyak dan beragam
+
+    Contoh penggunaan dapat dilihat pada [file server](poll-server.c) dan [file client](poll-client.c) yang ada pada modul. Lakukan seperti di [Subbab 2.3 Sockets](#23-sockets) untuk testing.
+
+- **epoll**
+
+    `epoll` adalah varian dari `poll()` yang bisa memperbesar skala dengan baik untuk jumlah file descriptor yang besar. 3 system call disediakan untuk set up dan mengkontrol epoll set : `epoll_create()`, `epoll_ctl()`, `epoll_wait()`.
+
+    Fungsi-fungsi untuk `epoll`
+    ```c
+    int epoll_create(int size); // creates an epoll() instance
+
+    int epoll_ctl(int epfd, int op, int fd, struct epoll_event *event); // performs control operations on the epoll() instance referred to by the file descriptor epfd.
+
+    int epoll_wait(int epfd, struct epoll_event *events,int maxevents, int timeout); // waits for events on the epoll() instance referred to by the file descriptor epfd
+
+    typedef union epoll_data {
+        void        *ptr;
+        int          fd;
+        uint32_t     u32;
+        uint64_t     u64;
+    } epoll_data_t;
+
+    struct epoll_event {
+        uint32_t     events;      /* Epoll events */
+        epoll_data_t data;        /* User data variable */
+    };
+    ```
+
+    Contoh penggunaan dapat dilihat pada [file server](epoll-server.c) dan [file client](epoll-client.c) yang ada pada modul. Lakukan seperti di [Subbab 2.3 Sockets](#23-sockets) untuk testing.
+
+
+</br>
+
+### **3.2 Socket Programming**
+
 *Socket* merupakan sebuah *end-point* dalam sebuah proses yang saling berkomunikasi. Biasanya *socket* digunakan untuk komunikasi antar proses pada komputer yang berbeda, namun dapat juga digunakan dalam komputer yang sama.
 
 Diagram :   
@@ -640,177 +810,26 @@ int main(int argc, char const *argv[]) {
 Jalankan proses server dulu, kemudian jalankan clientnya. Dan amati apa yang terjadi.
 
 
-<!-- TAMBAH KETERANGAN LEBIH DALAM BUAT MESSAGE QUEUES -->
-### 2.4 Message Queues
-Merupakan komunikasi antar proses dimana proses tersebut menciptakan internal linked-list pada alamat kernel Sistem Operasi. Pesannya disebut sebagai *queue* sedangkan pengenalnya disebut *queue* ID. *Queue* ID berguna sebagai *key* untuk menandai pesan mana yang akan dikirim dan tujuan pengiriman pesannya.
+</br>
 
+### **3.3 Libraries Docs (and functions)**
 
-<!-- TAMBAH KETERANGAN LEBIH DALAM BUAT SEMAPHORES -->
-### 2.5 Semaphores
-Semaphore berbeda dengan jenis-jenis IPC yang lain. Pada pengaplikasiannya, semaphore merupakan sebuah counter yang digunakan untuk controlling resource oleh beberapa proses secara bersamaan.
-- Jika suatu counter block memory memiliki nilai positif, semaphore dapat menggunakan resource untuk prosesnya, dan mengurangi nilai counter block dengan 1 untuk menandai bahwa suatu block memory tengah digunakan.
-- Sebaliknya, jika semaphore bernilai 0, proses akan masuk pada mode sleep sampai semaphore bernilai lebih besar dari 0.
- 
+Untuk membantu kamu dalam memahami beberapa hal yang berkaitan pada modul ini, kamu dapat `man bash`menggunakan command `man` seperti berikut.
 
-<!-- TAMBAH KETERANGAN LEBIH DALAM BUAT SHARED MEMORY -->
-### 2.6 Shared Memory
-Sebuah mekanisme *mapping area(segments)* dari suatu blok *memory* untuk digunakan bersama oleh beberapa proses. Sebuah proses akan menciptakan *segment memory*, kemudian proses lain yang diijinkan dapat mengakses *memory* tersebut. *Shared memory* merupakan cara yang efektif untuk melakukan pertukaran data antar program.
+```shell
+man {anything-you-want-to-know}
 
-Example: [Proses 1](proses1.c) [Proses 2](proses2.c)
-
-Proses 1
-```c
-#include <stdio.h>
-#include <sys/ipc.h>
-#include <sys/shm.h>
-#include <unistd.h>
-
-void main()
-{
-        key_t key = 1234;
-        int *value;
-
-        int shmid = shmget(key, sizeof(int), IPC_CREAT | 0666);
-        value = shmat(shmid, NULL, 0);
-
-        *value = 10;
-
-        printf("Program 1 : %d\n", *value);
-
-        sleep(5);
-
-        printf("Program 1: %d\n", *value);
-        shmdt(value);
-        shmctl(shmid, IPC_RMID, NULL);
-}
-```
-Proses 2
-```c
-#include <stdio.h>
-#include <sys/ipc.h>
-#include <sys/shm.h>
-#include <unistd.h>
-
-void main()
-{
-        key_t key = 1234;
-        int *value;
-
-        int shmid = shmget(key, sizeof(int), IPC_CREAT | 0666);
-        value = shmat(shmid, NULL, 0);
-
-        printf("Program 1 : %d\n", *value);
-	*value = 30;
-
-        sleep(5);
-
-        printf("Program 1: %d\n", *value);
-        shmdt(value);
-        shmctl(shmid, IPC_RMID, NULL);
-}
-```
-Jalankan proses 1 terlebih dahulu, lalu proses 2. 
-Hasilnya
-Proses 1
-```
-Program 1 : 10
-Program 1 : 30
-```
-Proses 2
-```
-Program 1 : 10
-Program 1 : 30
+# example:    
+man mkfifo
+man fcntl
 ```
 
+</br>
 
-<!-- JADIIN EXTRAS (BAHAN BACAAN TAMBAHAN) -->
-## 3. Asynchronous Programming
+## **Soal Latihan** 
 
-Kita sudah mengenal bagaimana cara menggunakan thread dan memproses perintah secara terpisah-pisah dan bersamaan. Di tingkatan selanjutnya, kita akan belajar bagaimana suatu proses menerima suatu perintah tanpa terblok oleh proses yang lain. Disinilah kita akan belajar tentang Asynchronous Programming dimana kita tidak perlu menunggu sesuatu terlalu lama dan kita membiarkan tugas lainnya dikerjakan oleh core processor yang lain. Berikut adalah beberapa perintah yang bisa digunakan untuk menerapkan Asynchronous Programming di C.
-
-### 3.1 select
-
-Select memberikan kita kemampuan untuk memonitor jumlah socket yang cukup besar, dan tiap socket tidak terblok oleh socket yang lain. Mungkin kita bisa mengakali menggunakan thread, hanya saja jika jumlah socket sangat besar seperti 1024, memiliki 1024 thread bukanlah solusi yang tepat dan penggunaan select akan lebih memudahkan pekerjaan.
-
-Fungsi select()
-```c
-int select(int nfds, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, struct timeval *timeout);
-
-struct timeval {
-    long int tv_sec;    /* Value in seconds */
-    long int tv_usec;   /* Value in milli-seconds */
-};
-```
-
-Penjelasan untuk parameter yang digunakan :
-- nfds  :   Jumlah file descriptor tertinggi + 1, bisa menggunakan `FD_SETSIZE` yang berisi angka 1024
-- readfds : File descriptor untuk pembacaan
-- writefds : File descriptor untuk penulisan
-- exceptfds :   File descriptor untuk exception
-- timeout   :   Timeout jika aplikasi menginginkan ada timeout
-
-Contoh penggunaan dapat dilihat pada [file server](select-server.c) dan [file client](select-client.c) yang ada pada modul. Lakukan seperti di [Subbab 2.3 Sockets](#23-sockets) untuk testing.
-
-### 3.2 poll
-`poll()` sendiri melakukan sesuatu yang sama dengan `select()` yaitu menunggu salah satu dari file descriptor untuk siap melakukan operasi. Tetapi `poll()` sendiri diciptakan untuk mengatasi permasalahan pending yang dimiliki oleh `select()`
-
-Fungsi `poll()`
-```c
-#include <poll.h> 
-
-int poll(struct pollfd *fds, int nfds, int timeout);
-
-struct pollfd {
-    int   fd;         /* file descriptor */
-    short events;     /* requested events */
-    short revents;    /* returned events */
-};
-```
-
-Penjelasan Parameter :
-- fds   :   Array dari file descriptor
-- nfds  :   Jumlah file descriptor
-- timeout   :    Timeout untuk program
-- events & revents : Bisa membaca sumber yang ada di referensi karena cukup banyak dan beragam
-
-Contoh penggunaan dapat dilihat pada [file server](poll-server.c) dan [file client](poll-client.c) yang ada pada modul. Lakukan seperti di [Subbab 2.3 Sockets](#23-sockets) untuk testing.
-
-### 3.3 epoll
-`epoll` adalah varian dari `poll()` yang bisa memperbesar skala dengan baik untuk jumlah file descriptor yang besar. 3 system call disediakan untuk set up dan mengkontrol epoll set : `epoll_create()`, `epoll_ctl()`, `epoll_wait()`.
-
-Fungsi-fungsi untuk `epoll`
-```c
-int epoll_create(int size); // creates an epoll() instance
-
-int epoll_ctl(int epfd, int op, int fd, struct epoll_event *event); // performs control operations on the epoll() instance referred to by the file descriptor epfd.
-
-int epoll_wait(int epfd, struct epoll_event *events,int maxevents, int timeout); // waits for events on the epoll() instance referred to by the file descriptor epfd
-
-typedef union epoll_data {
-    void        *ptr;
-    int          fd;
-    uint32_t     u32;
-    uint64_t     u64;
-} epoll_data_t;
-
-struct epoll_event {
-    uint32_t     events;      /* Epoll events */
-    epoll_data_t data;        /* User data variable */
-};
-```
-
-Contoh penggunaan dapat dilihat pada [file server](epoll-server.c) dan [file client](epoll-client.c) yang ada pada modul. Lakukan seperti di [Subbab 2.3 Sockets](#23-sockets) untuk testing.
-
-## Appendix
-### Libraries documentation (and functions)
-```
-$ man {anything-you-want-to-know}
-$ man mkfifo
-$ man fcntl
-```
-
-## Soal Latihan 
-1. Mentor Clemongs sangat senang memberi tugas tambahan pada Clemongs. Karena sudah lelah mengerjakannya, Clemongs meminta bantuan kamu untuk mengerjakan tugas-tugas yang diberikan oleh mentornya.
+*To be added to the here. Stay tune!*
+<!-- 1. Mentor Clemongs sangat senang memberi tugas tambahan pada Clemongs. Karena sudah lelah mengerjakannya, Clemongs meminta bantuan kamu untuk mengerjakan tugas-tugas yang diberikan oleh mentornya.
 Ia diminta membuat program multithreading untuk mengecek apakah suatu angka merupakan bilangan prima atau bukan.
 Contoh: 
 ```bash
@@ -842,9 +861,11 @@ GET
 Penambahan angka berhasil
 Penambahan angka berhasil
 5 3
-```
+``` -->
 
-### References 
+</br>
+
+### **References** 
 - https://notes.shichao.io/apue/  
 - https://www.gta.ufrj.br/ensino/eel878/sockets/index.html  
 - http://advancedlinuxprogramming.com/alp-folder/alp-ch05-ipc.pdf  
@@ -856,3 +877,4 @@ Penambahan angka berhasil
 - https://pubs.opengroup.org/onlinepubs/009696799/functions/poll.html
 - https://linux.die.net/man/4/epoll
 - https://programmer.ink/think/epoll-for-linux-programming.html
+- https://www.geeksforgeeks.org/mutex-lock-for-linux-thread-synchronization/
