@@ -540,10 +540,20 @@ Message queue menggunakan prinsip FIFO (First In First Out) tidak terbatas yang 
 
 <!-- TAMBAH KETERANGAN LEBIH DALAM BUAT SEMAPHORES -->
 ### 2.5 Semaphores
+Semaphore berfungsi untuk melindungi critical region yang dibagi untuk banyak proses. Banyak proses menggunakan region kode yang sama, sehingga apabila semua proses akan mengakses region tersebut secara paralel maka hasilnya akan tumpang tindih.
+> Sebagai contoh, apabila terdapat satu printer dan tiga pengguna dengan pekerjaannya masing-masing memulai pekerjaannya secara paralel, maka output printer tersebut akan tumpang tindih.
+
+Jadi, untuk melindungi hal-hal tersebut, kita memerlukan semaphore untuk mengunci critical section saat suatu proses berjalan.
+
 Semaphore berbeda dengan jenis-jenis IPC yang lain. Pada pengaplikasiannya, semaphore merupakan sebuah counter yang digunakan untuk controlling resource oleh beberapa proses secara bersamaan.
-- Jika suatu counter block memory memiliki nilai positif, semaphore dapat menggunakan resource untuk prosesnya, dan mengurangi nilai counter block dengan 1 untuk menandai bahwa suatu block memory tengah digunakan.
-- Sebaliknya, jika semaphore bernilai 0, proses akan masuk pada mode sleep sampai semaphore bernilai lebih besar dari 0.
- 
+
+Ilustrasi
+
+![semaphore](https://media.licdn.com/dms/image/C4D12AQE_5m23cEncqg/article-cover_image-shrink_423_752/0/1620572774832?e=1686787200&v=beta&t=HVehtAAGcLgKwce7FK6z2fiqp0689T7Gi3Euwu29GlE)
+
+Gambar di atas menunjukkan ilustrasi dari semaphore, yaitu terdapat critical section dan `V(s)` untuk melakukan increment (signal), dan `P(s)` decrement (wait).
+- Jika suatu counter block memory memiliki nilai positif, semaphore dapat menggunakan resource untuk prosesnya, dan mengurangi nilai counter block dengan 1 untuk menandai bahwa suatu block memory tengah digunakan (proses wait).
+- Sebaliknya, jika semaphore bernilai 0, proses akan masuk pada mode sleep sampai semaphore bernilai lebih besar dari 0 (signal masuk).
 
 <!-- TAMBAH KETERANGAN LEBIH DALAM BUAT SHARED MEMORY -->
 ### 2.6 Shared Memory
