@@ -545,7 +545,8 @@ Sebuah mekanisme *mapping area(segments)* dari suatu blok *memory* untuk digunak
 
 Example: [Proses 1](proses1.c) [Proses 2](proses2.c)
 
-Proses 1
+**Proses 1**
+
 ```c
 #include <stdio.h>
 #include <sys/ipc.h>
@@ -571,7 +572,9 @@ void main()
         shmctl(shmid, IPC_RMID, NULL);
 }
 ```
-Proses 2
+
+**Proses 2**
+
 ```c
 #include <stdio.h>
 #include <sys/ipc.h>
@@ -596,36 +599,39 @@ void main()
         shmctl(shmid, IPC_RMID, NULL);
 }
 ```
-Jalankan proses 1 terlebih dahulu, lalu proses 2. 
-Hasilnya
-Proses 1
+
+Jalankan proses 1 terlebih dahulu, lalu proses 2. Hasilnya adalah sebagai berikut.
+
+**Proses 1**
+
 ```
 Program 1 : 10
 Program 1 : 30
 ```
-Proses 2
+
+**Proses 2**
+
 ```
 Program 1 : 10
 Program 1 : 30
 ```
-
-
-
 
 </br>
 
-
 ## **3. Extras (Bahan Bacaan Tambahan)**
+
+Terdapat beberapa bahan bacaan yang *better to knows* untuk dibaca dan berkaitan dengan modul ini. 
 
 ### **3.1 Asynchronous Programming**
 
-Kita sudah mengenal bagaimana cara menggunakan thread dan memproses perintah secara terpisah-pisah dan bersamaan. Di tingkatan selanjutnya, kita akan belajar bagaimana suatu proses menerima suatu perintah tanpa terblok oleh proses yang lain. Disinilah kita akan belajar tentang Asynchronous Programming dimana kita tidak perlu menunggu sesuatu terlalu lama dan kita membiarkan tugas lainnya dikerjakan oleh core processor yang lain. Berikut adalah beberapa perintah yang bisa digunakan untuk menerapkan Asynchronous Programming di C.
+Kita sudah mengenal bagaimana cara menggunakan *thread* dan memproses perintah secara terpisah-pisah dan bersamaan. Di tingkatan selanjutnya, kita akan belajar bagaimana suatu proses menerima suatu perintah tanpa terblok oleh proses yang lain. Di sinilah kita akan belajar tentang *asynchronous* *programming*, di mana kita tidak perlu menunggu sesuatu terlalu lama dan kita membiarkan tugas lainnya dikerjakan oleh *core processor* yang lain. Berikut adalah beberapa perintah yang bisa digunakan untuk menerapkan *asynchronous* *programming* di C.
 
 - **select**
 
-    Select memberikan kita kemampuan untuk memonitor jumlah socket yang cukup besar, dan tiap socket tidak terblok oleh socket yang lain. Mungkin kita bisa mengakali menggunakan thread, hanya saja jika jumlah socket sangat besar seperti 1024, memiliki 1024 thread bukanlah solusi yang tepat dan penggunaan select akan lebih memudahkan pekerjaan.
+    *Select* memberikan kita kemampuan untuk memonitor jumlah *socket* yang cukup besar, dan tiap *socket* tidak terblok oleh *socket* yang lain. Mungkin kita bisa mengakali menggunakan thread, hanya saja jika jumlah *socket* sangat besar seperti 1024, memiliki 1024 *thread* bukanlah solusi yang tepat dan penggunaan *select* akan lebih memudahkan pekerjaan.
 
-    Fungsi select() ditunjukkan dalam potongan kode sebagai berikut.
+    Fungsi `select()` ditunjukkan dalam potongan kode sebagai berikut.
+
     ```c
     int select(int nfds, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, struct timeval *timeout);
 
@@ -636,20 +642,20 @@ Kita sudah mengenal bagaimana cara menggunakan thread dan memproses perintah sec
     ```
 
     Penjelasan untuk parameter yang digunakan adalah sebagai berikut.
-    - nfds  :   Jumlah file descriptor tertinggi + 1, bisa menggunakan `FD_SETSIZE` yang berisi angka 1024
-    - readfds : File descriptor untuk pembacaan
-    - writefds : File descriptor untuk penulisan
-    - exceptfds :   File descriptor untuk exception
-    - timeout   :   Timeout jika aplikasi menginginkan ada timeout
+    - nfds: Jumlah file descriptor tertinggi + 1, bisa menggunakan `FD_SETSIZE` yang berisi angka 1024.
+    - `readfds`: *File descriptor* untuk pembacaan.
+    - `writefds`: *File descriptor* untuk penulisan.
+    - `exceptfds`: *File descriptor* untuk *exception*.
+    - `timeout`: *Timeout* jika aplikasi menginginkan ada *timeout*.
 
-    Contoh penggunaan dapat dilihat pada [file server](select-server.c) dan [file client](select-client.c) yang ada pada modul. Lakukan seperti di [Subbab 2.3 Sockets](#23-sockets) untuk testing.
-
+    Contoh penggunaan dapat dilihat pada [file server](select-server.c) dan [file client](select-client.c) yang ada pada modul. Lakukan seperti di [Subbab 2.3 Sockets](#23-sockets) untuk *testing*.
 
 - **poll**
 
-    `poll()` sendiri melakukan sesuatu yang sama dengan `select()` yaitu menunggu salah satu dari file descriptor untuk siap melakukan operasi. Tetapi `poll()` sendiri diciptakan untuk mengatasi permasalahan pending yang dimiliki oleh `select()`
+    `poll()` sendiri melakukan sesuatu yang sama dengan `select()` yaitu menunggu salah satu dari *file descriptor* untuk siap melakukan operasi. Tetapi `poll()` sendiri diciptakan untuk mengatasi permasalahan *pending* yang dimiliki oleh `select()`.
 
-    Fungsi `poll()`
+    Fungsi `poll()` ditunjukkan dalam potongan kode sebagai berikut.
+
     ```c
     #include <poll.h> 
 
@@ -663,18 +669,19 @@ Kita sudah mengenal bagaimana cara menggunakan thread dan memproses perintah sec
     ```
 
     Penjelasan Parameter :
-    - fds   :   Array dari file descriptor
-    - nfds  :   Jumlah file descriptor
-    - timeout   :    Timeout untuk program
-    - events & revents : Bisa membaca sumber yang ada di referensi karena cukup banyak dan beragam
+    - `fds`: *Array* dari *file descriptor*.
+    - `nfds`: Jumlah *file descriptor*.
+    - `timeout`: *Timeout* untuk program.
+    - `events` & `revents`: Bisa membaca sumber yang ada di referensi karena cukup banyak dan beragam.
 
-    Contoh penggunaan dapat dilihat pada [file server](poll-server.c) dan [file client](poll-client.c) yang ada pada modul. Lakukan seperti di [Subbab 2.3 Sockets](#23-sockets) untuk testing.
+    Contoh penggunaan dapat dilihat pada [file server](poll-server.c) dan [file client](poll-client.c) yang ada pada modul. Lakukan seperti di [Subbab 2.3 Sockets](#23-sockets) untuk *testing*.
 
 - **epoll**
 
-    `epoll` adalah varian dari `poll()` yang bisa memperbesar skala dengan baik untuk jumlah file descriptor yang besar. 3 system call disediakan untuk set up dan mengkontrol epoll set : `epoll_create()`, `epoll_ctl()`, `epoll_wait()`.
+    `epoll` adalah varian dari `poll()` yang bisa memperbesar skala dengan baik untuk jumlah *file descriptor* yang besar. Tiga *system call* disediakan untuk *set up* dan mengkontrol *epoll set*, yaitu `epoll_create()`, `epoll_ctl()`, dan `epoll_wait()`.
 
-    Fungsi-fungsi untuk `epoll`
+    Fungsi-fungsi untuk `epoll` adalah sebagai berikut.
+
     ```c
     int epoll_create(int size); // creates an epoll() instance
 
@@ -695,7 +702,7 @@ Kita sudah mengenal bagaimana cara menggunakan thread dan memproses perintah sec
     };
     ```
 
-    Contoh penggunaan dapat dilihat pada [file server](epoll-server.c) dan [file client](epoll-client.c) yang ada pada modul. Lakukan seperti di [Subbab 2.3 Sockets](#23-sockets) untuk testing.
+    Contoh penggunaan dapat dilihat pada [file server](epoll-server.c) dan [file client](epoll-client.c) yang ada pada modul. Lakukan seperti di [Subbab 2.3 Sockets](#23-sockets) untuk *testing*.
 
 
 </br>
@@ -704,12 +711,14 @@ Kita sudah mengenal bagaimana cara menggunakan thread dan memproses perintah sec
 
 *Socket* merupakan sebuah *end-point* dalam sebuah proses yang saling berkomunikasi. Biasanya *socket* digunakan untuk komunikasi antar proses pada komputer yang berbeda, namun dapat juga digunakan dalam komputer yang sama.
 
-Diagram :   
+Diagram dari *socket* dapat ditunjukkan sebagai berikut.
+
 ![alt](img/socket.png "implementasi socket C")
 
-Example : [socket-server.c](socket-server.c) [socket-client.c](socket-client.c)
+Contoh kode dapat dilihat pada [socket-server.c](socket-server.c) dan [socket-client.c](socket-client.c).
 
-Server
+**Server**
+
 ```c
 #include <stdio.h>
 #include <sys/socket.h>
@@ -763,7 +772,9 @@ int main(int argc, char const *argv[]) {
     return 0;
 }
 ```
-Client
+
+**Client**
+
 ```c
 #include <stdio.h>
 #include <sys/socket.h>
@@ -807,8 +818,8 @@ int main(int argc, char const *argv[]) {
     return 0;
 }
 ```
-Jalankan proses server dulu, kemudian jalankan clientnya. Dan amati apa yang terjadi.
 
+Jalankan proses *server* dulu, kemudian jalankan *client*-nya. Dan amati apa yang terjadi.
 
 </br>
 
@@ -866,6 +877,7 @@ Penambahan angka berhasil
 </br>
 
 ### **References** 
+
 - https://notes.shichao.io/apue/  
 - https://www.gta.ufrj.br/ensino/eel878/sockets/index.html  
 - http://advancedlinuxprogramming.com/alp-folder/alp-ch05-ipc.pdf  
