@@ -529,19 +529,49 @@ int main()
 
 <!-- TAMBAH KETERANGAN LEBIH DALAM BUAT MESSAGE QUEUES -->
 ### 2.4 Message Queues
-Merupakan komunikasi antar proses dimana proses tersebut menciptakan internal linked-list pada alamat kernel Sistem Operasi. Pesannya disebut sebagai *queue* sedangkan pengenalnya disebut *queue* ID. *Queue* ID berguna sebagai *key* untuk menandai pesan mana yang akan dikirim dan tujuan pengiriman pesannya.
+Message queue merupakan suatu mekanisme *interprocess communication (IPC)* yang memungkinkan suatu proses untuk melakukan pertukaran data berupa pesan diantara dua proses. Mekanisme ini memungkinkan proses untuk berkomunikasi secara asinkron dengan mengirim pesan satu sama lain. Pesan yang dikirim akan disimpan ke dalam suatu antrian, menunggu untuk diproses, kemudian dihapus setelah proses selesai berjalan.
+
+Ilustrasi:
+
+![ilustrasi-message-queue](https://static.javatpoint.com/operating-system/images/ipc-using-message-queues.png)
+
+Message queue menggunakan prinsip FIFO (First In First Out) tidak terbatas yang tidak dapat diakses oleh dua thread yang berbeda. Dalam melakukan write pesan, banyak tasks dapat menulis pesan ke dalam queue, tetapi hanya satu tasks yang dapat membaca pesan secara sekaligus dari sebuah queue. Pembaca akan menunggu antrian pesan sampai ada pesan yang akan diproses.
 
 
 <!-- TAMBAH KETERANGAN LEBIH DALAM BUAT SEMAPHORES -->
 ### 2.5 Semaphores
+Semaphore berfungsi untuk melindungi critical region yang dibagi untuk banyak proses. Banyak proses menggunakan region kode yang sama, sehingga apabila semua proses akan mengakses region tersebut secara paralel maka hasilnya akan tumpang tindih.
+> Sebagai contoh, apabila terdapat satu printer dan tiga pengguna dengan pekerjaannya masing-masing memulai pekerjaannya secara paralel, maka output printer tersebut akan tumpang tindih.
+
+Jadi, untuk melindungi hal-hal tersebut, kita memerlukan semaphore untuk mengunci critical section saat suatu proses berjalan.
+
 Semaphore berbeda dengan jenis-jenis IPC yang lain. Pada pengaplikasiannya, semaphore merupakan sebuah counter yang digunakan untuk controlling resource oleh beberapa proses secara bersamaan.
-- Jika suatu counter block memory memiliki nilai positif, semaphore dapat menggunakan resource untuk prosesnya, dan mengurangi nilai counter block dengan 1 untuk menandai bahwa suatu block memory tengah digunakan.
-- Sebaliknya, jika semaphore bernilai 0, proses akan masuk pada mode sleep sampai semaphore bernilai lebih besar dari 0.
- 
+
+Ilustrasi
+
+![semaphore](https://media.licdn.com/dms/image/C4D12AQE_5m23cEncqg/article-cover_image-shrink_423_752/0/1620572774832?e=1686787200&v=beta&t=HVehtAAGcLgKwce7FK6z2fiqp0689T7Gi3Euwu29GlE)
+
+Gambar di atas menunjukkan ilustrasi dari semaphore, yaitu terdapat critical section dan `V(s)` untuk melakukan increment (signal), dan `P(s)` decrement (wait).
+- Jika suatu counter block memory memiliki nilai positif, semaphore dapat menggunakan resource untuk prosesnya, dan mengurangi nilai counter block dengan 1 untuk menandai bahwa suatu block memory tengah digunakan (proses wait).
+- Sebaliknya, jika semaphore bernilai 0, proses akan masuk pada mode sleep sampai semaphore bernilai lebih besar dari 0 (signal masuk).
 
 <!-- TAMBAH KETERANGAN LEBIH DALAM BUAT SHARED MEMORY -->
 ### 2.6 Shared Memory
-Sebuah mekanisme *mapping area(segments)* dari suatu blok *memory* untuk digunakan bersama oleh beberapa proses. Sebuah proses akan menciptakan *segment memory*, kemudian proses lain yang diijinkan dapat mengakses *memory* tersebut. *Shared memory* merupakan cara yang efektif untuk melakukan pertukaran data antar program.
+Sebuah mekanisme *mapping area (segments)* dari suatu blok *memory* untuk digunakan bersama oleh beberapa proses. Sebuah proses akan menciptakan *segment memory*, kemudian proses lain yang diijinkan dapat mengakses *memory* tersebut. *Shared memory* merupakan cara yang efektif untuk melakukan pertukaran data antar program. Dalam hal ini, apabila suatu proses melakukan perubahan, maka proses lain dapat melihatnya.
+
+![shared-memory](https://static.javatpoint.com/operating-system/images/ipc-through-shared-memory.png)
+
+Shared memory merupakan mekanisme IPC yang paling cepat. Suatu sistem operasi akan memetakan memory segment pada suatu address space dari beberapa proces untuk melakukan read and write di segmen memori tersebut tanpa memanggil fungsi dari sistem operasi. Shared memory ini merupakan mekanisme yang superior untuk melakukan pertukaran data dengan ukuran sangat besar.
+
+Langkah-langkah menggunakan shared memory:
+1. Melakukan request memory segment pada operating system yang bisa digunakan secara bersamaan oleh suatu proses
+2. Melakukan asosiasi dari sebagian atau seluruh memory dengan address space dari proses yang dimaksud.
+
+Ilustrasi
+![shared-mem](https://static.javatpoint.com/operating-system/images/ipc-through-shared-memory2.png)
+
+* Sebagai catatan, alamat memory dari suatu shared memory pada masing-masing proses belum tentu sama. Dalam hal ini, kita dapat menggunakan semaphore untuk melakukan sinkronisasi.
+
 
 Example: [Proses 1](proses1.c) [Proses 2](proses2.c)
 
