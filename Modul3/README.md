@@ -344,14 +344,14 @@ void *print_message_function( void *ptr )
 
 ```
 
-<!-- SECTION DI BAWAH INI DIBUAT HIDDEN DEFAULTNYA, BIAR MEREKA COBA DULU -->
+<details>
+  <summary>Keterangan&Kesimpulan</summary>
 
-Keterangan :
-- Pada program di atas, jika kita *comment* baris `pthread_join`, maka hasil yang didapat tidak akan memunculkan tulisan **Thread 1** dan **Thread 2**.
+- Pada program di atas, jika kita _comment_ baris `pthread_join`, maka hasil yang didapat tidak akan memunculkan tulisan **Thread 1** dan **Thread 2**.
 - Jika pemanggilan fungsi `pthread_join` di-uncomment, maka program yang kita buat akan memunculkan tulisan **Thread 1** dan **Thread 2**.
 
-**Kesimpulan** :
-Pada program pertama tidak menjalankan fungsi `print_message_function` karena sebelum kedua thread dijadwalkan, program utama (kemungkinan) telah selesai dieksekusi sehingga tidak menjalankan fungsi bawaan pada thread. Pada percobaan kedua, fungsi `pthread_join()` digunakan untuk membuat program utama menunggu thread yang *join* hingga target thread selesai dieksekusi, dengan fungsi ini program utama di-suspend hingga target thread selesai dieksekusi.
+Pada program pertama tidak menjalankan fungsi `print_message_function` karena sebelum kedua thread dijadwalkan, program utama (kemungkinan) telah selesai dieksekusi sehingga tidak menjalankan fungsi bawaan pada thread. Pada percobaan kedua, fungsi `pthread_join()` digunakan untuk membuat program utama menunggu thread yang _join_ hingga target thread selesai dieksekusi, dengan fungsi ini program utama di-suspend hingga target thread selesai dieksekusi.
+
 - Fungsi untuk terminasi thread
   ```c
   #include <pthread.h>
@@ -365,8 +365,8 @@ Pada program pertama tidak menjalankan fungsi `print_message_function` karena se
   /* Jika berhasil mengembalikan nilai 0, jika error mengembalikan nilai 1 */
   ```
   Fungsi akan menunda pekerjaan sampai status pointer `rval_ptr` dari fungsi `pthread_exit()` mengembalikan nilainya.
+  </details>
 
-<!-- SAMPE SINI BATAS AKHIRNYA -->
 
 
 
@@ -428,6 +428,154 @@ Keterangan :
 - Terdapat 2 buah thread yang berjalan dengan fungsi yang berbeda.
 - Sumber daya (variabel) yang digunakan kedua thread untuk mengeksekusi pekerjaannya **sama**.
 - Variabel `status` adalah contoh simple untuk mengendalikan jalannya thread.
+
+Kemudian kita juga fungsi `pthread_mutex` yang telah disediakan oleh library `pthread.h`. Berikut contoh programnya:
+
+```c
+#include <pthread.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+
+pthread_t tid[2];
+int counter;
+// lock: Variabel mutex yang digunakan untuk mengatur akses terhadap variabel counter.
+pthread_mutex_t lock;
+
+void* trythis(void* arg)
+{
+    //pthread_mutex_lock() digunakan untuk mengunci mutex lock, sehingga menghindari akses bersama pada variabel counter.
+    pthread_mutex_lock(&lock);
+
+    unsigned long i = 0;
+    counter += 1;
+    printf("\n Job %d has started\n", counter);
+
+    for (i = 0; i < (0xFFFFFFFF); i++)
+        ;
+
+    printf("\n Job %d has finished\n", counter);
+
+    //pthread_mutex_unlock() digunakan untuk membuka kunci mutex lock agar memungkinkan akses dari thread-thread lain.
+    pthread_mutex_unlock(&lock);
+
+    return NULL;
+}
+
+int main(void)
+{
+    int i = 0;
+    int error;
+
+    if (pthread_mutex_init(&lock, NULL) != 0) {
+        printf("\n mutex init has failed\n");
+        return 1;
+    }
+
+    while (i < 2) {
+        error = pthread_create(&(tid[i]),
+        NULL,
+        &trythis, NULL);
+        if (error != 0)
+            printf("\nThread can't be created :[%s]",
+            strerror(error));
+        i++;
+    }
+
+    pthread_join(tid[0], NULL);
+    pthread_join(tid[1], NULL);
+    pthread_mutex_destroy(&lock);
+
+    return 0;
+}
+```
+
+Output :
+
+```
+Job 1 has started
+
+Job 1 has finished
+
+Job 2 has started
+
+Job 2 has finished
+```
+
+Kemudian kita juga fungsi `pthread_mutex` yang telah disediakan oleh library `pthread.h`. Berikut contoh programnya:
+
+```c
+#include <pthread.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+
+pthread_t tid[2];
+int counter;
+// lock: Variabel mutex yang digunakan untuk mengatur akses terhadap variabel counter.
+pthread_mutex_t lock;
+
+void* trythis(void* arg)
+{
+    //pthread_mutex_lock() digunakan untuk mengunci mutex lock, sehingga menghindari akses bersama pada variabel counter.
+    pthread_mutex_lock(&lock);
+
+    unsigned long i = 0;
+    counter += 1;
+    printf("\n Job %d has started\n", counter);
+
+    for (i = 0; i < (0xFFFFFFFF); i++)
+        ;
+
+    printf("\n Job %d has finished\n", counter);
+
+    //pthread_mutex_unlock() digunakan untuk membuka kunci mutex lock agar memungkinkan akses dari thread-thread lain.
+    pthread_mutex_unlock(&lock);
+
+    return NULL;
+}
+
+int main(void)
+{
+    int i = 0;
+    int error;
+
+    if (pthread_mutex_init(&lock, NULL) != 0) {
+        printf("\n mutex init has failed\n");
+        return 1;
+    }
+
+    while (i < 2) {
+        error = pthread_create(&(tid[i]),
+        NULL,
+        &trythis, NULL);
+        if (error != 0)
+            printf("\nThread can't be created :[%s]",
+            strerror(error));
+        i++;
+    }
+
+    pthread_join(tid[0], NULL);
+    pthread_join(tid[1], NULL);
+    pthread_mutex_destroy(&lock);
+
+    return 0;
+}
+```
+
+Output :
+
+```
+Job 1 has started
+
+Job 1 has finished
+
+Job 2 has started
+
+Job 2 has finished
+```
 
 **Kesimpulan** :
 Karena kita tidak mengetahui *thread* mana yang lebih dahulu mengeksekusi sebuah variable atau sumber daya pada program, kegunaan dari **Mutex** adalah untuk menjaga sumber daya suatu thread agar tidak digunakan oleh thread lain sebelum ia menyelesaikan pekerjaannya.
