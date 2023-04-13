@@ -1,24 +1,29 @@
 # **Thread dan IPC**
-## **Objectives**
-1. Peserta memahami IPC sebagai bagian dari bahasan process sebelumnya
-2. Peserta mengetahui apa itu thread
-3. Peserta memahami bagaimana thread bekerja
-4. Peserta memahami bagaimana cara membuat thread
+## **Objektif**
+1. Peserta memahami IPC sebagai bagian dari bahasan proses pada modul sebelumnya.
+2. Peserta mengetahui apa itu *thread*.
+3. Peserta memahami bagaimana *thread* bekerja.
+4. Peserta memahami bagaimana cara membuat *thread*.
+
+<br>
+
+## **Daftar Isi**
 
 - [**Thread dan IPC**](#thread-dan-ipc)
-  - [**Objectives**](#objectives)
+  - [**Objektif**](#objektif)
+  - [**Daftar Isi**](#daftar-isi)
   - [1. Thread](#1-thread)
     - [1.1 Thread](#11-thread)
     - [1.2 Multiprocess Vs Multithread](#12-multiprocess-vs-multithread)
     - [1.3 Pembuatan Thread](#13-pembuatan-thread)
     - [**1.4 Join Thread**](#14-join-thread)
-    - [**1.5 Mutual Exclusion**](#15-mutual-exclusion)
+    - [1.5 Mutual Exclusion](#15-mutual-exclusion)
   - [**2. IPC (Interprocess Communication)**](#2-ipc-interprocess-communication)
     - [**2.1 IPC**](#21-ipc)
     - [**2.2 Pipes**](#22-pipes)
     - [**2.3 Message Queues**](#23-message-queues)
     - [**2.4 Semaphores**](#24-semaphores)
-    - [**2.6 Shared Memory**](#26-shared-memory)
+    - [**2.5 Shared Memory**](#25-shared-memory)
   - [**3. Extras (Bahan Bacaan Tambahan)**](#3-extras-bahan-bacaan-tambahan)
     - [**3.1 Asynchronous Programming**](#31-asynchronous-programming)
     - [**3.2 Socket Programming**](#32-socket-programming)
@@ -32,13 +37,13 @@
 
 ### 1.1 Thread
 
-Thread merupakan unit terkecil dalam suatu proses yang dapat dijadwalkan oleh sistem operasi. Thread juga sering disebut sebagai Lightweight Processes. Thread biasanya secara tidak langsung terbentuk karena adanya suatu proses , dimana setiap proses pasti memiliki thread didalamnya (dalam sistem operasi modern).
+*Thread* merupakan unit terkecil dalam suatu proses yang dapat dijadwalkan oleh sistem operasi. *Thread* juga sering disebut sebagai *Lightweight* *Processes*. *Thread* biasanya secara tidak langsung terbentuk karena adanya *forking* pada suatu proses, dimana setiap proses pasti memiliki thread didalamnya (dalam sistem operasi modern).
 
-Dalam suatu proses, minimal terdapat sebuah thread yang berjalan, walau biasanya terdapat lebih dari satu thread dalam proses tersebut. Thread akan berbagi memori dan menggunakan informasi (nilai) dari variabel-variabel pada suatu proses tersebut. Penggambaran thread pada sebuah proses dapat dilihat sebagai berikut.
+Dalam suatu proses, minimal terdapat sebuah *thread* yang berjalan, walau biasanya terdapat lebih dari satu *thread* dalam proses tersebut. *Thread* akan berbagi memori dan menggunakan informasi (nilai) dari variabel-variabel pada suatu proses tersebut. Penggambaran *thread* pada sebuah proses dapat dilihat sebagai berikut.
 
 ![thread](img/thread2.png)
 
-Untuk melihat thread yang sedang berjalan, gunakan perintah sebagai berikut.
+Untuk melihat *thread* yang sedang berjalan, gunakan perintah sebagai berikut.
 
 ```bash
 top -H
@@ -52,7 +57,8 @@ top -H
 
 ![multivsmulti](multiprocessing_multithreading.gif)
 
-Perbedaan multiprocess dan multithread
+Perbedaan *multiprocess* dan *multithread*.
+
 Nomor | Multiprocess | Multithread
 --- | --- | ---
 1 | banyak proses dieksekusi secara konkuren | banyak thread dalam 1 proses dieksekusi secara konkuren
@@ -67,7 +73,7 @@ Nomor | Multiprocess | Multithread
 
 ### 1.3 Pembuatan Thread
 
-Thread dapat dibuat menggunakan fungsi pada program berbahasa C :
+Thread dapat dibuat menggunakan fungsi pada program berbahasa C sebagai berikut.
 
 ```c
 #include <pthread.h> //library thread
@@ -80,7 +86,7 @@ int pthread_create(pthread_t *restrict tidp,
 /* Jika berhasil mengembalikan nilai 0, jika error mengembalikan nilai 1 */
 ```
 
-Penjelasan Syntax:
+Penjelasan syntax:
 
 - Pointer `tidp` digunakan untuk menunjukkan alamat memori dengan thread ID dari thread baru.
 - Argumen `attr` digunakan untuk menyesuaikan atribut yang digunakan oleh thread. nilai `attr` di-set `NULL` ketika thread menggunakan atribut _default_.
@@ -138,7 +144,7 @@ void main() {
 }
 ```
 
-Program Pembanding jika tidak menggunakan Thread
+Program Pembanding jika tidak menggunakan *Thread*.
 
 ```c
 #include <stdio.h>
@@ -174,7 +180,7 @@ int main() {
 }
 ```
 
-Perbandingan antara Thread dengan Fork
+Perbandingan antara Thread dengan Fork.
 
 Contoh membuat program tanpa menggunakan thread [playtanpathread.c](playtanpathread.c):
 
@@ -209,7 +215,7 @@ int main()
 }
 ```
 
-Contoh membuat program menggunakan thread [playthread.c](playthread.c) :
+Contoh membuat program menggunakan thread [playthread.c](playthread.c).
 
 > compile dengan cara `gcc -pthread -o [output] input.c`
 
@@ -343,7 +349,6 @@ void *print_message_function( void *ptr )
 }
 
 ```
-
 <details>
   <summary>Keterangan&Kesimpulan</summary>
 
@@ -358,8 +363,7 @@ Pada program pertama tidak menjalankan fungsi `print_message_function` karena se
   void pthread_exit(void *rval_ptr);
   ```
   Argumen `rval_ptr` adalah pointer yang digunakan yang dapat diakses oleh fungsi `pthread_join()` agar dapat mengetahui status thread tersebut
-
-- Fungsi untuk melakukan join thread 
+- Fungsi untuk melakukan join thread
   ```c
   int pthread_join(pthread_t thread, void **rval_ptr);
   /* Jika berhasil mengembalikan nilai 0, jika error mengembalikan nilai 1 */
@@ -367,61 +371,46 @@ Pada program pertama tidak menjalankan fungsi `print_message_function` karena se
   Fungsi akan menunda pekerjaan sampai status pointer `rval_ptr` dari fungsi `pthread_exit()` mengembalikan nilainya.
   </details>
 
+</br>
 
-
-
-### **1.5 Mutual Exclusion**
+### 1.5 Mutual Exclusion
 
 Disebut juga sebagai **Mutex**, yaitu suatu cara yang menjamin jika ada pekerjaan yang menggunakan variabel atau berkas digunakan juga oleh pekerjaan yang lain, maka pekerjaan lain tersebut akan mengeluarkan nilai dari pekerjaan sebelumnya.
 
-<!-- TAMBAH KETERANGAN KALAU INI PENGGAMBARAN MUTEX SEDERHANA DENGAN MENGGUNAKAN FLAG BERUPA VARIABEL STATUS. PENGGUNAAN STL BISA MENGGUNAKAN pthread_mutex_... -->
+Contoh program Simple Mutual_Exclusion [threadmutex.c](threadmutex.c) yang mana di sini menggunakan flag `status`.
 
-Contoh program Simple Mutual_Exclusion [threadmutex.c](threadmutex.c):
 ```c
 #include<stdio.h>
 #include<string.h>
 #include<pthread.h>
 #include<stdlib.h>
 #include<unistd.h>
- 
 pthread_t tid1, tid2;
 int status;
 int nomor;
- 
 void* tulis(void *arg)
 {
     status = 0;
- 
     printf("Masukan nomor : ");
     scanf("%d", &nomor);
- 
     status = 1;
- 
     return NULL;
 }
-
 void* baca(void *arg)
 {
     while(status != 1)
     {
-
     }
-
     printf("Nomor %d\n", nomor);
 }
- 
 int main(void)
 {
-
     pthread_create(&(tid1), NULL, tulis, NULL);
     pthread_create(&(tid2), NULL, baca, NULL);
- 
     pthread_join(tid1, NULL);
     pthread_join(tid2, NULL);
- 
     return 0;
 }
-
 ```
 
 Keterangan :
@@ -437,42 +426,32 @@ Kemudian kita juga fungsi `pthread_mutex` yang telah disediakan oleh library `pt
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-
 pthread_t tid[2];
 int counter;
 // lock: Variabel mutex yang digunakan untuk mengatur akses terhadap variabel counter.
 pthread_mutex_t lock;
-
 void* trythis(void* arg)
 {
     //pthread_mutex_lock() digunakan untuk mengunci mutex lock, sehingga menghindari akses bersama pada variabel counter.
     pthread_mutex_lock(&lock);
-
     unsigned long i = 0;
     counter += 1;
     printf("\n Job %d has started\n", counter);
-
     for (i = 0; i < (0xFFFFFFFF); i++)
         ;
-
     printf("\n Job %d has finished\n", counter);
-
     //pthread_mutex_unlock() digunakan untuk membuka kunci mutex lock agar memungkinkan akses dari thread-thread lain.
     pthread_mutex_unlock(&lock);
-
     return NULL;
 }
-
 int main(void)
 {
     int i = 0;
     int error;
-
     if (pthread_mutex_init(&lock, NULL) != 0) {
         printf("\n mutex init has failed\n");
         return 1;
     }
-
     while (i < 2) {
         error = pthread_create(&(tid[i]),
         NULL,
@@ -482,11 +461,9 @@ int main(void)
             strerror(error));
         i++;
     }
-
     pthread_join(tid[0], NULL);
     pthread_join(tid[1], NULL);
     pthread_mutex_destroy(&lock);
-
     return 0;
 }
 ```
@@ -495,97 +472,21 @@ Output :
 
 ```
 Job 1 has started
-
 Job 1 has finished
-
 Job 2 has started
-
-Job 2 has finished
-```
-
-Kemudian kita juga fungsi `pthread_mutex` yang telah disediakan oleh library `pthread.h`. Berikut contoh programnya:
-
-```c
-#include <pthread.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-
-pthread_t tid[2];
-int counter;
-// lock: Variabel mutex yang digunakan untuk mengatur akses terhadap variabel counter.
-pthread_mutex_t lock;
-
-void* trythis(void* arg)
-{
-    //pthread_mutex_lock() digunakan untuk mengunci mutex lock, sehingga menghindari akses bersama pada variabel counter.
-    pthread_mutex_lock(&lock);
-
-    unsigned long i = 0;
-    counter += 1;
-    printf("\n Job %d has started\n", counter);
-
-    for (i = 0; i < (0xFFFFFFFF); i++)
-        ;
-
-    printf("\n Job %d has finished\n", counter);
-
-    //pthread_mutex_unlock() digunakan untuk membuka kunci mutex lock agar memungkinkan akses dari thread-thread lain.
-    pthread_mutex_unlock(&lock);
-
-    return NULL;
-}
-
-int main(void)
-{
-    int i = 0;
-    int error;
-
-    if (pthread_mutex_init(&lock, NULL) != 0) {
-        printf("\n mutex init has failed\n");
-        return 1;
-    }
-
-    while (i < 2) {
-        error = pthread_create(&(tid[i]),
-        NULL,
-        &trythis, NULL);
-        if (error != 0)
-            printf("\nThread can't be created :[%s]",
-            strerror(error));
-        i++;
-    }
-
-    pthread_join(tid[0], NULL);
-    pthread_join(tid[1], NULL);
-    pthread_mutex_destroy(&lock);
-
-    return 0;
-}
-```
-
-Output :
-
-```
-Job 1 has started
-
-Job 1 has finished
-
-Job 2 has started
-
 Job 2 has finished
 ```
 
 **Kesimpulan** :
-Karena kita tidak mengetahui *thread* mana yang lebih dahulu mengeksekusi sebuah variable atau sumber daya pada program, kegunaan dari **Mutex** adalah untuk menjaga sumber daya suatu thread agar tidak digunakan oleh thread lain sebelum ia menyelesaikan pekerjaannya.
+Karena kita tidak mengetahui _thread_ mana yang lebih dahulu mengeksekusi sebuah variable atau sumber daya pada program, kegunaan dari **Mutex** adalah untuk menjaga sumber daya suatu thread agar tidak digunakan oleh thread lain sebelum ia menyelesaikan pekerjaannya.
 
-
+</br></br>
 
 ## **2. IPC (Interprocess Communication)**
 ### **2.1 IPC**
 IPC (*Interprocess Communication*) adalah cara atau mekanisme pertukaran data antara satu proses dengan proses lain, baik pada komputer yang sama atau komputer jarak jauh yang terhubung melalui suatu jaringan.
-<!-- TAMBAHKAN PENGERTIAN LEBIH LENGKAP -->
+
+</br>
 
 ### **2.2 Pipes**
 
@@ -800,7 +701,7 @@ Gambar di atas menunjukkan ilustrasi dari semaphore, yaitu terdapat critical sec
 
 </br>
 
-### **2.6 Shared Memory**
+### **2.5 Shared Memory**
 
 Sebuah mekanisme *mapping area (segments)* dari suatu blok *memory* untuk digunakan bersama oleh beberapa proses. Sebuah proses akan menciptakan *segment memory*, kemudian proses lain yang diijinkan dapat mengakses *memory* tersebut. *Shared memory* merupakan cara yang efektif untuk melakukan pertukaran data antar program. Dalam hal ini, apabila suatu proses melakukan perubahan, maka proses lain dapat melihatnya.
 
@@ -891,7 +792,7 @@ Program 1 : 10
 Program 1 : 30
 ```
 
-</br>
+</br></br>
 
 ## **3. Extras (Bahan Bacaan Tambahan)**
 
@@ -1110,7 +1011,7 @@ man mkfifo
 man fcntl
 ```
 
-</br>
+</br></br>
 
 ## **Soal Latihan** 
 
@@ -1149,7 +1050,7 @@ Penambahan angka berhasil
 5 3
 ``` -->
 
-</br>
+</br></br>
 
 ### **References** 
 
