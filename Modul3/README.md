@@ -1,24 +1,24 @@
-# Thread dan IPC
-## Objectives
+# **Thread dan IPC**
+## **Objectives**
 1. Peserta memahami IPC sebagai bagian dari bahasan process sebelumnya
 2. Peserta mengetahui apa itu thread
 3. Peserta memahami bagaimana thread bekerja
 4. Peserta memahami bagaimana cara membuat thread
 
-- [Thread dan IPC](#thread-dan-ipc)
-  - [Objectives](#objectives)
+- [**Thread dan IPC**](#thread-dan-ipc)
+  - [**Objectives**](#objectives)
   - [1. Thread](#1-thread)
     - [1.1 Thread](#11-thread)
     - [1.2 Multiprocess Vs Multithread](#12-multiprocess-vs-multithread)
     - [1.3 Pembuatan Thread](#13-pembuatan-thread)
-    - [1.4 Join Thread](#14-join-thread)
-    - [1.5 Mutual Exclusion](#15-mutual-exclusion)
-  - [2. IPC (Interprocess Communication)](#2-ipc-interprocess-communication)
-    - [2.1 IPC](#21-ipc)
-    - [2.2 Pipes](#22-pipes)
-    - [2.4 Message Queues](#24-message-queues)
-    - [2.5 Semaphores](#25-semaphores)
-    - [2.6 Shared Memory](#26-shared-memory)
+    - [**1.4 Join Thread**](#14-join-thread)
+    - [**1.5 Mutual Exclusion**](#15-mutual-exclusion)
+  - [**2. IPC (Interprocess Communication)**](#2-ipc-interprocess-communication)
+    - [**2.1 IPC**](#21-ipc)
+    - [**2.2 Pipes**](#22-pipes)
+    - [**2.3 Message Queues**](#23-message-queues)
+    - [**2.4 Semaphores**](#24-semaphores)
+    - [**2.6 Shared Memory**](#26-shared-memory)
   - [**3. Extras (Bahan Bacaan Tambahan)**](#3-extras-bahan-bacaan-tambahan)
     - [**3.1 Asynchronous Programming**](#31-asynchronous-programming)
     - [**3.2 Socket Programming**](#32-socket-programming)
@@ -26,24 +26,27 @@
   - [**Soal Latihan**](#soal-latihan)
     - [**References**](#references)
 
+</br>
 
-## 1. Thread 
+## 1. Thread
 
 ### 1.1 Thread
 
-Thread merupakan unit terkecil dalam suatu proses yang dapat dijadwalkan oleh sistem operasi. Thread juga sering disebut sebagai Lightweight Processes. Thread biasanya secara tidak langsung terbentuk karena adanya kegiatan `fork` pada proses yang berjalan. 
+Thread merupakan unit terkecil dalam suatu proses yang dapat dijadwalkan oleh sistem operasi. Thread juga sering disebut sebagai Lightweight Processes. Thread biasanya secara tidak langsung terbentuk karena adanya suatu proses , dimana setiap proses pasti memiliki thread didalamnya (dalam sistem operasi modern).
 
 Dalam suatu proses, minimal terdapat sebuah thread yang berjalan, walau biasanya terdapat lebih dari satu thread dalam proses tersebut. Thread akan berbagi memori dan menggunakan informasi (nilai) dari variabel-variabel pada suatu proses tersebut. Penggambaran thread pada sebuah proses dapat dilihat sebagai berikut.
 
 ![thread](img/thread2.png)
 
 Untuk melihat thread yang sedang berjalan, gunakan perintah sebagai berikut.
+
 ```bash
 top -H
 ```
 
-<!-- KASIH GAMBAR SS HASIL DARI top -H, KASIH KETERANGANNYA JUGA MANA YANG THREAD DARI HASIL ITU -->
+![top -H](img/top%20-H.jpg)
 
+</br>
 
 ### 1.2 Multiprocess Vs Multithread
 
@@ -56,17 +59,16 @@ Nomor | Multiprocess | Multithread
 2 | menambah CPU untuk menigkatkan kekuatan komputasi | membuat banyak thread dalam 1 proses untuk meningkatkan kekuatan komputasi
 3 | pembuatan proses membutuhkan waktu dan resource yang besar | pembuatan thread lebih ekonomis dalam segi waktu dan resource
 4 | bergantung pada object di memori untuk mengirim data ke proses lain | tidak bergantung pada object lain
-5 |child process sebagian besar bersifat interruptible / killable | multithreading tidak bersifat interruptible / killable
+5 |process sebagian besar bersifat interruptible / killable | threading lebih susah untuk dikill atau diinterrup karena sebuah thread ada dalam sebuah proses sehingga jika ingin menginterrup thread harus melalui prosesnya (yang dikill prosesnya , otomatis thread akan juga terinterrup)
 
-<!-- JELASIN MAKSUD DARI POIN 5 -->
+- Contoh Penggunaan `Multi Processing` adalah pada sistem browser chrome, ketika kita membuka atau membuat tab baru maka sistem juga akan membuat process baru untuk kebutuhan tab baru tersebut sedangkan contoh implementasi `Multi Threading` adalah pada sistem sebuah game dimana sebuah proses dapat menangani berbagai kebutuhan secara bersamaan contohnya sebuah game dapat melakukan rendering beberapa objek bersamaan sehingga proses akan lebih cepat.
 
-<!-- TAMBAHKAN ANALOGI ATAU CONTOH MULTIPROCESS DAN MULTITHREAD (BISA DARI WINDOWS) SEPERTI PROCESS CHROME, DAN THREAD PADA GAME -->
-
-
+</br>
 
 ### 1.3 Pembuatan Thread
 
 Thread dapat dibuat menggunakan fungsi pada program berbahasa C :
+
 ```c
 #include <pthread.h> //library thread
 
@@ -79,15 +81,100 @@ int pthread_create(pthread_t *restrict tidp,
 ```
 
 Penjelasan Syntax:
+
 - Pointer `tidp` digunakan untuk menunjukkan alamat memori dengan thread ID dari thread baru.
-- Argumen `attr` digunakan untuk menyesuaikan atribut yang digunakan oleh thread. nilai `attr` di-set `NULL` ketika thread menggunakan atribut *default*.
+- Argumen `attr` digunakan untuk menyesuaikan atribut yang digunakan oleh thread. nilai `attr` di-set `NULL` ketika thread menggunakan atribut _default_.
 - Thread yang baru dibuat akan berjalan dimulai dari fungsi `start_rtn` dalam fungsi thread.
 - Pointer `arg` digunakan untuk memberikan sebuah argumen ke fungsi `start_rtn`, jika tidak diperlukan argumen, maka `arg` akan di-set `NULL`.
 
+Contoh Program menggunakan Thread
 
-<!-- DI SINI TAMBAHIN KODE YANG DARI PAK BAS, THREADING SEDERHANA -->
+> compile dengan cara `gcc -pthread -o [output] input.c`
 
-<!-- KODE DI BAWAH INI PERLU DIREVISI, JANGAN PAKAI EXEC UNTUK THREADING -->
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <pthread.h>
+
+void *run(void *args) {
+	int angka;
+	angka = *((int *)args);
+
+	if (angka == 1) {
+		printf("%d bukan prima\n", angka);
+		return NULL;
+	}
+
+	for (int i=2; i<angka; i++){
+		if (angka % i == 0){
+			printf("%d bukan prima\n", angka);
+			return NULL;
+		}
+	}
+	printf("%d prima\n", angka);
+        return NULL;
+}
+
+void main() {
+	int angka;
+	printf("Masukkan angka: ");
+	scanf("%d", &angka);
+
+	pthread_t t_id[angka];
+	printf("Thread berhasil dibuat\n");
+
+	for (int i=0 ; i<angka; i++) {
+		int *num_to_check = (int *)malloc(sizeof(int));
+		*num_to_check = i+1 ;
+		pthread_create(&t_id[i], NULL, &run, (void *)num_to_check);
+	}
+
+	for (int i=0 ; i<angka; i++) {
+		pthread_join(t_id[i], NULL);
+	}
+	printf("Thread telah selesai\n");
+
+}
+```
+
+Program Pembanding jika tidak menggunakan Thread
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+
+int is_prime(int angka) {
+    if (angka == 1) {
+        printf("%d bukan prima\n", angka);
+        return 0;
+    }
+
+    for (int i=2; i<angka; i++){
+        if (angka % i == 0){
+            printf("%d bukan prima\n", angka);
+            return 0;
+        }
+    }
+    printf("%d prima\n", angka);
+    return 1;
+}
+
+int main() {
+    int jumlah;
+    printf("Masukkan jumlah angka: ");
+    scanf("%d", &jumlah);
+
+    printf("Hasil pengujian bilangan:\n");
+    for (int i=0; i<jumlah; i++) {
+        is_prime(i);
+    }
+
+    return 0;
+}
+```
+
+Perbandingan antara Thread dengan Fork
 
 Contoh membuat program tanpa menggunakan thread [playtanpathread.c](playtanpathread.c):
 
@@ -118,12 +205,12 @@ int main()
 		}
 		execv("/usr/bin/xlogo", argv2);
 	}
-	
-}
 
+}
 ```
 
 Contoh membuat program menggunakan thread [playthread.c](playthread.c) :
+
 > compile dengan cara `gcc -pthread -o [output] input.c`
 
 ```c
@@ -195,17 +282,14 @@ int main(void)
 	exit(0);
 	return 0;
 }
-
-
 ```
 
 **Kesimpulan** :
-Terlihat ketika program menggunakan thread dapat menjalankan dua task secara bersamaan (task menampilkan gambar dan task timer).
+Terlihat ketika program menggunakan thread dapat menjalankan dua task secara bersamaan dan konsumsi cpu lebih kecil jika dibanding dengan create suaru proses baru.
 
-<!-- TAMBAHKAN FUNFACT TENTANG PERBEDAAN KONSUMSI CPU -->
+</br>
 
-
-### 1.4 Join Thread
+### **1.4 Join Thread**
 Join thread adalah fungsi untuk melakukan penggabungan dengan thread lain yang telah berhenti (*terminated*). Bila thread yang ingin di-join belum dihentikan, maka fungsi ini akan menunggu hingga thread yang diinginkan berstatus **`Terminated`**. Fungsi `pthread_join()` ini dapat dikatakan sebagai fungsi `wait()` pada proses, karena program (*task*) utama akan menunggu thread yang di-join-kan pada program utama tersebut. Kita tidak mengetahui program utama atau thread yang lebih dahulu menyelesaikan pekerjaannya.
 
 Contoh program C Join_Thread [thread_join.c](thread_join.c):
@@ -286,7 +370,8 @@ Pada program pertama tidak menjalankan fungsi `print_message_function` karena se
 
 
 
-### 1.5 Mutual Exclusion
+### **1.5 Mutual Exclusion**
+
 Disebut juga sebagai **Mutex**, yaitu suatu cara yang menjamin jika ada pekerjaan yang menggunakan variabel atau berkas digunakan juga oleh pekerjaan yang lain, maka pekerjaan lain tersebut akan mengeluarkan nilai dari pekerjaan sebelumnya.
 
 <!-- TAMBAH KETERANGAN KALAU INI PENGGAMBARAN MUTEX SEDERHANA DENGAN MENGGUNAKAN FLAG BERUPA VARIABEL STATUS. PENGGUNAAN STL BISA MENGGUNAKAN pthread_mutex_... -->
@@ -349,27 +434,32 @@ Karena kita tidak mengetahui *thread* mana yang lebih dahulu mengeksekusi sebuah
 
 
 
-## 2. IPC (Interprocess Communication)
-### 2.1 IPC
+## **2. IPC (Interprocess Communication)**
+### **2.1 IPC**
 IPC (*Interprocess Communication*) adalah cara atau mekanisme pertukaran data antara satu proses dengan proses lain, baik pada komputer yang sama atau komputer jarak jauh yang terhubung melalui suatu jaringan.
 <!-- TAMBAHKAN PENGERTIAN LEBIH LENGKAP -->
 
-### 2.2 Pipes
-Pipe merupakan komunikasi sequensial antar proses yang saling terelasi. Kelemahannya, hanya dapat digunakan untuk proses yang saling berhubungan dan secara sequensial.
-Terdapat dua jenis pipe:
-- unnamed pipe : Komunikasi antara parent dan child proses.
-- named pipe : Biasa disebut sebagai FIFO, digunakan untuk komunikasi yang berjalan secara independen. **Hanya bisa digunakan jika kedua proses menggunakan *filesystem* yang sama.**
+### **2.2 Pipes**
+
+*Pipe* merupakan komunikasi sequensial antar proses yang saling terelasi. Kelemahannya, hanya dapat digunakan untuk proses yang saling berhubungan dan secara sequensial.
+
+Terdapat dua jenis *pipe* sebagai berikut.
+- `unnamed pipe`: Komunikasi antara *parent* dan *child* proses.
+- `named pipe`: Biasa disebut sebagai FIFO, digunakan untuk komunikasi yang berjalan secara independen. **Hanya bisa digunakan jika kedua proses menggunakan *filesystem* yang sama.**
+
 ```
 $ ls | less
 ```
-Diagram :
+
+Diagram dari *pipe* dapat ditunjukkan sebagai berikut.
 
 ![alt](img/pipe.png "Diagram Pipe")  
 
 <!-- TAMBAHKAN PENJELASAN TENTANG FDS (FILE DESCRIPTOR). SAMA KAYA PID, TAPI BUAT PIPING -->
 
-Syntax in C languange :
-```
+*pseudocode* dari *pipe* (tanpa *fork*) dapat ditunjukkan sebagai berikut.
+
+```pascal
 int pipe(int fds[2]);
 
 Parameters :
@@ -379,8 +469,8 @@ fd[1] will be the fd for the write end of pipe.
 Returns : 0 on Success.
 -1 on error.
 ```
-Example :  
-[pipe1.c](pipe1.c)
+
+Contoh kode dalam bahasa C (tanpa *fork*) dapat dilihat pada [pipe1.c](pipe1.c).
 
 ```c
 // C program to illustrate 
@@ -416,20 +506,22 @@ int main()
 	} 
 	return 0; 
 } 
-
 ```  
-Output :  
+
+Output dari kode tersebut adalah seperti berikut.  
+
 ```
 hello, world #1
 hello, world #2
 hello, world #3
 ```  
-Pipe dengan fork  
-Diagram :  
+
+Diagram dari *pipe* (dengan *fork*) dapat ditunjukkan sebagai berikut. 
+
 ![alt](img/pipe-fork.png)  
 
-Example :  
-[pipe-fork](pipe-fork.c)  
+Contoh kode dalam bahasa C (dengan *fork*) dapat dilihat pada [pipe-fork](pipe-fork.c).  
+
 ```c
 // C program to demonstrate use of fork() and pipe() 
 #include<stdio.h> 
@@ -524,24 +616,59 @@ int main()
 		exit(0); 
 	} 
 } 
-
 ```
 
-<!-- TAMBAH KETERANGAN LEBIH DALAM BUAT MESSAGE QUEUES -->
-### 2.4 Message Queues
-Merupakan komunikasi antar proses dimana proses tersebut menciptakan internal linked-list pada alamat kernel Sistem Operasi. Pesannya disebut sebagai *queue* sedangkan pengenalnya disebut *queue* ID. *Queue* ID berguna sebagai *key* untuk menandai pesan mana yang akan dikirim dan tujuan pengiriman pesannya.
+</br>
 
+### **2.3 Message Queues**
 
-<!-- TAMBAH KETERANGAN LEBIH DALAM BUAT SEMAPHORES -->
-### 2.5 Semaphores
+Message queue merupakan suatu mekanisme *interprocess communication (IPC)* yang memungkinkan suatu proses untuk melakukan pertukaran data berupa pesan diantara dua proses. Mekanisme ini memungkinkan proses untuk berkomunikasi secara asinkron dengan mengirim pesan satu sama lain. Pesan yang dikirim akan disimpan ke dalam suatu antrian, menunggu untuk diproses, kemudian dihapus setelah proses selesai berjalan.
+
+Ilustrasi:
+
+![ilustrasi-message-queue](https://static.javatpoint.com/operating-system/images/ipc-using-message-queues.png)
+
+Message queue menggunakan prinsip FIFO (First In First Out) tidak terbatas yang tidak dapat diakses oleh dua thread yang berbeda. Dalam melakukan write pesan, banyak tasks dapat menulis pesan ke dalam queue, tetapi hanya satu tasks yang dapat membaca pesan secara sekaligus dari sebuah queue. Pembaca akan menunggu antrian pesan sampai ada pesan yang akan diproses.
+
+</br>
+
+### **2.4 Semaphores**
+
+Semaphore berfungsi untuk melindungi critical region yang dibagi untuk banyak proses. Banyak proses menggunakan region kode yang sama, sehingga apabila semua proses akan mengakses region tersebut secara paralel maka hasilnya akan tumpang tindih.
+
+> Sebagai contoh, apabila terdapat satu printer dan tiga pengguna dengan pekerjaannya masing-masing memulai pekerjaannya secara paralel, maka output printer tersebut akan tumpang tindih.
+
+Jadi, untuk melindungi hal-hal tersebut, kita memerlukan semaphore untuk mengunci critical section saat suatu proses berjalan.
+
 Semaphore berbeda dengan jenis-jenis IPC yang lain. Pada pengaplikasiannya, semaphore merupakan sebuah counter yang digunakan untuk controlling resource oleh beberapa proses secara bersamaan.
-- Jika suatu counter block memory memiliki nilai positif, semaphore dapat menggunakan resource untuk prosesnya, dan mengurangi nilai counter block dengan 1 untuk menandai bahwa suatu block memory tengah digunakan.
-- Sebaliknya, jika semaphore bernilai 0, proses akan masuk pada mode sleep sampai semaphore bernilai lebih besar dari 0.
- 
 
-<!-- TAMBAH KETERANGAN LEBIH DALAM BUAT SHARED MEMORY -->
-### 2.6 Shared Memory
-Sebuah mekanisme *mapping area(segments)* dari suatu blok *memory* untuk digunakan bersama oleh beberapa proses. Sebuah proses akan menciptakan *segment memory*, kemudian proses lain yang diijinkan dapat mengakses *memory* tersebut. *Shared memory* merupakan cara yang efektif untuk melakukan pertukaran data antar program.
+Ilustrasi
+
+![semaphore](https://media.licdn.com/dms/image/C4D12AQE_5m23cEncqg/article-cover_image-shrink_423_752/0/1620572774832?e=1686787200&v=beta&t=HVehtAAGcLgKwce7FK6z2fiqp0689T7Gi3Euwu29GlE)
+
+Gambar di atas menunjukkan ilustrasi dari semaphore, yaitu terdapat critical section dan `V(s)` untuk melakukan increment (signal), dan `P(s)` decrement (wait).
+- Jika suatu counter block memory memiliki nilai positif, semaphore dapat menggunakan resource untuk prosesnya, dan mengurangi nilai counter block dengan 1 untuk menandai bahwa suatu block memory tengah digunakan (proses wait).
+- Sebaliknya, jika semaphore bernilai 0, proses akan masuk pada mode sleep sampai semaphore bernilai lebih besar dari 0 (signal masuk).
+
+</br>
+
+### **2.6 Shared Memory**
+
+Sebuah mekanisme *mapping area (segments)* dari suatu blok *memory* untuk digunakan bersama oleh beberapa proses. Sebuah proses akan menciptakan *segment memory*, kemudian proses lain yang diijinkan dapat mengakses *memory* tersebut. *Shared memory* merupakan cara yang efektif untuk melakukan pertukaran data antar program. Dalam hal ini, apabila suatu proses melakukan perubahan, maka proses lain dapat melihatnya.
+
+![shared-memory](https://static.javatpoint.com/operating-system/images/ipc-through-shared-memory.png)
+
+Shared memory merupakan mekanisme IPC yang paling cepat. Suatu sistem operasi akan memetakan memory segment pada suatu address space dari beberapa proces untuk melakukan read and write di segmen memori tersebut tanpa memanggil fungsi dari sistem operasi. Shared memory ini merupakan mekanisme yang superior untuk melakukan pertukaran data dengan ukuran sangat besar.
+
+Langkah-langkah menggunakan shared memory:
+1. Melakukan request memory segment pada operating system yang bisa digunakan secara bersamaan oleh suatu proses
+2. Melakukan asosiasi dari sebagian atau seluruh memory dengan address space dari proses yang dimaksud.
+
+Ilustrasi
+![shared-mem](https://static.javatpoint.com/operating-system/images/ipc-through-shared-memory2.png)
+
+* Sebagai catatan, alamat memory dari suatu shared memory pada masing-masing proses belum tentu sama. Dalam hal ini, kita dapat menggunakan semaphore untuk melakukan sinkronisasi.
+
 
 Example: [Proses 1](proses1.c) [Proses 2](proses2.c)
 
