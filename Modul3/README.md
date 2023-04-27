@@ -350,7 +350,7 @@ void *print_message_function( void *ptr )
 
 ```
 <details>
-  <summary>Keterangan&Kesimpulan</summary>
+  <summary>Keterangan & Kesimpulan</summary>
 
 - Pada program di atas, jika kita _comment_ baris `pthread_join`, maka hasil yang didapat tidak akan memunculkan tulisan **Thread 1** dan **Thread 2**.
 - Jika pemanggilan fungsi `pthread_join` di-uncomment, maka program yang kita buat akan memunculkan tulisan **Thread 1** dan **Thread 2**.
@@ -1016,7 +1016,7 @@ man fcntl
 ## **Soal Latihan** 
 
 *To be added to the here. Stay tune!*
-<!-- 1. Mentor Clemongs sangat senang memberi tugas tambahan pada Clemongs. Karena sudah lelah mengerjakannya, Clemongs meminta bantuan kamu untuk mengerjakan tugas-tugas yang diberikan oleh mentornya.
+1. Mentor Clemongs sangat senang memberi tugas tambahan pada Clemongs. Karena sudah lelah mengerjakannya, Clemongs meminta bantuan kamu untuk mengerjakan tugas-tugas yang diberikan oleh mentornya.
 Ia diminta membuat program multithreading untuk mengecek apakah suatu angka merupakan bilangan prima atau bukan.
 Contoh: 
 ```bash
@@ -1048,7 +1048,7 @@ GET
 Penambahan angka berhasil
 Penambahan angka berhasil
 5 3
-``` -->
+```
 
 </br></br>
 
