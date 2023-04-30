@@ -679,6 +679,8 @@ Ilustrasi:
 
 Message queue menggunakan prinsip FIFO (First In First Out) tidak terbatas yang tidak dapat diakses oleh dua thread yang berbeda. Dalam melakukan write pesan, banyak tasks dapat menulis pesan ke dalam queue, tetapi hanya satu tasks yang dapat membaca pesan secara sekaligus dari sebuah queue. Pembaca akan menunggu antrian pesan sampai ada pesan yang akan diproses.
 
+Contoh program dapat diakses di [sender](sender.c) dan [receiver](receiver.c).
+
 </br>
 
 ### **2.4 Semaphores**
