@@ -5,6 +5,8 @@
 1. Peserta mengetahui _file system_
 
 2. Peserta mengetahui dan mampu mengimplementasikan FUSE
+   
+3. Peserta mampu mengintegrasikan FUSE dengan Docker
 
 
 ## Daftar Isi
@@ -24,6 +26,18 @@
   - [3. Membuat Program FUSE](#3-membuat-program-fuse)
     - [Tips](#tips)
   - [4. Unmount FUSE](#4-unmount-fuse)
+- [Docker Dasar](#docker-dasar)
+  - [Virtualization vs Containerization](#virtualization-vs-containerization)
+  - [Pengenalan Docker](#pengenalan-docker)
+    - [Docker Daemon](#docker-daemon)
+    - [Docker Client](#docker-client)
+    - [Docker Objects](#docker-objects)
+    - [Docker Registry](#docker-registry)
+  - [Dockerfile, Docker Image, dan Docker Container](#dockerfile-docker-image-dan-docker-container)
+  - [Docker Compose](#docker-compose)
+  - [Docker Data Management](#docker-data-management)
+    - [Jenis-Jenis Docker Mount](#jenis-jenis-docker-mount)
+  - [Integrasi FUSE dengan Docker](#integrasi-fuse-dengan-docker)
 - [Soal Latihan](#soal-latihan)
 - [References](#references)
 
@@ -623,6 +637,257 @@ atau
 fusermount -u [direktori tujuan]
 ```
 
+# Docker Dasar
+
+Sebelum memasuki materi ketiga, peserta wajib membaca dan melakukan intruksi sesuai yang ada pada [Modul Prasyarat Pelatihan Docker](https://github.com/arsitektur-jaringan-komputer/Pelatihan-Docker/tree/master/0.%20Prasyarat).
+
+## Virtualization vs Containerization
+
+Virtualization adalah teknologi yang memungkinkan pembuatan mesin virtual di dalam satu fisik server. Dengan menggunakan hypervisor, virtualisasi memungkinkan pengelolaan beberapa sistem operasi atau aplikasi yang berjalan secara mandiri. Konsep dasar virtualisasi melibatkan isolasi sumber daya antara mesin virtual, sehingga setiap mesin virtual dapat beroperasi seolah-olah menjadi mesin fisik yang terpisah.
+
+Sedangkan Containerization adalah teknologi yang memungkinkan pengemasan aplikasi dan dependensinya ke dalam sebuah wadah (container) yang dapat dijalankan secara konsisten di berbagai lingkungan komputasi, tanpa perlu mengubah kode atau konfigurasi aplikasi itu sendiri. Container merupakan unit yang portabel, ringan, dan dapat diisolasi, yang mengemas aplikasi, library, dan konfigurasi menjadi satu entitas yang dapat dijalankan di lingkungan yang berbeda, seperti lokal, cloud, atau pusat data.
+
+![Perbedaan cara kerja virtualization dan containerization](img/virtualization-vs-containerization.jpg)
+
+- Virtualisasi menggunakan hypervisor untuk membuat mesin virtual yang memerlukan sistem operasi penuh dan isolasi sumber daya seperti CPU, RAM, dan storage untuk setiap mesin virtual. Sementara itu, containerization menggunakan teknologi seperti Docker untuk membuat wadah (container) yang berbagi sistem operasi host.
+
+- Virtualisasi memungkinkan menjalankan sistem operasi dan aplikasi yang berbeda secara simultan dalam mesin virtual yang terisolasi. Sementara itu, containerization memungkinkan menjalankan aplikasi yang dikemas dalam container di dalam host yang sama, berbagi kernel OS yang sama.
+
+- Virtualisasi cenderung lebih cocok untuk aplikasi yang membutuhkan isolasi penuh, konfigurasi yang kompleks, dan dukungan untuk berbagai sistem operasi. Di sisi lain, containerization lebih cocok untuk aplikasi yang bersifat ringan, portabel, dan bisa dijalankan di berbagai lingkungan komputasi.
+
+- Proses start-up pada virtualisasi memerlukan waktu yang lebih lama, karena melibatkan booting sistem operasi dan konfigurasi tambahan pada setiap mesin virtual. Containerization, di sisi lain, memungkinkan proses deploy dan start-up yang lebih cepat, karena hanya perlu menjalankan container yang sudah dikemas dan siap dijalankan.
+
+## Pengenalan Docker
+
+![Logo Docker](img/docker.png)
+
+Docker adalah sebuah platform yang memungkinkan pengembang perangkat lunak untuk membuat, mengemas, dan menjalankan aplikasi dalam wadah yang dapat diisolasi secara mandiri, disebut container. Container dalam Docker berfungsi seperti lingkungan eksekusi yang terisolasi untuk menjalankan aplikasi, termasuk kode sumber, runtime, dan dependensi yang diperlukan.
+
+Dengan Docker, pengembang dapat membuat wadah yang konsisten dan portabel, yang dapat dijalankan di berbagai lingkungan komputasi, termasuk mesin lokal, server cloud, atau lingkungan pengembangan dan produksi yang berbeda. Docker memungkinkan aplikasi dan dependensinya diisolasi, sehingga aplikasi dapat dijalankan secara konsisten di berbagai lingkungan tanpa mengganggu host operating system atau aplikasi lainnya.
+
+Docker sendiri memiliki arsitektur dengan bagian-bagian sebagai berikut.
+
+![Arsitektur Docker](img/architecture.png)
+
+### Docker Daemon
+Docker Daemon adalah komponen yang berjalan di latar belakang (background) pada host dan bertanggung jawab untuk menjalankan dan mengelola Docker Object seperti images, container, network, dan lain-lain. Docker Daemon adalah proses yang berjalan di dalam sistem operasi host dan menerima perintah dari Docker Client untuk membuat, menjalankan, menghentikan, dan mengelola Docker Object. Docker Daemon juga bertanggung jawab untuk mengelola sumber daya host seperti CPU, memori, dan jaringan yang digunakan oleh Docker Object.
+
+### Docker Client
+Docker Client adalah antarmuka pengguna berbasis command-line atau GUI yang digunakan untuk berinteraksi dengan Docker. Docker Client memungkinkan pengguna untuk menjalankan perintah-perintah Docker untuk membuat, mengelola, dan mengontrol layanan pada Docker. Docker Client berkomunikasi dengan Docker Daemon untuk mengirimkan perintah-perintah Docker dan menerima output layanan Docker yang sedang berjalan.
+
+### Docker Objects
+Docker Objects adalah komponen dasar yang terdapat di Docker. Beberapa contoh Docker Objects meliputi image, container, volume, dan network yang akan dijelaskan pada modul selanjutnya. 
+
+### Docker Registry 
+Docker Registry adalah repositori yang digunakan untuk menyimpan dan berbagi Docker Image. Docker Registry berfungsi sebagai tempat penyimpanan untuk Docker Image yang dapat diakses oleh pengguna Docker dari berbagai lokasi. Docker Hub, yang merupakan Docker's public registry, adalah salah satu contoh Docker Registry yang sering digunakan untuk menyimpan dan berbagi Docker Image secara publik. Selain Docker Hub, pengguna juga dapat membuat Docker Registry pribadi untuk menyimpan Docker Image.
+
+## Dockerfile, Docker Image, dan Docker Container
+
+![Dockerfile, Docker Image, dan Docker Container](img/file-container-image.png)
+
+Dockerfile adalah file teks yang berisi instruksi untuk membangun sebuah Docker Image. Dalam Dockerfile, dapat menentukan berbagai komponen dan konfigurasi yang diperlukan untuk membuat sebuah image, seperti base image yang digunakan, perintah-perintah yang harus dijalankan, file yang harus di-copy, serta variabel lingkungan yang perlu di-set. Dockerfile sangat penting dalam membangun sebuah image karena memungkinkan pengguna untuk membuat image dengan cara yang konsisten dan terdokumentasi dengan baik. Dengan Dockerfile, seorang developer dapat mereplikasi pengaturan dan konfigurasi yang sama setiap kali membangun sebuah image, bahkan pada lingkungan yang berbeda-beda. Selain itu, Dockerfile juga memungkinkan seorang developer untuk menggunakan konsep modularitas dalam membangun image dengan memisahkan komponen-komponen image menjadi layer-layer yang berbeda dalam Dockerfile. Sehingga memungkinkan untuk memperbarui atau mengganti komponen tertentu tanpa harus membangun ulang seluruh image.
+
+Docker Image adalah template atau blueprints yang digunakan untuk membuat Docker Container. Image ini berisi sistem operasi dan aplikasi yang sudah dikonfigurasi dengan baik serta siap digunakan. Image dapat dibangun secara manual dengan membuat Dockerfile atau dapat diunduh dari Docker Hub, yaitu repositori publik yang menyediakan banyak image yang sudah siap digunakan. Docker Image bersifat immutables, artinya setelah dibuat, image tidak bisa diubah secara langsung. Namun, image dapat dibuat baru dengan melakukan modifikasi pada image sebelumnya dan memberikan nama yang berbeda. Setiap image memiliki nama dan tag untuk mengidentifikasinya secara unik. Dalam Docker Hub, nama image biasanya terdiri dari beberapa bagian, seperti nama pengguna (username), nama image, dan tag, seperti contoh **`username/nama_image:tag`**. Setelah image dibuat, bisa menggunakan perintah **`docker run`** untuk membuat instance dari image tersebut dalam bentuk container.
+
+Docker Container adalah sebuah unit terisolasi yang berisi perangkat lunak dan semua dependensinya, yang dijalankan pada lingkungan yang terpisah dari host dan container lainnya. Dalam container, aplikasi dapat berjalan dengan konsisten di berbagai lingkungan meskipun terdapat perbedaan dalam konfigurasi dan infrastruktur. Docker Container bisa diibaratkan seperti kotak berisi program dan semua bahan yang dibutuhkan agar program tersebut bisa berjalan dengan baik. Kotak ini dijalankan secara terpisah dari komputer aslinya, sehingga program dalam kotak ini dapat berjalan dengan konsisten pada berbagai lingkungan tanpa terpengaruh oleh konfigurasi dan infrastruktur yang ada pada komputer aslinya. Dengan Docker Container, developer bisa dengan mudah mengelola dan menjalankan aplikasi di berbagai lingkungan tanpa harus khawatir dengan masalah konfigurasi dan dependensi.
+
+Bahasan ini dapat dipelajari secara lebih detail pada [Pelatihan Docker - Modul 2 (Docker Service Dasar)](https://github.com/arsitektur-jaringan-komputer/Pelatihan-Docker/tree/master/2.%20Docker%20Service%20Dasar).
+
+## Docker Compose
+
+Docker Compose adalah sebuah alat atau tool untuk mengelola dan menjalankan aplikasi yang terdiri dari satu atau beberapa container. Docker Compose memungkinkan untuk mendefinisikan, mengonfigurasi, dan menjalankan beberapa Docker Container sekaligus dengan menggunakan file konfigurasi YAML yang sederhana. Docker Compose juga dapat menentukan Docker Image untuk setiap Docker Container, mengatur pengaturan jaringan, menentukan volume yang dibutuhkan, dan melakukan konfigurasi lainnya dalam satu file konfigurasi. Selain itu, Docker Compose juga memudahkan proses pengaturan dan penyebaran aplikasi pada lingkungan produksi atau development yang berbeda dengan cara yang konsisten.
+
+> Baca juga: [**A Docker Analogy**](https://davidtruxall.com/a-docker-analogy/)
+
+Dalam pengembangan perangkat lunak modern, aplikasi terdiri dari banyak komponen yang dapat dijalankan secara terpisah dan berinteraksi satu sama lain melalui jaringan. Dalam hal ini, Docker Compose menjadi alat yang sangat berguna untuk mengatur aplikasi tersebut dengan menggunakan Docker Container, sehingga memudahkan proses pengembangan, pengujian, dan penyebaran aplikasi yang kompleks.
+
+Berikut adalah contoh penerapan Docker Compose untuk membuat sebuah aplikasi web yang terdiri dari tiga service, yaitu frontend, backend, dan database.
+
+```YAML
+version: '3'
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "8080:8080"
+    environment:
+      DB_HOST: database
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    environment:
+      REACT_APP_BACKEND_URL: http://backend:8080
+  database:
+    image: postgres
+    environment:
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+      POSTGRES_DB: mydb
+```
+
+Berikut adalah penjelasan dari konfigurasi diatas:
+
+| Properti | Deskripsi |
+| --- | --- |
+| `version: '3'` | Versi dari Docker Compose yang digunakan dalam konfigurasi tersebut. |
+| `services` | Komponen utama yang mendefinisikan service yang akan dijalankan. Dalam konfigurasi diatas, terdapat 3 service, yaitu frontend, backend, dan database. |
+| `backend` | Nama service yang akan dijalankan. |
+| `build: ./backend` | Menentukan direktori dimana Docker akan melakukan build image untuk service backend. |
+| `ports: - "8080:8080"` | Mendefinisikan port mapping, dimana `port 8080` pada container akan di-forward ke `port 8080` pada host. |
+| `environment: DB_HOST: database` | Mendefinisikan environment variable pada service backend, dimana `DB_HOST` akan di-set sebagai database. |
+| `frontend` | Nama service yang akan dijalankan. |
+| `build: ./frontend` | Menentukan direktori dimana Docker akan melakukan build image untuk service frontend. |
+| `ports: - "3000:3000"` | Mendefinisikan port mapping, dimana `port 3000` pada container akan di-forward ke `port 3000` pada host. |
+| `environment: REACT_APP_BACKEND_URL: http://backend:8080` | Mendefinisikan environment variable pada service frontend, dimana `REACT_APP_BACKEND_URL` akan di-set sebagai `http://backend:8080`. |
+| `database` | Nama service yang akan dijalankan. |
+| image: postgres | Mendefinisikan image yang akan digunakan untuk service database. |
+| `environment: POSTGRES_USER: myuser POSTGRES_PASSWORD: mypassword POSTGRES_DB: mydb` | Mendefinisikan environment variable pada service database, dimana `POSTGRES_USER` akan di-set sebagai `myuser`, `POSTGRES_PASSWORD` akan di-set sebagai `mypassword`, dan `POSTGRES_DB` akan di-set sebagai `mydb`. |
+
+## Docker Data Management 
+
+Docker Data Management adalah sebuah konsep untuk mengelola data atau file yang ada di Docker. Ketika menjalankan sebuah aplikasi atau layanan di dalam Docker Container, data yang dihasilkan oleh aplikasi tersebut dapat disimpan dalam container itu sendiri atau dalam sebuah volume yang terpisah dari container.
+
+Dalam Docker, terdapat beberapa jenis mount atau penghubung yang digunakan untuk mengelola data, seperti volume, bind mount, dan tmpfs mount. Seorang developer dapat memilih jenis mount yang tepat sesuai dengan kebutuhan aplikasi yang dijalankan di dalam container. Selain itu, Docker juga menyediakan beberapa perintah untuk mengelola data pada Docker Volume, seperti menampilkan informasi volume, menghapus volume, dan mengatur volume driver options. Dengan menggunakan perintah-perintah ini, developer dapat mengelola data di Docker dengan mudah dan efisien.
+
+Pemahaman tentang Docker Data Management sangat penting untuk memastikan data yang dihasilkan oleh aplikasi yang dijalankan di dalam container tetap terjaga dan tidak hilang saat container dihapus atau dimatikan.
+
+### Jenis-Jenis Docker Mount
+<img src="img/docker-mounts.png" alt="Docker Mount" style="width:100%;">
+
+Terdapat beberapa jenis Docker Mount sebagai berikut.
+
+- ##### Volume
+    Docker Volume adalah fitur pada Docker yang memungkinkan developer untuk mengelola data yang dibutuhkan oleh container secara terpisah dari container itu sendiri. Docker Volume memungkinkan container untuk berbagi data dengan host, container lain, atau dengan layanan penyimpanan data yang disediakan oleh penyedia layanan cloud.
+
+    Dalam Docker, setiap container memiliki file system sendiri yang terisolasi dari host dan container lainnya. Dalam beberapa kasus, data yang diperlukan oleh container perlu disimpan secara persisten, sehingga tidak hilang saat container dihapus atau dihentikan. Docker Volume memungkinkan untuk membuat penyimpanan data persisten untuk container tersebut, dan memungkinkan container lain atau host untuk mengakses data tersebut.
+
+    Berikut adalah contoh menerapkan Docker Volume pada konfigurasi Docker Compose **`docker-compose.yml`** sebelumnya.
+
+    ```YAML
+    version: '3'
+    services:
+    backend:
+        build: ./backend
+        ports:
+        - "8080:8080"
+        environment:
+        DB_HOST: database
+    frontend:
+        build: ./frontend
+        ports:
+        - "3000:3000"
+        environment:
+        REACT_APP_BACKEND_URL: http://backend:8080
+    database:
+        image: postgres
+        volumes:
+        - ./data:/var/lib/postgresql/data
+        environment:
+        POSTGRES_USER: myuser
+        POSTGRES_PASSWORD: mypassword
+        POSTGRES_DB: mydb
+    ```
+    Pada konfigurasi di atas, ditambahakan sebuah volume dengan nama **`./data`** yang akan diikatkan (bind) ke direktori **`/var/lib/postgresql/data`** di dalam container. Artinya, data yang dibuat atau dimodifikasi oleh service database akan disimpan dalam direktori **`./data`** di host. Dengan menambahkan konfigurasi volumes pada Docker Compose, maka data dari database akan tersimpan dan tidak hilang meskipun container dimatikan.
+
+- ##### Bind Mount
+    Bind mount adalah tipe mount di Docker yang memungkinkan suatu file atau direktori di mesin host digunakan oleh Docker Container. Dalam bind mount, container dan mesin host menggunakan file system yang sama, sehingga jika suatu file diubah dalam container, perubahannya juga akan terlihat di mesin host, dan sebaliknya.
+
+    Dalam penggunaannya, bind mount dapat digunakan untuk mengakses file-file atau direktori dari mesin host dan menggunakan data tersebut dalam container. Misalnya, jika ingin menjalankan sebuah aplikasi web di dalam container, tetapi ingin menggunakan file konfigurasi yang ada di mesin host, maka dapat dilakukan bind mount dari direktori yang berisi file konfigurasi tersebut ke dalam direktori di dalam container.
+
+    Berikut adalah contoh implementasi dari bind mount.
+
+    ```bash
+    docker run -d \
+    -it \
+    --name bind-container \
+    --mount type=bind,source="$(pwd)"/target,target=/app \
+    node:16-alpine
+    ``` 
+    ![Hasil implementasi bind mount](img/docker-bind-mount-cli.png)
+
+    Kode di atas merupakan perintah untuk menjalankan sebuah container dari image **`node:16-alpine`**, dengan beberapa opsi seperti berikut.
+
+    | Opsi          | Keterangan                                                  |
+    | ------------- | ------------------------------------------------------------ |
+    | `-d`          | menjalankan container di background (detach mode).          |
+    | `-it`         | mengalihkan interaksi ke terminal container (interactive mode dan attach to container). |
+    | `--name`      | memberikan nama `bind-container` container.                  |
+    | `--mount`     | menentukan opsi mount pada container. Pada kasus ini, menggunakan `opsi type=bind` untuk membuat bind mount, di mana direktori lokal pada host `$(pwd)/target` di-mount pada direktori `/app` pada container. |
+    | `node:16-alpine` | image yang akan digunakan untuk menjalankan container.        |
+
+    Untuk memastikan proses bind mount berjalan dengan baik dapat menggunakan perintah **`docker inspect nama_container`** dan lihat outputnya pada bagian **`Mounts`**.
+    ```bash
+    docker inspect bind-container
+    ```
+    ![Output dari bind mount di Docker container](img/hasil-bind-mount.png)
+
+    Untuk memverifikasi kesesuaian antara isi file di directory host dengan directory target dapat dilakukan dengan masuk ke mode shell dari container itu sendiri.
+    ![Verifikasi hasil bind mount](img/verifikasi-bind-mount.png)
+
+    Keuntungan dari bind mount adalah fleksibilitasnya yang tinggi, karena memungkinkan akses langsung ke file di mesin host. Namun, Bind Mount tidak memberikan isolasi penuh antara mesin host dan container. Jika suatu file atau direktori pada host dihapus atau dimodifikasi, maka akan mempengaruhi container yang menggunakan bind mount tersebut.
+
+- ##### tmpfs Mount
+    tmpfs mount adalah salah satu jenis mount pada Docker yang memungkinkan untuk menyimpan data secara sementara di dalam memory RAM pada host. Dengan menggunakan tmpfs mount, data akan cepat diakses karena langsung disimpan di dalam memory RAM, namun data tersebut tidak akan persisten karena hanya disimpan di dalam memory dan tidak disimpan ke dalam disk fisik.
+
+    Cara penggunaannya yaitu dengan menambahkan opsi **`--mount`** pada saat menjalankan container, lalu menentukan tipe mount tmpfs dan ukuran memory yang akan digunakan untuk menyimpan data. Berikut contoh perintah untuk menggunakan tmpfs mount dengan ukuran memory 100 MB pada container:
+
+    ```bash
+    docker run -d \
+    -it \
+    --name tmpfs-container \
+    --mount type=tmpfs,destination=/app,tmpfs-size=100M \
+    node:16-alpine
+    ```
+
+## Integrasi FUSE dengan Docker
+
+Integrasi FUSE dengan Docker memungkinkan pengguna untuk menghubungkan file system kustom yang dibuat dengan FUSE ke dalam container Docker. Dengan menggunakan FUSE dalam Docker, pengguna dapat memperluas kemampuan file system di dalam container dengan mengimplementasikan file system yang lebih kompleks dan kustom. Melalui mekanisme bind mount atau volume Docker, file system FUSE dapat diintegrasikan ke dalam container dengan mudah.
+
+Misalnya, dengan menggunakan FUSE dalam Docker, pengguna dapat membuat file system yang terhubung ke penyimpanan cloud seperti Amazon S3 atau Google Cloud Storage. Dengan begitu, container Docker dapat mengakses dan mengelola file-file di penyimpanan cloud tersebut seolah-olah mereka berada di sistem file lokal. Hal ini memungkinkan pengguna untuk menggunakan layanan penyimpanan cloud tanpa perlu memodifikasi secara signifikan aplikasi yang ada.
+
+Selain itu, integrasi FUSE dengan Docker juga memungkinkan pengguna untuk menerapkan fitur-fitur tambahan seperti enkripsi file secara transparan di dalam container. Dengan mengimplementasikan file system FUSE yang mendukung enkripsi, pengguna dapat menjaga kerahasiaan dan keamanan file dalam lingkungan Docker. Ini memungkinkan pengguna untuk melindungi data sensitif atau rahasia yang disimpan dalam container dengan cara yang lebih fleksibel dan terintegrasi.
+
+Dalam keseluruhan, integrasi FUSE dengan Docker membuka pintu bagi pengguna untuk menggabungkan kekuatan file system kustom yang diimplementasikan dengan FUSE dengan fleksibilitas dan portabilitas yang ditawarkan oleh container Docker. Dengan memanfaatkan integrasi ini, pengguna dapat mengoptimalkan pengelolaan file system dalam container, mengakses sumber daya eksternal, dan menerapkan fitur-fitur kustom sesuai kebutuhan aplikasi yang dikembangkan dalam lingkungan Docker.
+
+Langkah-langkah berikut ini akan membantu dalam mengimplementasikan integrasi FUSE dengan Docker untuk menggunakan file system kustom di dalam container Docker.
+
+- ### Membuat Docker Container dengan File System FUSE
+
+  - Buat file docker-compose.yml dengan konfigurasi berikut:
+    ```YAML
+      version: "3"
+      services:
+      myapp:
+          image: [nama_image_docker]
+          volumes:
+          - [path_ke_file_system_fuse]:[path_tujuan_di_dalam_kontainer]
+    ```
+  - Gantilah [nama_image_docker] dengan nama image Docker yang akan kamu gunakan.
+  - Gantilah [path_ke_file_system_fuse] dengan path absolut ke file system FUSE yang ingin dihubungkan ke dalam kontainer.
+  - Gantilah [path_tujuan_di_dalam_kontainer] dengan path di dalam kontainer di mana file system FUSE akan tersedia.
+
+- ### Menjalankan Docker Container dengan File System FUSE
+
+  - Buka terminal, lalu arahkan ke direktori yang berisi file docker-compose.yml.
+  - Jalankan perintah berikut untuk menjalankan kontainer:
+    ```YAML
+    docker-compose up -d
+    ```
+  - Docker akan membuat dan menjalankan kontainer dengan file system FUSE terhubung.
+
+- ### Menggunakan Fitur File System FUSE dalam Docker Container
+
+  - Akses kontainer Docker dengan menjalankan shell interaktif di dalamnya:
+    ```YAML
+    docker exec -it [nama_kontainer] /bin/bash
+    ```
+  - Di dalam kontainer, navigasikan ke path yang ditentukan dalam docker-compose.yml untuk mengakses file system FUSE yang terhubung.
+  - Anda dapat membaca, menulis, atau melakukan operasi file lainnya seperti yang Anda lakukan dalam sistem file biasa.
+
+Dengan mengikuti langkah-langkah di atas, kamu akan berhasil mengintegrasikan file system FUSE dengan kontainer Docker. Kamu dapat menggunakan file system FUSE untuk mengakses sumber daya eksternal atau menerapkan fitur-fitur kustom sesuai kebutuhan aplikasi yang berjalan di dalam kontainer Docker.
+
+Pastikan untuk mengganti [nama_image_docker], [path_ke_file_system_fuse], dan [path_tujuan_di_dalam_kontainer] sesuai dengan kebutuhan dan konfigurasi spesifik yang kamu miliki.
 
 # Soal Latihan
 
