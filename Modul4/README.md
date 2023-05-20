@@ -858,10 +858,11 @@ Langkah-langkah berikut ini akan membantu dalam mengimplementasikan integrasi FU
     ```YAML
       version: "3"
       services:
-      myapp:
-          image: [nama_image_docker]
-          volumes:
-          - [path_ke_file_system_fuse]:[path_tujuan_di_dalam_kontainer]
+         myapp:
+             image: [nama_image_docker]
+             command: tail -f /dev/null
+             volumes:
+             - [path_ke_file_system_fuse]:[path_tujuan_di_dalam_kontainer]
     ```
   - Gantilah [nama_image_docker] dengan nama image Docker yang akan kamu gunakan.
   - Gantilah [path_ke_file_system_fuse] dengan path absolut ke file system FUSE yang ingin dihubungkan ke dalam kontainer.
