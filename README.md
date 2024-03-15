@@ -2,7 +2,7 @@
 
 ## Kelas Reguler
 
-### [Modul 1 - Pengenalan Linux](/Modul1/README.md)
+### [Modul 1 - Pengenalan Linux](/Modul1/README-ID.md)
 
 ### [Modul 2 - Proses dan Daemon](/Modul2/README.md)
 
@@ -12,7 +12,7 @@
 
 ## IUP Class
 
-### [Module 1 - Introduction to Linux](/Modul1/README-English.md)
+### [Module 1 - Introduction to Linux](/Modul1/README-EN.md)
 
 ### [Module 2 - Process and Daemon](/Modul2/README-English.md)
 
