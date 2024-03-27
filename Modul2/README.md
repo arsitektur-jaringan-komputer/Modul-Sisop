@@ -1,71 +1,120 @@
-# sisop-modul-2
+# Modul II - Proses, Thread, dan IPC
 
-# Proses dan Daemon
+## Capaian
 
-Menggunakan:
+1. Memahami apa itu proses, thread, dan IPC
+2. Mampu membedakan perbedaan proses dan thread
+3. Dapat membuat program dengan multiproses dan multithread
 
-- Linux
-- Bahasa C (compile dengan _gcc_)
+## Prasyarat
 
-# Daftar Isi
+1. Melakukan instalasi OS Linux, instalasi menggunakan VMWare dapat dilihat [di sini](https://github.com/arsitektur-jaringan-komputer/Pelatihan-Linux/tree/master/0.%20Prerequisites)
+2. Mengenal OS Linux secara umum pada [Modul Pengenalan OS Linux](https://github.com/arsitektur-jaringan-komputer/Pelatihan-Linux/blob/master/1.%20What%20is%20Linux/README.md)
 
-- Proses dan Daemon
-  - [Daftar Isi](#daftar-isi)
-  - [Proses](#proses)
-    - [1. Pengertian](#1-pengertian)
-    - [2. Macam-Macam PID](#2-macam-macam-pid)
-      - [2.1 User ID (UID)](#21-user-id-uid)
-      - [2.2 Process ID (PID)](#22-process-id-pid)
-      - [2.3 Parent PID (PPID)](#23-parent-pid-ppid)
-    - [3. Melihat Proses Berjalan](#3-melihat-proses-berjalan)
-    - [4. Menghentikan Proses](#4-menghentikan-proses)
-    - [5. Membuat Proses](#5-membuat-proses)
-      - [fork](#fork)
-      - [exec](#exec)
-      - [Menjalankan Program Secara Bersamaan](#menjalankan-program-secara-bersamaan)
-      - [wait x fork x exec](#wait-x-fork-x-exec)
-      - [system](#system)
-    - [6. Jenis-Jenis Proses](#6-jenis-jenis-proses)
-      - [Zombie Process](#zombie-process)
-      - [Orphan Process](#orphan-process)
-      - [Daemon Process](#daemon-process)
-  - [Daemon](#daemon)
-    - [1. Pengertian Daemon](#1-pengertian-daemon)
-    - [2. Langkah Pembuatan Daemon](#2-langkah-pembuatan-daemon)
-    - [3. Implementasi Daemon](#3-implementasi-daemon)
-  - [Extras](#extras)
-    - [Directory Listing](#directory-listing-in-c)
-    - [File Permission](#file-permission-in-c)
-    - [File Ownership](#file-ownership-in-c)
-  - [Soal Latihan](#soal-latihan)
+## Daftar Isi
 
-# Proses
+- [i. Capaian](#capaian)
+- [ii. Prasyarat](#prasyarat)
+- [iii. Daftar Isi](#daftar-isi)
+- [1. Pendahuluan](#pendahuluan)
+  - [1.1 Pengertian Proses](#pengertian-proses)
+  - [1.2 Pengertian Thread](#pengertian-thread)
+  - [1.3 Pengertian Multiprocess dan Multithread](#pengertian-multiprocess-dan-multithread)
+- [2. Proses](#proses)
+  - [2.1 Macam-Macam PID](#2-macam-macam-pid)
+    - [2.1.1 User ID (UID)](#21-user-id-uid)
+    - [2.1.2 Process ID (PID)](#22-process-id-pid)
+    - [2.1.3 Parent PID (PPID)](#23-parent-pid-ppid)
+  - [2.2 Melihat Proses Berjalan](#3-melihat-proses-berjalan)
+  - [2.3 Menghentikan Proses](#4-menghentikan-proses)
+  - [2.4 Membuat Proses](#5-membuat-proses)
+    - [2.4.1 fork](#fork)
+    - [2.4.2 exec](#exec)
+  - [2.5 Menjalankan Proses di Latar Belakang](#menjalankan-proses-di-latar-belakang)
+  - [2.6 Menjalankan Proses Secara Bersamaan](#menjalankan-proses-secara-bersamaan)
+    - [2.6.1 wait x fork x exec](#wait-x-fork-x-exec)
+    - [2.6.2 system](#system)
+  - [2.7 Jenis-Jenis Proses](#6-jenis-jenis-proses)
+    - [2.7.1 Zombie Process](#zombie-process)
+    - [2.7.2 Orphan Process](#orphan-process)
+    - [2.7.3 Daemon Process](#daemon-process)
+  - [2.8 Daemon](#daemon)
+    - [2.8.1 Pengertian Daemon](#1-pengertian-daemon)
+    - [2.8.2 Langkah Pembuatan Daemon](#2-langkah-pembuatan-daemon)
+    - [2.8.3 Implementasi Daemon](#3-implementasi-daemon)
+- [3. Thread](#thread)
+  - [3.1 Perbedaan Multithread dan Multiprocess](#multiprocess-vs-multithread)
+  - [3.2 Pembuatan Thread](#pembuatan-thread)
+  - [3.3 Join Thread](#join-thread)
+  - [3.4 Mutual Exclusion](#mutual-exclusion)
+- [4. IPC](#ipc-interprocess-communication)
+  - [4.1 Pengertian IPC](#ipc)
+  - [4.2 Piping](#pipes)
+  - [4.3 Shared Memory](#shared-memory)
 
-## 1. Pengertian
+## Pendahuluan
+
+### Pengertian Proses
+
+Pernahkah kalian membuka banyak aplikasi dalam laptop? Jika iya, maka kalian telah mengimplementasikan `proses`. Meskipun, kita sedang membuka satu aplikasi, tetapi aplikasi yang lain masih ada di latar belakang sebagai proses yang menunggu giliran.
+
+[open-apps-on-laptop](https://www.google.com/url?sa%3Di%26url%3Dhttps%3A%2F%2Fedu.gcfglobal.org%2Fen%2Fwindows10%2Ftips-for-managing-multiple-windows%2F1%2F%26psig%3DAOvVaw39n0qAnQAbpPhMgQE1Zlkj%26ust%3D1711552610019000%26source%3Dimages%26cd%3Dvfe%26opi%3D89978449%26ved%3D0CBIQjRxqFwoTCPiFuryckoUDFQAAAAAdAAAAABAJ)
+
+Proses sendiri dapat didefinisikan sebagai program yang sedang dieksekusi oleh OS. Ketika suatu program tersebut dieksekusi oleh OS, proses tersebut memiliki PID (Process ID) yang merupakan identifier dari suatu proses. Pada UNIX, untuk melihat proses yang dieksekusi oleh OS dengan memanggil perintah shell `ps`. Untuk melihat lebih lanjut mengenai perintah `ps` dapat membuka `man ps`.
+
+### Pengertian Thread
+
+Thread adalah unit dasar dari eksekusi yang dapat melakukan tugas-tugas tertentu di dalam sebuah proses. Thread-thread ini bekerja bersama-sama di dalam sebuah proses untuk menyelesaikan pekerjaan secara bersamaan. Mereka berbagi sumber daya dan konteks yang sama dengan proses utama di mana mereka berjalan.
+
+[many-tabs-opened-at-once](https://www.google.com/url?sa%3Di%26url%3Dhttps%3A%2F%2Fwww.makeuseof.com%2Fchrome-extensions-to-manage-and-sort-open-tabs%2F%26psig%3DAOvVaw2m6fNfdZ6xuM4q4-cBhUr9%26ust%3D1711560906349000%26source%3Dimages%26cd%3Dvfe%26opi%3D89978449%26ved%3D0CBIQjRxqFwoTCMCtrLC7koUDFQAAAAAdAAAAABAJ)
+
+Contoh dari thread adalah saat kita membuka browser, umumnya kita akan membuka banyak tab secara bersamaan. Masing-masing tab atau jendela tersebut mungkin akan dijalankan sebagai thread yang berbeda dalam satu proses utama dari aplikasi web browser.
+
+### Pengertian Multiprocess dan Multithread
+
+[multiprocess-multithread](https://www.google.com/url?sa%3Di%26url%3Dhttps%3A%2F%2Fmedium.com%2F%40noueruzzaman%2Ftug-of-war-multiprocessing-vs-multithreading-55341c1f2103%26psig%3DAOvVaw2JBVSefstuO62j1CFEGtob%26ust%3D1711561903509000%26source%3Dimages%26cd%3Dvfe%26opi%3D89978449%26ved%3D0CBIQjRxqFwoTCNjG7Iu_koUDFQAAAAAdAAAAABAY)
+
+1. Multiprocess
+Multiproses adalah pendekatan di mana sistem operasi dapat menjalankan beberapa proses secara bersamaan.
+
+Karakteristik:
+- Memiliki memori yang terpisah dan sumber daya yang terisolasi
+- Proses-proses ini tidak berbagi memori atau variabel antara satu sama lain, kecuali jika ada mekanisme khusus seperti shared memory.
+- Jika satu proses mengalami kegagalan atau crash, proses lainnya biasanya tidak terpengaruh.
+
+Contoh kasus:
+Saat membuka beberapa aplikasi dalam satu waktu, jika terdapat satu aplikasi yang bermasalah/crash, maka aplikasi lain tidak akan terpengaruh
+
+2. Multithread
+Multithreading adalah pendekatan di mana sebuah proses dapat memiliki beberapa thread yang berjalan secara bersamaan di dalamnya.
+
+Karakteristik:
+- Thread-thread dalam satu proses berbagi memori dan sumber daya. Mereka dapat saling berkomunikasi dengan mudah dan berbagi variabel.
+- Thread-thread dapat melakukan tugas-tugas yang berbeda secara bersamaan dalam satu proses, meningkatkan efisiensi dan responsifitas.
+- Jika satu thread mengalami kegagalan atau crash, hal itu dapat mempengaruhi keseluruhan proses dan thread-thread lainnya.
+
+Contoh kasus:
+Misalnya, sebuah server web perlu mampu menangani banyak permintaan HTTP dari klien secara bersamaan tanpa menghambat kinerja atau waktu tanggapan. Dibutuhkan multithreading untuk menangani setiap permintaan klien secara terpisah. Setiap kali server menerima permintaan baru, ia akan membuat thread baru untuk menangani permintaan tersebut.
+
+## Proses
+
+### Macam-Macam PID
 
 [Daftar Isi](#daftar-isi)
 
-Proses adalah program yang sedang dieksekusi oleh OS. Ketika suatu program tersebut dieksekusi oleh OS, proses tersebut memiliki PID (Process ID) yang merupakan identifier dari suatu proses. Pada UNIX, untuk melihat proses yang dieksekusi oleh OS dengan memanggil perintah shell `ps`. Untuk melihat lebih lanjut mengenai perintah `ps` dapat membuka `man ps`.
-
-Dalam penggunaannya, suatu proses dapat membentuk proses lainnya yang disebut _spawning process_. Proses yang memanggil proses lainnya disebut **_parent process_** dan yang terpanggil disebut **_child process_**.
-
-## 2. Macam-Macam PID
-
-[Daftar Isi](#daftar-isi)
-
-### 2.1 User ID (UID)
+#### User ID (UID)
 
 Merupakan identifier dari suatu proses yang menampilkan user yang menjalankan suatu program. Pada program C, dapat memanggil fungsi ` uid_t getuid(void);`
 
-### 2.2 Process ID (PID)
+#### Process ID (PID)
 
 Angka unik dari suatu proses yang sedang berjalan untuk mengidentifikasi suatu proses. Pada program C, dapat memanggil fungsi `pid_t getpid(void);`
 
-### 2.3 Parent PID (PPID)
+#### Parent PID (PPID)
 
 Setiap proses memiliki identifier tersendiri dan juga setelah proses tersebut membuat proses lainnya. Proses yang terbentuk ini memiliki identifier berupa ID dari pembuatnya (parent). Pada program C, dapat memanggil fungsi `pid_t getppid(void); `.
 
-## 3. Melihat Proses Berjalan
+### Melihat Proses Berjalan
 
 [Daftar Isi](#daftar-isi)
 
@@ -94,7 +143,7 @@ Kita juga dapat melihat proses yang berjalan dalam bentuk tree, sehingga kita de
 
 ![show pstree](img/pstree.jpg)
 
-## 4. Menghentikan Proses
+### Menghentikan Proses
 
 [Daftar Isi](#daftar-isi)
 
@@ -104,7 +153,7 @@ Selain mengguankan command `kill` kita juga dapat menggunakan command `pkill`. P
 
 Kalian dapat melihat PID dan Nama proses menggunakan `jobs -l` atau `ps aux`
 
-### Macam-Macam Signal
+#### Macam-Macam Signal
 
 | Signal name | Signal value | Effect                  |
 | ----------- | :----------: | ----------------------- |
@@ -120,11 +169,11 @@ Dan jika kita mengguanakan `Ctrl + C` untuk menghentikkan suatu program , saat i
 
 Sedangkan jika kita menggunakan `Ctrl + Z` untuk menhentikan suatu program , saat itu sistem akan mengirimkan signal `SIGSTP` yang artinya menjeda proses tersebut dan dapat dijalankan kembali dengan menggunakan perintah `fg` atau `bg`.
 
-## 5. Membuat Proses
+### Membuat Proses
 
 [Daftar Isi](#daftar-isi)
 
-### **fork**
+#### **fork**
 
 `fork` adalah fungsi _system call_ di C untuk melakukan _spawning process_. Setelah memanggil fungsi itu, akan terdapat proses baru yang merupakan _child process_, fungsi akan mengembalikan nilai 0 di dalam _child process_, dan akan mengembalikan nilai _PID_ dari _child process_ di dalam _parent process_
 
@@ -219,7 +268,7 @@ Visualisasi:
 +-------------------------+        +-------------------------+
 ```
 
-### **exec**
+#### **exec**
 
 `exec` adalah fungsi untuk menjalankan program baru dan menggantikan program yang sedang berjalan. Fungsi `exec` memiliki banyak variasi seperti `execvp`, `execlp`, dan `execv`.
 
@@ -244,7 +293,7 @@ int main () {
 }
 ```
 
-### **Menjalankan Program di latar belakang**
+### **Menjalankan Proses di latar belakang**
 
 Dengan menggunakan `&` diakhir command kita dapat menjalankan program di latar belakang sehingga kita dapat melakukan hal lain sembari proses lain berjalan.
 
@@ -260,7 +309,7 @@ Dan ini jika kita menjalankannya di foreground:
 
 Jika seperti ini maka proses akan berjalan secara foreground sehingga akan muncul di layar kalian.
 
-### **Menjalankan Program Secara Bersamaan**
+### **Menjalankan Proses Secara Bersamaan**
 
 Dengan menggabungkan `fork` dan `exec`, kita dapat melakukan dua atau lebih _tasks_ secara bersamaan. Contohnya adalah membackup log yang berbeda secara bersamaan.
 
@@ -316,7 +365,7 @@ Visualisasi:
 
 Jika ingin melakukan banyak task secara bersamaan tanpa mementingkan urutan kerjanya, dapat menggunakan `fork` dan `exec`.
 
-### **wait** x **fork** x **exec**
+#### **wait** x **fork** x **exec**
 
 Kita dapat menjalankan dua proses dalam satu program. Contoh penggunaannya adalah membuat folder dan mengisi folder tersebut dengan suatu file. Pertama, buat folder terlebih dahulu. Kemudian, buat file dengan perintah shell `touch` pada folder tersebut. Namun, pada kenyataannya untuk melakukan dua hal bersamaan perlu adanya jeda beberapa saat.
 
@@ -399,7 +448,7 @@ int main() {
 
 Pada contoh di atas, fungsi `wait` adalah menunggu _child process_ selesai melakukan tugasnya, yaitu membuat folder. Setelah _terminated_, _parent process_ akan kembali menjalankan prosesnya membuat `fileku` dalam folder `folderku`.
 
-### **system**
+#### **system**
 
 `system` adalah fungsi untuk melakukan pemanggilan perintah shell secara langsung dari program C. Contohnya ketika ingin memanggil suatu script dalam program C. `system(ls)` akan menghasilkan output yang sama ketika memanggilnya di shell script dengan `ls`.
 
@@ -431,39 +480,34 @@ Output:
 Shell script dipanggil
 ```
 
-## 6. Jenis-Jenis Proses
+### Jenis-Jenis Proses
 
 [Daftar Isi](#daftar-isi)
 
-### **Zombie Process**
+#### **Zombie Process**
 
 Zombie Process terjadi karena adaanya child process yang di exit namun parrent processnya tidak tahu bahwa child process tersebut telah di terminate, misalnya disebabkan karena putusnya network. Sehingga parent process tidak merelease process yang masih digunakan oleh child process tersebut walaupun process tersebut sudah mati. Dan proses ini tidak akan hilang sebelum komputer direstart atau dimatikan.
 
-### **Orphan Process**
+#### **Orphan Process**
 
 Orphan Process adalah sebuah proses yang ada dalam komputer dimana parent process telah selesai atau berhenti bekerja namun proses anak sendiri tetap berjalan.
 
-### **Daemon Process**
+#### **Daemon Process**
 
 Daemon Process adalah sebuah proses yang bekerja pada background karena proses ini tidak memiliki terminal pengontrol. Dalam sistem operasi Windows biasanya lebih dikenal dengan sebutan service. Daemon adalah sebuah proses yang didesain supaya proses tersebut tidak mendapatkan intervensi dari user.
 
----
 
-# Daemon
-
-[Daftar Isi](#daftar-isi)
-
-## 1. Pengertian Daemon
+### Pengertian Daemon
 
 Daemon adalah suatu program yang berjalan di background secara terus menerus tanpa adanya interaksi secara langsung dengan user yang sedang aktif.
 
 <!-- Sebuah daemon dapat berhenti karena beberapa hal. -->
 
-## 2. Langkah Pembuatan Daemon
+### Langkah Pembuatan Daemon
 
 Ada beberapa langkah untuk membuat sebuah daemon:
 
-### 2.1 Melakukan Fork pada Parent Process dan mematikan Parent Process
+#### Melakukan Fork pada Parent Process dan mematikan Parent Process
 
 Langkah pertama adalah membuat sebuah parent process dan memunculkan child process dengan melakukan `fork()`. Kemudian bunuh parent process agar sistem operasi mengira bahwa proses telah selesai.
 
@@ -485,7 +529,7 @@ if (pid > 0) {
 }
 ```
 
-### 2.2 Mengubah Mode File dengan `umask`
+#### Mengubah Mode File dengan `umask`
 
 Setiap file dan directory memiliki _permission_ atau izin yang mengatur siapa saja yang boleh melakukan _read, write,_ dan _execute_ pada file atau directory tersebut.
 
@@ -495,7 +539,7 @@ Dengan menggunakan `umask` kita dapat mengatur _permission_ dari suatu file pada
 umask(0);
 ```
 
-### 2.3 Membuat Unique Session ID (SID)
+#### Membuat Unique Session ID (SID)
 
 Sebuah Child Process harus memiliki SID agar dapat berjalan. Tanpa adanya SID, Child Process yang Parent-nya sudah di-`kill` akan menjadi Orphan Process.
 
@@ -508,7 +552,7 @@ if (sid < 0) {
 }
 ```
 
-### 2.4 Mengubah Working Directory
+#### Mengubah Working Directory
 
 Working directory harus diubah ke suatu directory yang pasti ada. Untuk amannya, kita akan mengubahnya ke root (/) directory karena itu adalah directory yang dijamin ada pada semua distro linux.
 
@@ -520,7 +564,7 @@ if ((chdir("/")) < 0) {
 }
 ```
 
-### 2.5 Menutup File Descriptor Standar
+#### Menutup File Descriptor Standar
 
 Sebuah daemon tidak boleh menggunakan terminal. Oleh sebab itu kita harus _menutup_ file descriptor standar (STDIN, STDOUT, STDERR).
 
@@ -532,7 +576,7 @@ close(STDERR_FILENO);
 
 File descriptor sendiri merupakan sebuah angka yang merepresentasikan sabuah file yang dibuka di sebuah sistem operasi. File descriptor mendeskripsikan sumber data dan bagaimana data itu diakses.
 
-### 2.6 Membuat Loop Utama
+#### Membuat Loop Utama
 
 Di loop utama ini lah tempat kita menuliskan inti dari program kita. Jangan lupa beri perintah `sleep()` agar loop berjalan pada suatu interval.
 
@@ -544,289 +588,727 @@ while (1) {
 }
 ```
 
-## 3. Implementasi Daemon
+## Thread
 
-Di bawah ini adalah kode hasil gabungan dari langkah-langkah pembuatan daemon (template Daemon):
+### Multiprocess Vs Multithread
+
+![multivsmulti](multiprocessing_multithreading.gif)
+
+Perbedaan *multiprocess* dan *multithread*.
+
+Nomor | Multiprocess | Multithread
+--- | --- | ---
+1 | banyak proses dieksekusi secara konkuren | banyak thread dalam 1 proses dieksekusi secara konkuren
+2 | menambah CPU untuk menigkatkan kekuatan komputasi | membuat banyak thread dalam 1 proses untuk meningkatkan kekuatan komputasi
+3 | pembuatan proses membutuhkan waktu dan resource yang besar | pembuatan thread lebih ekonomis dalam segi waktu dan resource
+4 | bergantung pada object di memori untuk mengirim data ke proses lain | tidak bergantung pada object lain
+5 |process sebagian besar bersifat interruptible / killable | threading lebih susah untuk dikill atau diinterrup karena sebuah thread ada dalam sebuah proses sehingga jika ingin menginterrup thread harus melalui prosesnya (yang dikill prosesnya , otomatis thread akan juga terinterrup)
+
+- Contoh Penggunaan `Multi Processing` adalah pada sistem browser chrome, ketika kita membuka atau membuat tab baru maka sistem juga akan membuat process baru untuk kebutuhan tab baru tersebut sedangkan contoh implementasi `Multi Threading` adalah pada sistem sebuah game dimana sebuah proses dapat menangani berbagai kebutuhan secara bersamaan contohnya sebuah game dapat melakukan rendering beberapa objek bersamaan sehingga proses akan lebih cepat.
+
+</br>
+
+### Pembuatan Thread
+
+Thread dapat dibuat menggunakan fungsi pada program berbahasa C sebagai berikut.
 
 ```c
-#include <sys/types.h>
-#include <sys/stat.h>
+#include <pthread.h> //library thread
+
+int pthread_create(pthread_t *restrict tidp,
+                   const pthread_attr_t *restrict attr,
+                   void *(*start_rtn)(void *),
+                   void *restrict arg);
+
+/* Jika berhasil mengembalikan nilai 0, jika error mengembalikan nilai 1 */
+```
+
+Penjelasan syntax:
+
+- Pointer `tidp` digunakan untuk menunjukkan alamat memori dengan thread ID dari thread baru.
+- Argumen `attr` digunakan untuk menyesuaikan atribut yang digunakan oleh thread. nilai `attr` di-set `NULL` ketika thread menggunakan atribut _default_.
+- Thread yang baru dibuat akan berjalan dimulai dari fungsi `start_rtn` dalam fungsi thread.
+- Pointer `arg` digunakan untuk memberikan sebuah argumen ke fungsi `start_rtn`, jika tidak diperlukan argumen, maka `arg` akan di-set `NULL`.
+
+Contoh Program menggunakan Thread
+
+> compile dengan cara `gcc -pthread -o [output] input.c`
+
+```c
 #include <stdio.h>
 #include <stdlib.h>
-#include <fcntl.h>
-#include <errno.h>
 #include <unistd.h>
-#include <syslog.h>
-#include <string.h>
+#include <pthread.h>
 
-int main() {
-  pid_t pid, sid;        // Variabel untuk menyimpan PID
+void *run(void *args) {
+	int angka;
+	angka = *((int *)args);
 
-  pid = fork();     // Menyimpan PID dari Child Process
+	if (angka == 1) {
+		printf("%d bukan prima\n", angka);
+		return NULL;
+	}
 
-  /* Keluar saat fork gagal
-  * (nilai variabel pid < 0) */
-  if (pid < 0) {
-    exit(EXIT_FAILURE);
-  }
+	for (int i=2; i<angka; i++){
+		if (angka % i == 0){
+			printf("%d bukan prima\n", angka);
+			return NULL;
+		}
+	}
+	printf("%d prima\n", angka);
+        return NULL;
+}
 
-  /* Keluar saat fork berhasil
-  * (nilai variabel pid adalah PID dari child process) */
-  if (pid > 0) {
-    exit(EXIT_SUCCESS);
-  }
+void main() {
+	int angka;
+	printf("Masukkan angka: ");
+	scanf("%d", &angka);
 
-  umask(0);
+	pthread_t t_id[angka];
+	printf("Thread berhasil dibuat\n");
 
-  sid = setsid();
-  if (sid < 0) {
-    exit(EXIT_FAILURE);
-  }
+	for (int i=0 ; i<angka; i++) {
+		int *num_to_check = (int *)malloc(sizeof(int));
+		*num_to_check = i+1 ;
+		pthread_create(&t_id[i], NULL, &run, (void *)num_to_check);
+	}
 
-  if ((chdir("/")) < 0) {
-    exit(EXIT_FAILURE);
-  }
+	for (int i=0 ; i<angka; i++) {
+		pthread_join(t_id[i], NULL);
+	}
+	printf("Thread telah selesai\n");
 
-  close(STDIN_FILENO);
-  close(STDOUT_FILENO);
-  close(STDERR_FILENO);
-
-  while (1) {
-    // Tulis program kalian di sini
-
-    sleep(30);
-  }
 }
 ```
 
-### 3.1 Meng-_compile_ program daemon
-
-Untuk menjalankan daemon process pertama kita compile program C yang telah kita buat dengan perintah `gcc [nama_program.c] -o [nama_file_outputd]`.
-
-### 3.2 Menjalankan program daemon
-
-Setelah melakukan langkah sebelumnya, akan muncul sebuah file executeable yang dapat dijalankan dengan `./nama_file_outputd`.
-
-### 3.3 Periksa apakah Daemon process berjalan
-
-Untuk memeriksa process apa saja yang sedang berlangsung kita dapat menggunakan perintah `ps -aux`. Untuk menemukan Daemon process yang kita _run_, manfaatkan `grep`. Sehingga perintahnya menjadi `ps -aux | grep "nama_file_outputd"`. Bila ada, berarti daemon process kita sedang berjalan.
-
-### 3.4 Mematikan Daemon process yang sedang berjalan
-
-Untuk mematikan daemon process kita akan menggunakan perintah `kill`. Pertama kita harus menemukan PID dari Daemon process yang akan dimatikan. Kita dapat menemukan PID tersebut pada langkah sebelumnya. Lalu jalankan `sudo kill -9 pid` untuk mematikan process-nya.
-
-# Extras
-
-## Directory Listing in C
-
-Dengan bahasa C, kita bisa melihat ada file apa saja yang terdapat dalam suatu directory. Tentu saja hal ini membutuhkan suatu library khusus bernama `dirent.h`. Berikut contoh directory listing di bahasa C :
+Program Pembanding jika tidak menggunakan *Thread*.
 
 ```c
 #include <stdio.h>
-#include <sys/types.h>
-#include <dirent.h>
+#include <stdlib.h>
 
+int is_prime(int angka) {
+    if (angka == 1) {
+        printf("%d bukan prima\n", angka);
+        return 0;
+    }
 
-int main (void)
-{
-    DIR *dp;
-    struct dirent *ep;
-    char path[100];
-
-    printf("Enter path to list files: ");
-    scanf("%s", path);
-
-    dp = opendir(path);
-
-    if (dp != NULL)
-    {
-      while ((ep = readdir (dp))) {
-          puts (ep->d_name);
-      }
-
-      (void) closedir (dp);
-    } else perror ("Couldn't open the directory");
-
-    return 0;
-}
-```
-
-Kita juga bisa melakukan traverse secara rekursif terhadap suatu directory. Contoh :
-
-```c
-#include <stdio.h>
-#include <string.h>
-#include <dirent.h>
-
-void listFilesRecursively(char *path);
-
-
-int main()
-{
-    char path[100];
-
-    printf("Enter path to list files: ");
-    scanf("%s", path);
-
-    listFilesRecursively(path);
-
-    return 0;
-}
-
-void listFilesRecursively(char *basePath)
-{
-    char path[1000];
-    struct dirent *dp;
-    DIR *dir = opendir(basePath);
-
-    if (!dir)
-        return;
-
-    while ((dp = readdir(dir)) != NULL)
-    {
-        if (strcmp(dp->d_name, ".") != 0 && strcmp(dp->d_name, "..") != 0)
-        {
-            printf("%s\n", dp->d_name);
-
-            // Construct new path from our base path
-            strcpy(path, basePath);
-            strcat(path, "/");
-            strcat(path, dp->d_name);
-
-            listFilesRecursively(path);
+    for (int i=2; i<angka; i++){
+        if (angka % i == 0){
+            printf("%d bukan prima\n", angka);
+            return 0;
         }
     }
+    printf("%d prima\n", angka);
+    return 1;
+}
 
-    closedir(dir);
+int main() {
+    int jumlah;
+    printf("Masukkan jumlah angka: ");
+    scanf("%d", &jumlah);
+
+    printf("Hasil pengujian bilangan:\n");
+    for (int i=0; i<jumlah; i++) {
+        is_prime(i);
+    }
+
+    return 0;
 }
 ```
 
-## File Permission in C
+Perbandingan antara Thread dengan Fork.
 
-Kita bisa melihat permission dari suatu file atau directory di bahasa C dengan library yang bernama `sys/stat.h`. Berikut adalah contoh dari checking permission file dengan bahasa C :
+Contoh membuat program tanpa menggunakan thread [playtanpathread.c](playtanpathread.c):
+
+```c
+#include<stdio.h>
+#include<unistd.h>
+#include<stdlib.h>
+#include<sys/types.h>
+#include<sys/wait.h>
+
+int main()
+{
+	pid_t child;
+	int i, stat;
+	char *argv1[] = {"clear", NULL};
+	char *argv2[] = {"xlogo", NULL};
+	child = fork();
+	if (child==0) {
+		execv("/usr/bin/clear", argv1);
+	}
+	else
+	{
+		for(i=0;i<6;i++)
+		{
+			printf("%d\n",i);
+			fflush(stdout);
+			sleep(1);
+		}
+		execv("/usr/bin/xlogo", argv2);
+	}
+
+}
+```
+
+Contoh membuat program menggunakan thread [playthread.c](playthread.c).
+
+> compile dengan cara `gcc -pthread -o [output] input.c`
+
+```c
+#include<stdio.h>
+#include<string.h>
+#include<pthread.h>
+#include<stdlib.h>
+#include<unistd.h>
+#include<sys/types.h>
+#include<sys/wait.h>
+
+pthread_t tid[3]; //inisialisasi array untuk menampung thread dalam kasus ini ada 2 thread
+pid_t child;
+
+int length=5; //inisialisasi jumlah untuk looping
+void* playandcount(void *arg)
+{
+	char *argv1[] = {"clear", NULL};
+	char *argv2[] = {"xlogo", NULL};
+	unsigned long i=0;
+	pthread_t id=pthread_self();
+	int iter;
+	if(pthread_equal(id,tid[0])) //thread untuk clear layar
+	{
+		child = fork();
+		if (child==0) {
+		    execv("/usr/bin/clear", argv1);
+	    	}
+	}
+	else if(pthread_equal(id,tid[1])) // thread menampilkan counter
+	{
+        for(iter=0;iter<6;iter++)
+		{
+			printf("%d\n",iter);
+			fflush(stdout);
+			sleep(1);
+		}
+	}
+	else if(pthread_equal(id,tid[2])) // thread menampilkan gambar
+	{
+        child = fork();
+        if (child==0) {
+		    execv("/usr/bin/xlogo", argv2);
+	    }
+	}
+
+	return NULL;
+}
+
+int main(void)
+{
+	int i=0;
+	int err;
+	while(i<3) // loop sejumlah thread
+	{
+		err=pthread_create(&(tid[i]),NULL,&playandcount,NULL); //membuat thread
+		if(err!=0) //cek error
+		{
+			printf("\n can't create thread : [%s]",strerror(err));
+		}
+		else
+		{
+			printf("\n create thread success\n");
+		}
+		i++;
+	}
+	pthread_join(tid[0],NULL);
+	pthread_join(tid[1],NULL);
+	exit(0);
+	return 0;
+}
+```
+
+**Kesimpulan** :
+Terlihat ketika program menggunakan thread dapat menjalankan dua task secara bersamaan dan konsumsi cpu lebih kecil jika dibanding dengan create suaru proses baru.
+
+</br>
+
+### Join Thread
+Join thread adalah fungsi untuk melakukan penggabungan dengan thread lain yang telah berhenti (*terminated*). Bila thread yang ingin di-join belum dihentikan, maka fungsi ini akan menunggu hingga thread yang diinginkan berstatus **`Terminated`**. Fungsi `pthread_join()` ini dapat dikatakan sebagai fungsi `wait()` pada proses, karena program (*task*) utama akan menunggu thread yang di-join-kan pada program utama tersebut. Kita tidak mengetahui program utama atau thread yang lebih dahulu menyelesaikan pekerjaannya.
+
+Contoh program C Join_Thread [thread_join.c](thread_join.c):
 
 ```c
 #include <stdio.h>
 #include <stdlib.h>
-#include <sys/stat.h>
+#include <pthread.h> //library thread
+
+void *print_message_function( void *ptr );
 
 int main()
 {
-    struct stat fs;
-    char filename[100];
-    int r;
+    pthread_t thread1, thread2;//inisialisasi awal
+    const char *message1 = "Thread 1";
+    const char *message2 = "Thread 2";
+    int  iret1, iret2;
 
-    printf("Enter path to list files: ");
-    scanf("%s", filename);
-
-    r = stat(filename,&fs);
-    if( r==-1 )
+    iret1 = pthread_create( &thread1, NULL, print_message_function, (void*) message1); //membuat thread pertama
+    if(iret1) //jika eror
     {
-        fprintf(stderr,"File error\n");
-        exit(1);
+        fprintf(stderr,"Error - pthread_create() return code: %d\n",iret1);
+        exit(EXIT_FAILURE);
     }
 
-    printf("Obtaining permission mode for '%s':\n",filename);
+    iret2 = pthread_create( &thread2, NULL, print_message_function, (void*) message2);//membuat thread kedua
+    if(iret2)//jika gagal
+    {
+        fprintf(stderr,"Error - pthread_create() return code: %d\n",iret2);
+        exit(EXIT_FAILURE);
+    }
 
-    /* file permissions are kept in the st_mode member */
-    /* The S_ISREG() macro tests for regular files */
-    if( S_ISREG(fs.st_mode) )
-        puts("Regular file");
-    else
-        puts("Not a regular file");
+    printf("pthread_create() for thread 1 returns: %d\n",iret1);
+    printf("pthread_create() for thread 2 returns: %d\n",iret2);
 
-    printf("Owner permissions: ");
-    if( fs.st_mode & S_IRUSR )
-        printf("read ");
-    if( fs.st_mode & S_IWUSR )
-        printf("write ");
-    if( fs.st_mode & S_IXUSR )
-        printf("execute");
-    putchar('\n');
+    // pthread_join( thread1, NULL);
+    // pthread_join( thread2, NULL); 
 
-    printf("Group permissions: ");
-    if( fs.st_mode & S_IRGRP )
-        printf("read ");
-    if( fs.st_mode & S_IWGRP )
-        printf("write ");
-    if( fs.st_mode & S_IXGRP )
-        printf("execute");
-    putchar('\n');
+    exit(EXIT_SUCCESS);
+}
 
-    printf("Others permissions: ");
-    if( fs.st_mode & S_IROTH )
-        printf("read ");
-    if( fs.st_mode & S_IWOTH )
-        printf("write ");
-    if( fs.st_mode & S_IXOTH )
-        printf("execute");
-    putchar('\n');
+void *print_message_function( void *ptr )
+{
+    char *message;
+    message = (char *) ptr;
+    printf("%s \n", message);
 
-    return(0);
+    for(int i=0;i<10;i++){
+        printf("%s %d \n", message, i);
+    }
+}
+
+```
+<details>
+  <summary>Keterangan & Kesimpulan</summary>
+
+- Pada program di atas, jika kita _comment_ baris `pthread_join`, maka hasil yang didapat tidak akan memunculkan tulisan **Thread 1** dan **Thread 2**.
+- Jika pemanggilan fungsi `pthread_join` di-uncomment, maka program yang kita buat akan memunculkan tulisan **Thread 1** dan **Thread 2**.
+
+Pada program pertama tidak menjalankan fungsi `print_message_function` karena sebelum kedua thread dijadwalkan, program utama (kemungkinan) telah selesai dieksekusi sehingga tidak menjalankan fungsi bawaan pada thread. Pada percobaan kedua, fungsi `pthread_join()` digunakan untuk membuat program utama menunggu thread yang _join_ hingga target thread selesai dieksekusi, dengan fungsi ini program utama di-suspend hingga target thread selesai dieksekusi.
+
+- Fungsi untuk terminasi thread
+  ```c
+  #include <pthread.h>
+  void pthread_exit(void *rval_ptr);
+  ```
+  Argumen `rval_ptr` adalah pointer yang digunakan yang dapat diakses oleh fungsi `pthread_join()` agar dapat mengetahui status thread tersebut
+- Fungsi untuk melakukan join thread
+  ```c
+  int pthread_join(pthread_t thread, void **rval_ptr);
+  /* Jika berhasil mengembalikan nilai 0, jika error mengembalikan nilai 1 */
+  ```
+  Fungsi akan menunda pekerjaan sampai status pointer `rval_ptr` dari fungsi `pthread_exit()` mengembalikan nilainya.
+  </details>
+
+</br>
+
+### Mutual Exclusion
+
+Disebut juga sebagai **Mutex**, yaitu suatu cara yang menjamin jika ada pekerjaan yang menggunakan variabel atau berkas digunakan juga oleh pekerjaan yang lain, maka pekerjaan lain tersebut akan mengeluarkan nilai dari pekerjaan sebelumnya.
+
+Contoh program Simple Mutual_Exclusion [threadmutex.c](threadmutex.c) yang mana di sini menggunakan flag `status`.
+
+```c
+#include<stdio.h>
+#include<string.h>
+#include<pthread.h>
+#include<stdlib.h>
+#include<unistd.h>
+pthread_t tid1, tid2;
+int status;
+int nomor;
+void* tulis(void *arg)
+{
+    status = 0;
+    printf("Masukan nomor : ");
+    scanf("%d", &nomor);
+    status = 1;
+    return NULL;
+}
+void* baca(void *arg)
+{
+    while(status != 1)
+    {
+    }
+    printf("Nomor %d\n", nomor);
+}
+int main(void)
+{
+    pthread_create(&(tid1), NULL, tulis, NULL);
+    pthread_create(&(tid2), NULL, baca, NULL);
+    pthread_join(tid1, NULL);
+    pthread_join(tid2, NULL);
+    return 0;
 }
 ```
 
-Untuk variabel dengan prefix `S_...` memiliki suatu aturan seperti file permission di dalam linux. Berikut adalah gambar yang menunjukkan cara penggunaannya :
+Keterangan :
+- Terdapat 2 buah thread yang berjalan dengan fungsi yang berbeda.
+- Sumber daya (variabel) yang digunakan kedua thread untuk mengeksekusi pekerjaannya **sama**.
+- Variabel `status` adalah contoh simple untuk mengendalikan jalannya thread.
 
-![file-permission](img/file-permission.png)
+Kemudian kita juga fungsi `pthread_mutex` yang telah disediakan oleh library `pthread.h`. Berikut contoh programnya:
 
-## File Ownership in C
+```c
+#include <pthread.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+pthread_t tid[2];
+int counter;
+// lock: Variabel mutex yang digunakan untuk mengatur akses terhadap variabel counter.
+pthread_mutex_t lock;
+void* trythis(void* arg)
+{
+    //pthread_mutex_lock() digunakan untuk mengunci mutex lock, sehingga menghindari akses bersama pada variabel counter.
+    pthread_mutex_lock(&lock);
+    unsigned long i = 0;
+    counter += 1;
+    printf("\n Job %d has started\n", counter);
+    for (i = 0; i < (0xFFFFFFFF); i++)
+        ;
+    printf("\n Job %d has finished\n", counter);
+    //pthread_mutex_unlock() digunakan untuk membuka kunci mutex lock agar memungkinkan akses dari thread-thread lain.
+    pthread_mutex_unlock(&lock);
+    return NULL;
+}
+int main(void)
+{
+    int i = 0;
+    int error;
+    if (pthread_mutex_init(&lock, NULL) != 0) {
+        printf("\n mutex init has failed\n");
+        return 1;
+    }
+    while (i < 2) {
+        error = pthread_create(&(tid[i]),
+        NULL,
+        &trythis, NULL);
+        if (error != 0)
+            printf("\nThread can't be created :[%s]",
+            strerror(error));
+        i++;
+    }
+    pthread_join(tid[0], NULL);
+    pthread_join(tid[1], NULL);
+    pthread_mutex_destroy(&lock);
+    return 0;
+}
+```
 
-Kita juga bisa melihat owner dan group dari suatu file dengan bahasa C. Hal ini bisa dilakukan dengan bantuan library `sys/stat.h`, `pwd.h`, dan `grp.h`. Untuk mendapatkan informasi itu, perlu dilakukan 2 langkah yaitu mencari UID dan GID dari suatu file lalu mencari nama dari user dan group dalam user database atau group database. Berikut adalah contoh cara melakukan hal tersebut :
+Output :
+
+```
+Job 1 has started
+Job 1 has finished
+Job 2 has started
+Job 2 has finished
+```
+
+**Kesimpulan** :
+Karena kita tidak mengetahui _thread_ mana yang lebih dahulu mengeksekusi sebuah variable atau sumber daya pada program, kegunaan dari **Mutex** adalah untuk menjaga sumber daya suatu thread agar tidak digunakan oleh thread lain sebelum ia menyelesaikan pekerjaannya.
+
+</br></br>
+
+## IPC (Interprocess Communication)
+### IPC
+IPC (*Interprocess Communication*) adalah cara atau mekanisme pertukaran data antara satu proses dengan proses lain, baik pada komputer yang sama atau komputer jarak jauh yang terhubung melalui suatu jaringan.
+
+</br>
+
+### Pipes
+
+*Pipe* merupakan komunikasi sequensial antar proses yang saling terelasi. Kelemahannya, hanya dapat digunakan untuk proses yang saling berhubungan dan secara sequensial.
+
+Terdapat dua jenis *pipe* sebagai berikut.
+- `unnamed pipe`: Komunikasi antara *parent* dan *child* proses.
+- `named pipe`: Biasa disebut sebagai FIFO, digunakan untuk komunikasi yang berjalan secara independen. **Hanya bisa digunakan jika kedua proses menggunakan *filesystem* yang sama.**
+
+```
+$ ls | less
+```
+
+Diagram dari *pipe* dapat ditunjukkan sebagai berikut.
+
+![alt](img/pipe.png "Diagram Pipe")  
+
+<!-- TAMBAHKAN PENJELASAN TENTANG FDS (FILE DESCRIPTOR). SAMA KAYA PID, TAPI BUAT PIPING -->
+
+*pseudocode* dari *pipe* (tanpa *fork*) dapat ditunjukkan sebagai berikut.
+
+```pascal
+int pipe(int fds[2]);
+
+Parameters :
+fd[0] will be the fd(file descriptor) for the 
+read end of pipe.
+fd[1] will be the fd for the write end of pipe.
+Returns : 0 on Success.
+-1 on error.
+```
+
+Contoh kode dalam bahasa C (tanpa *fork*) dapat dilihat pada [pipe1.c](pipe1.c).
+
+```c
+// C program to illustrate 
+// pipe system call in C 
+#include <stdio.h> 
+#include <unistd.h> 
+#include <stdlib.h>
+
+#define MSGSIZE 16 
+char* msg1 = "hello, world #1"; 
+char* msg2 = "hello, world #2"; 
+char* msg3 = "hello, world #3"; 
+
+int main() 
+{ 
+	char inbuf[MSGSIZE]; 
+	int p[2], i; 
+
+	if (pipe(p) < 0) 
+		exit(1); 
+
+	/* continued */
+	/* write pipe */
+
+	write(p[1], msg1, MSGSIZE); 
+	write(p[1], msg2, MSGSIZE); 
+	write(p[1], msg3, MSGSIZE); 
+
+	for (i = 0; i < 3; i++) { 
+		/* read pipe */
+		read(p[0], inbuf, MSGSIZE); 
+		printf("%s\n", inbuf); 
+	} 
+	return 0; 
+} 
+```  
+
+Output dari kode tersebut adalah seperti berikut.  
+
+```
+hello, world #1
+hello, world #2
+hello, world #3
+```  
+
+Diagram dari *pipe* (dengan *fork*) dapat ditunjukkan sebagai berikut. 
+
+![alt](img/pipe-fork.png)  
+
+Contoh kode dalam bahasa C (dengan *fork*) dapat dilihat pada [pipe-fork](pipe-fork.c).  
+
+```c
+// C program to demonstrate use of fork() and pipe() 
+#include<stdio.h> 
+#include<stdlib.h> 
+#include<unistd.h> 
+#include<sys/types.h> 
+#include<string.h> 
+#include<sys/wait.h> 
+
+int main() 
+{ 
+	// We use two pipes 
+	// First pipe to send input string from parent 
+	// Second pipe to send concatenated string from child 
+
+	int fd1[2]; // Used to store two ends of first pipe 
+	int fd2[2]; // Used to store two ends of second pipe 
+
+	char fixed_str[] = "forgeeks.org"; 
+	char input_str[100]; 
+	pid_t p; 
+
+	if (pipe(fd1)==-1) 
+	{ 
+		fprintf(stderr, "Pipe Failed" ); 
+		return 1; 
+	} 
+	if (pipe(fd2)==-1) 
+	{ 
+		fprintf(stderr, "Pipe Failed" ); 
+		return 1; 
+	} 
+
+	scanf("%s", input_str); 
+	p = fork(); 
+
+	if (p < 0) 
+	{ 
+		fprintf(stderr, "fork Failed" ); 
+		return 1; 
+	} 
+
+	// Parent process 
+	else if (p > 0) 
+	{ 
+		char concat_str[100]; 
+
+		close(fd1[0]); // Close reading end of first pipe 
+
+		// Write input string and close writing end of first 
+		// pipe. 
+		write(fd1[1], input_str, strlen(input_str)+1); 
+		close(fd1[1]); 
+
+		// Wait for child to send a string 
+		wait(NULL); 
+
+		close(fd2[1]); // Close writing end of second pipe 
+
+		// Read string from child, print it and close 
+		// reading end. 
+		read(fd2[0], concat_str, 100); 
+		printf("Concatenated string %s\n", concat_str); 
+		close(fd2[0]); 
+	} 
+
+	// child process 
+	else
+	{ 
+		close(fd1[1]); // Close writing end of first pipe 
+
+		// Read a string using first pipe 
+		char concat_str[100]; 
+		read(fd1[0], concat_str, 100); 
+
+		// Concatenate a fixed string with it 
+		int k = strlen(concat_str); 
+		int i; 
+		for (i=0; i<strlen(fixed_str); i++) 
+			concat_str[k++] = fixed_str[i]; 
+
+		concat_str[k] = '\0'; // string ends with '\0' 
+
+		// Close both reading ends 
+		close(fd1[0]); 
+		close(fd2[0]); 
+
+		// Write concatenated string and close writing end 
+		write(fd2[1], concat_str, strlen(concat_str)+1); 
+		close(fd2[1]); 
+
+		exit(0); 
+	} 
+} 
+```
+
+</br>
+
+### Message Queues
+
+Message queue merupakan suatu mekanisme *interprocess communication (IPC)* yang memungkinkan suatu proses untuk melakukan pertukaran data berupa pesan diantara dua proses. Mekanisme ini memungkinkan proses untuk berkomunikasi secara asinkron dengan mengirim pesan satu sama lain. Pesan yang dikirim akan disimpan ke dalam suatu antrian, menunggu untuk diproses, kemudian dihapus setelah proses selesai berjalan.
+
+Ilustrasi:
+
+![ilustrasi-message-queue](https://static.javatpoint.com/operating-system/images/ipc-using-message-queues.png)
+
+Message queue menggunakan prinsip FIFO (First In First Out) tidak terbatas yang tidak dapat diakses oleh dua thread yang berbeda. Dalam melakukan write pesan, banyak tasks dapat menulis pesan ke dalam queue, tetapi hanya satu tasks yang dapat membaca pesan secara sekaligus dari sebuah queue. Pembaca akan menunggu antrian pesan sampai ada pesan yang akan diproses.
+
+Contoh program dapat diakses di [sender](sender.c) dan [receiver](receiver.c).
+
+</br>
+
+### Shared Memory
+
+Sebuah mekanisme *mapping area (segments)* dari suatu blok *memory* untuk digunakan bersama oleh beberapa proses. Sebuah proses akan menciptakan *segment memory*, kemudian proses lain yang diijinkan dapat mengakses *memory* tersebut. *Shared memory* merupakan cara yang efektif untuk melakukan pertukaran data antar program. Dalam hal ini, apabila suatu proses melakukan perubahan, maka proses lain dapat melihatnya.
+
+![shared-memory](https://static.javatpoint.com/operating-system/images/ipc-through-shared-memory.png)
+
+Shared memory merupakan mekanisme IPC yang paling cepat. Suatu sistem operasi akan memetakan memory segment pada suatu address space dari beberapa proces untuk melakukan read and write di segmen memori tersebut tanpa memanggil fungsi dari sistem operasi. Shared memory ini merupakan mekanisme yang superior untuk melakukan pertukaran data dengan ukuran sangat besar.
+
+Langkah-langkah menggunakan shared memory:
+1. Melakukan request memory segment pada operating system yang bisa digunakan secara bersamaan oleh suatu proses
+2. Melakukan asosiasi dari sebagian atau seluruh memory dengan address space dari proses yang dimaksud.
+
+Ilustrasi
+![shared-mem](https://static.javatpoint.com/operating-system/images/ipc-through-shared-memory2.png)
+
+* Sebagai catatan, alamat memory dari suatu shared memory pada masing-masing proses belum tentu sama. Dalam hal ini, kita dapat menggunakan semaphore untuk melakukan sinkronisasi.
+
+
+Example: [Proses 1](proses1.c) [Proses 2](proses2.c)
+
+**Proses 1**
 
 ```c
 #include <stdio.h>
-#include <stdlib.h>
-#include <pwd.h>
-#include <grp.h>
-#include <sys/stat.h>
+#include <sys/ipc.h>
+#include <sys/shm.h>
+#include <unistd.h>
 
-int main()
+void main()
 {
-    struct stat info;
-    char path[100];
-    int r;
+        key_t key = 1234;
+        int *value;
 
-    printf("Enter path to list files: ");
-    scanf("%s", path);
+        int shmid = shmget(key, sizeof(int), IPC_CREAT | 0666);
+        value = shmat(shmid, NULL, 0);
 
-    r = stat(path, &info);
-    if( r==-1 )
-    {
-        fprintf(stderr,"File error\n");
-        exit(1);
-    }
+        *value = 10;
 
-    struct passwd *pw = getpwuid(info.st_uid);
-    struct group  *gr = getgrgid(info.st_gid);
+        printf("Program 1 : %d\n", *value);
 
-    if (pw != 0) puts(pw->pw_name);
-    if (gr != 0) puts(gr->gr_name);
+        sleep(5);
+
+        printf("Program 1: %d\n", *value);
+        shmdt(value);
+        shmctl(shmid, IPC_RMID, NULL);
 }
 ```
 
-# Soal Latihan
+**Proses 2**
 
-[Daftar Isi](#daftar-isi)
+```c
+#include <stdio.h>
+#include <sys/ipc.h>
+#include <sys/shm.h>
+#include <unistd.h>
 
-1. Devin adalah suatu programmer di perusahaan twatter. Suatu ketika, Devin sangat bosan dengan code yang disusun karena merasa sangat gampang, ia pun melihat-lihat kode yg ditulis oleh Nuhur yang merupakan teman sekaligus Security Engineer di perusahaan Pohon Hub. Ia merasa kode yang ditulis oleh Nuhur masih belum sempurna karena tidak mampu memberikan output secara urut dari A-Z. Bantulah Devin untuk memperbaiki kode yg ditulis Nuhur tanpa merubah fungsi yang sudah ada!
-   _(Hint: Gunakan fungsi wait)_
+void main()
+{
+        key_t key = 1234;
+        int *value;
 
-2. Karena membantu Nuhur yang merupakan rival dari perusahaannya , Devin pun mendapatkan hukuman dari mentornya. Hukumannya ialah meng-copy tiap baris yang mengandung string wlan0 pada file dmesg.log dan meletakkannya pada folder wlan_log dan dengan nama file wlan0.log.{no} (wlan0.log.1, wlan0.log.2, dst) tanpa menggunakan fungsi system.
-   Bantulah Devin menuntaskan hukumannya!
+        int shmid = shmget(key, sizeof(int), IPC_CREAT | 0666);
+        value = shmat(shmid, NULL, 0);
 
-3. Karena muka Devin yang mengesalkan , mentor Devin ternyata ingin menambahkan hukuman lagi. Hukuman kedua untuk Devin ialah membuat program daemon yang berfungsi menghapus file dengan ekstensi .trash yang ada pada folder /tmp/trash dan berjalan setiap 30 detik. Namun ada kondisi dimana ketika ada file stop.trash, programnya berhenti. Bantulah Devin membuat program untuk dapat memuaskan mentornya! Catatan: berhati-hatilah saat menghapus file
+        printf("Program 1 : %d\n", *value);
+	*value = 30;
 
-## Referensi
+        sleep(5);
 
-- https://notes.shichao.io/apue/ch8/
-- https://www.geeksforgeeks.org/exec-family-of-functions-in-c/
-- http://www.netzmafia.de/skripten/unix/linux-daemon-howto.html
-- https://www.computerhope.com/unix/uumask.htm
-- http://www.gnu.org/savannah-checkouts/gnu/libc/manual/html_node/Simple-Directory-Lister.html
-- https://codeforwin.org/2018/03/c-program-to-list-all-files-in-a-directory-recursively.html
-- https://c-for-dummies.com/blog/?p=4101
-- https://pubs.opengroup.org/onlinepubs/009695399/functions/getgrgid.html
-- https://pubs.opengroup.org/onlinepubs/009695399/functions/getgrgid.html
-- https://pubs.opengroup.org/onlinepubs/009695399/functions/getpwuid.html
-- https://www.geeksforgeeks.org/exit-status-child-process-linux/
+        printf("Program 1: %d\n", *value);
+        shmdt(value);
+        shmctl(shmid, IPC_RMID, NULL);
+}
+```
+
+Jalankan proses 1 terlebih dahulu, lalu proses 2. Hasilnya adalah sebagai berikut.
+
+**Proses 1**
+
+```
+Program 1 : 10
+Program 1 : 30
+```
+
+**Proses 2**
+
+```
+Program 1 : 10
+Program 1 : 30
+```
+
+</br></br>
