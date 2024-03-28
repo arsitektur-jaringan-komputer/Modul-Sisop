@@ -58,7 +58,7 @@
 
 Pernahkah kalian membuka banyak aplikasi dalam laptop? Jika iya, maka kalian telah mengimplementasikan `proses`. Meskipun, kita sedang membuka satu aplikasi, tetapi aplikasi yang lain masih ada di latar belakang sebagai proses yang menunggu giliran.
 
-[open-apps-on-laptop](img/many-apps-on-laptop.jpeg)
+![open-apps-on-laptop](img/many-apps-on-laptop.jpeg)
 
 Proses sendiri dapat didefinisikan sebagai program yang sedang dieksekusi oleh OS. Ketika suatu program tersebut dieksekusi oleh OS, proses tersebut memiliki PID (Process ID) yang merupakan identifier dari suatu proses. Pada UNIX, untuk melihat proses yang dieksekusi oleh OS dengan memanggil perintah shell `ps`. Untuk melihat lebih lanjut mengenai perintah `ps` dapat membuka `man ps`.
 
@@ -66,13 +66,13 @@ Proses sendiri dapat didefinisikan sebagai program yang sedang dieksekusi oleh O
 
 Thread adalah unit dasar dari eksekusi yang dapat melakukan tugas-tugas tertentu di dalam sebuah proses. Thread-thread ini bekerja bersama-sama di dalam sebuah proses untuk menyelesaikan pekerjaan secara bersamaan. Mereka berbagi sumber daya dan konteks yang sama dengan proses utama di mana mereka berjalan.
 
-[many-tabs-opened-at-once](img/tabs-opened-at-once.png)
+![many-tabs-opened-at-once](img/tabs-opened-at-once.png)
 
 Contoh dari thread adalah saat kita membuka browser, umumnya kita akan membuka banyak tab secara bersamaan. Masing-masing tab atau jendela tersebut mungkin akan dijalankan sebagai thread yang berbeda dalam satu proses utama dari aplikasi web browser.
 
 ### Pengertian Multiprocess dan Multithread
 
-[multiprocess-multithread](img/multiprocess-multithread.png)
+![multiprocess-multithread](img/multiprocess-multithread.png)
 
 1. Multiprocess
 
@@ -106,8 +106,6 @@ Misalnya, sebuah server web perlu mampu menangani banyak permintaan HTTP dari kl
 
 ### Macam-Macam PID
 
-[Daftar Isi](#daftar-isi)
-
 #### User ID (UID)
 
 Merupakan identifier dari suatu proses yang menampilkan user yang menjalankan suatu program. Pada program C, dapat memanggil fungsi ` uid_t getuid(void);`
@@ -121,8 +119,6 @@ Angka unik dari suatu proses yang sedang berjalan untuk mengidentifikasi suatu p
 Setiap proses memiliki identifier tersendiri dan juga setelah proses tersebut membuat proses lainnya. Proses yang terbentuk ini memiliki identifier berupa ID dari pembuatnya (parent). Pada program C, dapat memanggil fungsi `pid_t getppid(void); `.
 
 ### Melihat Proses Berjalan
-
-[Daftar Isi](#daftar-isi)
 
 Untuk melihat proces yang sedang berjalan di OS, dapat menggunakan `ps`.
 
@@ -151,8 +147,6 @@ Kita juga dapat melihat proses yang berjalan dalam bentuk tree, sehingga kita de
 
 ### Menghentikan Proses
 
-[Daftar Isi](#daftar-isi)
-
 Untuk menghentikan (_terminate_) proses yang berjalan, jalankan perintah shell `kill [options] <pid>`. Biasanya untuk menghentikan paksa suatu proses dapat menggunakan perintah `kill -9 <pid>`. Angka _9_ adalah kode Signal untuk terminate suatu process.
 
 Selain mengguankan command `kill` kita juga dapat menggunakan command `pkill`. Perbedaan penggunaannya jika menggunakan pkill adalah dengan menambahkan nama prosesnya `pkill [options] <nama proses>`
@@ -176,8 +170,6 @@ Dan jika kita mengguanakan `Ctrl + C` untuk menghentikkan suatu program , saat i
 Sedangkan jika kita menggunakan `Ctrl + Z` untuk menhentikan suatu program , saat itu sistem akan mengirimkan signal `SIGSTP` yang artinya menjeda proses tersebut dan dapat dijalankan kembali dengan menggunakan perintah `fg` atau `bg`.
 
 ### Membuat Proses
-
-[Daftar Isi](#daftar-isi)
 
 #### **fork**
 
@@ -487,8 +479,6 @@ Shell script dipanggil
 ```
 
 ### Jenis-Jenis Proses
-
-[Daftar Isi](#daftar-isi)
 
 #### **Zombie Process**
 
