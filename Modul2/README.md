@@ -52,6 +52,8 @@
   - [4.2 Piping](#pipes)
   - [4.3 Shared Memory](#shared-memory)
 
+</br></br>
+
 ## Pendahuluan
 
 ### Pengertian Proses
@@ -62,6 +64,8 @@ Pernahkah kalian membuka banyak aplikasi dalam laptop? Jika iya, maka kalian tel
 
 Proses sendiri dapat didefinisikan sebagai program yang sedang dieksekusi oleh OS. Ketika suatu program tersebut dieksekusi oleh OS, proses tersebut memiliki PID (Process ID) yang merupakan identifier dari suatu proses. Pada UNIX, untuk melihat proses yang dieksekusi oleh OS dengan memanggil perintah shell `ps`. Untuk melihat lebih lanjut mengenai perintah `ps` dapat membuka `man ps`.
 
+</br></br>
+
 ### Pengertian Thread
 
 Thread adalah unit dasar dari eksekusi yang dapat melakukan tugas-tugas tertentu di dalam sebuah proses. Thread-thread ini bekerja bersama-sama di dalam sebuah proses untuk menyelesaikan pekerjaan secara bersamaan. Mereka berbagi sumber daya dan konteks yang sama dengan proses utama di mana mereka berjalan.
@@ -69,6 +73,8 @@ Thread adalah unit dasar dari eksekusi yang dapat melakukan tugas-tugas tertentu
 ![many-tabs-opened-at-once](img/tabs-opened-at-once.png)
 
 Contoh dari thread adalah saat kita membuka browser, umumnya kita akan membuka banyak tab secara bersamaan. Masing-masing tab atau jendela tersebut mungkin akan dijalankan sebagai thread yang berbeda dalam satu proses utama dari aplikasi web browser.
+
+</br></br>
 
 ### Pengertian Multiprocess dan Multithread
 
@@ -102,7 +108,12 @@ Contoh kasus:
 
 Misalnya, sebuah server web perlu mampu menangani banyak permintaan HTTP dari klien secara bersamaan tanpa menghambat kinerja atau waktu tanggapan. Dibutuhkan multithreading untuk menangani setiap permintaan klien secara terpisah. Setiap kali server menerima permintaan baru, ia akan membuat thread baru untuk menangani permintaan tersebut.
 
+</br>
+</br>
+
 ## Proses
+
+</br>
 
 ### Macam-Macam PID
 
@@ -117,6 +128,8 @@ Angka unik dari suatu proses yang sedang berjalan untuk mengidentifikasi suatu p
 #### Parent PID (PPID)
 
 Setiap proses memiliki identifier tersendiri dan juga setelah proses tersebut membuat proses lainnya. Proses yang terbentuk ini memiliki identifier berupa ID dari pembuatnya (parent). Pada program C, dapat memanggil fungsi `pid_t getppid(void); `.
+
+</br>
 
 ### Melihat Proses Berjalan
 
@@ -145,6 +158,8 @@ Kita juga dapat melihat proses yang berjalan dalam bentuk tree, sehingga kita de
 
 ![show pstree](img/pstree.jpg)
 
+</br>
+
 ### Menghentikan Proses
 
 Untuk menghentikan (_terminate_) proses yang berjalan, jalankan perintah shell `kill [options] <pid>`. Biasanya untuk menghentikan paksa suatu proses dapat menggunakan perintah `kill -9 <pid>`. Angka _9_ adalah kode Signal untuk terminate suatu process.
@@ -168,6 +183,8 @@ Secara default ketika menggunakan perintah shell `kill <pid>`, akan menggunakan 
 Dan jika kita mengguanakan `Ctrl + C` untuk menghentikkan suatu program , saat itu akan dikirmakan signal `SIGINT` yang mana proses akan dihentikan secara permanen oleh sistem.
 
 Sedangkan jika kita menggunakan `Ctrl + Z` untuk menhentikan suatu program , saat itu sistem akan mengirimkan signal `SIGSTP` yang artinya menjeda proses tersebut dan dapat dijalankan kembali dengan menggunakan perintah `fg` atau `bg`.
+
+</br>
 
 ### Membuat Proses
 
@@ -291,6 +308,8 @@ int main () {
 }
 ```
 
+</br>
+
 ### **Menjalankan Proses di latar belakang**
 
 Dengan menggunakan `&` diakhir command kita dapat menjalankan program di latar belakang sehingga kita dapat melakukan hal lain sembari proses lain berjalan.
@@ -306,6 +325,8 @@ Dan ini jika kita menjalankannya di foreground:
 ![show foreground](img/foreground.jpg)
 
 Jika seperti ini maka proses akan berjalan secara foreground sehingga akan muncul di layar kalian.
+
+</br>
 
 ### **Menjalankan Proses Secara Bersamaan**
 
@@ -478,6 +499,8 @@ Output:
 Shell script dipanggil
 ```
 
+</br>
+
 ### Jenis-Jenis Proses
 
 #### **Zombie Process**
@@ -492,12 +515,15 @@ Orphan Process adalah sebuah proses yang ada dalam komputer dimana parent proces
 
 Daemon Process adalah sebuah proses yang bekerja pada background karena proses ini tidak memiliki terminal pengontrol. Dalam sistem operasi Windows biasanya lebih dikenal dengan sebutan service. Daemon adalah sebuah proses yang didesain supaya proses tersebut tidak mendapatkan intervensi dari user.
 
+</br>
 
 ### Pengertian Daemon
 
 Daemon adalah suatu program yang berjalan di background secara terus menerus tanpa adanya interaksi secara langsung dengan user yang sedang aktif.
 
 <!-- Sebuah daemon dapat berhenti karena beberapa hal. -->
+
+</br>
 
 ### Langkah Pembuatan Daemon
 
@@ -583,6 +609,9 @@ while (1) {
   sleep(30);
 }
 ```
+
+</br>
+</br>
 
 ## Thread
 

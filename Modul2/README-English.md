@@ -52,27 +52,33 @@
   - [4.2 Piping](#pipes)
   - [4.3 Shared Memory](#shared-memory)
 
+</br></br>
+
 ## Introduction
 
 ### Definition of Process
 
 Have you ever opened multiple applications on your laptop? If yes, then you have implemented `process`. Even though we're actively using one application, other applications still exist in the background as processes waiting for their turn.
 
-[open-apps-on-laptop](img/many-apps-on-laptop.jpeg)
+![open-apps-on-laptop](img/many-apps-on-laptop.jpeg)
 
 A process can be defined as a program being executed by the operating system. When a program is executed by the OS, it is assigned a Process ID (PID), which serves as the identifier of that process. In UNIX-based systems, you can view the processes being executed by the OS by invoking the `ps` shell command. For further information on the `ps` command, you can refer to the `man ps` command.
-`
+
+</br></br>
+
 ### Definition of Thread
 
 Threads are the basic units of execution that can perform specific tasks within a process. These threads work together within a process to accomplish tasks simultaneously. They share resources and the same context as the main process in which they are running.
 
-[many-tabs-opened-at-once](img/tabs-opened-at-once.png)
+![many-tabs-opened-at-once](img/tabs-opened-at-once.png)
 
 An example of a thread is when we open a web browser, typically we open multiple tabs simultaneously. Each tab or window may be running as a different thread within a single main process of the web browser application.
 
+</br></br>
+
 ### Definition of Multiprocess and Multithread
 
-[multiprocess-multithread](img/multiprocess-multithread.png)
+![multiprocess-multithread](img/multiprocess-multithread.png)
 
 1. Multiprocess
 Multiprocess is an approach where the operating system can run multiple processes concurrently.
@@ -96,11 +102,13 @@ Characteristics:
 Example scenario:
 For instance, a web server needs to be able to handle multiple HTTP requests from clients simultaneously without impeding performance or response time. Multithreading is required to handle each client request separately. Each time the server receives a new request, it creates a new thread to handle that request.
 
+</br></br>
+
 ## Process
 
-### Types of PID
+</br>
 
-[Module Content](#module-content)
+### Types of PID
 
 #### User ID (UID)
 
@@ -114,9 +122,9 @@ A unique number of a running process to identify a process. In a C program, you 
 
 Every process has its own identifier, and also after the process creates another process. This newly formed process has an identifier which is the ID of its creator (parent). In a C program, you can call the function `pid_t getppid(void);`.
 
-### See the Running Process
+</br>
 
-[Module Content](#module-content)
+### See the Running Process
 
 To see the processes currently running on the OS, you can use ```ps -ef``` to see the details.
 
@@ -142,9 +150,9 @@ We can also view running processes in a tree-like structure, making it easy to i
 
 ![show pstree](img/pstree.jpg)
 
-### Stop the Process
+</br>
 
-[Module Content](#module-content)
+### Stop the Process
 
 To stop (_terminate_) a running process, run the shell command `` kill [options] <pid> ``. Usually to force stop a process you can use the command `` kill -9 <pid> ``. The number _9_ is the Signal code to terminate a process.
 
@@ -168,9 +176,9 @@ When using `Ctrl + C` to terminate a program, it sends the `SIGINT` signal, whic
 
 However, when using `Ctrl + Z` to suspend a program, the system sends the `SIGTSTP` signal, which means pausing the process, and it can be resumed using the `fg` or `bg` command.
 
-### Making a Process
+</br>
 
-[Module Content](#module-content)
+### Making a Process
 
 #### **fork**
 `fork` is a _system call_ function in C to perform _spawning process_. After calling the function, there will be a new process which is the _child process_, the function will return a value of 0 in the _child process_ but return the _PID_ of the newly spawned _child process_ in the _parent process_
@@ -286,6 +294,9 @@ int main () {
 
 }
 ```
+
+</br>
+
 ### Running Processes in the Background
 
 By using `&` at the end of a command, we can run a program in the background, allowing us to do other things while other processes are running.
@@ -301,6 +312,8 @@ And this is if we run it in the foreground:
 ![show foreground](img/foreground.jpg)
 
 In this scenario, the process will execute in the foreground, making it visible on your screen.
+
+</br>
 
 ### **Running programs concurrently**
 
@@ -468,27 +481,30 @@ Output:
 Shell script ran
 ```
 
+</br>
 
 ### Types of Processes
 
-[Module Content](#module-content)
-
-### **Zombie Process**
+#### **Zombie Process**
 
 The Zombie process occurs because there is a child process that is exited but the parent process does not know that the child process has ended, for example due to a network break. So that the parent process does not releases processes that are still used by the child processes even though the process is dead.
 
-### **Orphan Process**
+#### **Orphan Process**
 
 Orphan Process is a process on the computer where the parent process has finished or has stopped working, but the child process itself is still running.
 
-### **Daemon Process**
+#### **Daemon Process**
 
 Daemon Process is a process that runs in the background because it does not have a controlling terminal. In the Windows operating system it is usually better known as a service. Daemon is a process that is designed so that the process does not get intervention from a user.
+
+</br>
 
 ### Definition of Daemon
 Daemon is a program that runs in the background continuously without direct interaction with an active user.
 
 <!-- Sebuah daemon dapat berhenti karena beberapa hal. -->
+</br>
+
 ### Daemon Creation Steps
 There are several steps to creating a daemon:
 #### Fork the Parent Process and turn off the Parent Process
@@ -563,7 +579,12 @@ while (1) {
   sleep(30);
 }
 ```
+
+</br></br>
+
 ## Thread
+
+</br>
 
 ### Multiprocess Vs Multithread
 
@@ -886,6 +907,8 @@ The first program does not run the `print_message_function` function because bef
   ```
  The function will pause the job until the `rval_ptr` pointer state of the` pthread_exit () `function returns its value.
 
+</br>
+
 ### Mutual Exclusion
 Also known as ** Mutex **, which is a way to ensure that if a job that uses variables or files is also used by another job, the other job will output the value of the previous job.
 
@@ -1188,6 +1211,8 @@ int main()
 }
 
 ```
+
+</br>
 
 ### Message Queues
 Is a communication between processes where the process creates an internal linked-list at the address of the Operating System kernel. The message is referred to as *queue* while the identifier is called *queue* ID. *Queue* ID is used as a *key* to indicate which message will be sent and the destination of the message.
