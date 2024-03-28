@@ -4,7 +4,7 @@
 
 ### [Modul 1 - Pengenalan Linux](/Modul1/README-ID.md)
 
-### [Modul 2 - Proses dan Daemon](/Modul2/README.md)
+### [Modul 2 - Proses, Thread, dan IPC](/Modul2/README.md)
 
 ### [Modul 3 - Thread dan IPC](/Modul3/README.md)
 
@@ -14,7 +14,7 @@
 
 ### [Module 1 - Introduction to Linux](/Modul1/README-EN.md)
 
-### [Module 2 - Process and Daemon](/Modul2/README-English.md)
+### [Module 2 - Process, Thread, and IPC](/Modul2/README-English.md)
 
 ### [Module 3 - Thread and IPC](/Modul3/README-English.md)
 

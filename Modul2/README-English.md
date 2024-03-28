@@ -689,8 +689,7 @@ int main() {
 
 Comparison between Thread with Fork.
 
-The example of creating a program without utilizing thread
-[playtanpathread.c](playtanpathread.c):
+The example of creating a program without utilizing thread:
 
 ```c
 #include<stdio.h>
@@ -723,7 +722,7 @@ int main()
 }
 ```
 
-Example of creating a program that utilizes thread [playthread.c](playthread.c).
+Example of creating a program that utilizes thread.
 
 > compile using `gcc -pthread -o [output] input.c`
 
@@ -806,7 +805,7 @@ It is evident that when a program utilizes threads, it can execute two tasks sim
 ### Join Thread
 Join thread is a function to join other threads that have stopped (*terminated*). If the thread that you want to join has not been stopped, this function will wait until the desired thread has a status of **`Terminated`**. The `pthread_join ()` function can be said to be the `wait ()` function of the process, because the main program (*task*) will wait for the thread to be joined in the main program. We do not know wether the 
 
-Example C program Join_Thread [thread_join.c](thread_join.c):
+Example C program Join_Thread:
 
 ```c
 #include <stdio.h>
@@ -885,7 +884,7 @@ The first program does not run the `print_message_function` function because bef
 ### Mutual Exclusion
 Also known as ** Mutex **, which is a way to ensure that if a job that uses variables or files is also used by another job, the other job will output the value of the previous job.
 
-Example of Simple Mutual_Exclusion program [threadmutex.c](threadmutex.c):
+Example of Simple Mutual_Exclusion program:
 
 ```c
 #include<stdio.h>
@@ -1034,7 +1033,6 @@ Returns : 0 on Success.
 -1 on error.
 ```
 Example of code using C (without *fork*) can be found at:  
-[pipe1.c](pipe1.c)
 
 ```c
 // C program to illustrate
@@ -1084,8 +1082,7 @@ Pipe with fork
 Diagram :  
 ![alt](img/pipe-fork.png)  
 
-Example :  
-[pipe-fork](pipe-fork.c)  
+Example :   
 ```c
 // C program to demonstrate use of fork() and pipe()
 #include<stdio.h>
@@ -1191,7 +1188,86 @@ Illustration:
 
 A message queue that follows the FIFO (First In First Out) principle is unbounded and cannot be accessed by two different threads simultaneously. When writing messages, multiple tasks can write messages to the queue, but only one task can read messages at a time from a queue. The reader will wait for message queues until there are messages to be processed.
 
-Example of program can be accessed at [sender](sender.c) and [receiver](receiver.c).
+Example of program can be accessed at [sender](playground/sender.c) and [receiver](playground/receiver.c).
+
+Code example for sender:
+```
+// C Program for Message Queue (Writer Process)
+#include <stdio.h>
+#include <sys/ipc.h>
+#include <sys/msg.h>
+#define MAX 10
+
+// structure for message queue
+struct mesg_buffer {
+	long mesg_type;
+	char mesg_text[100];
+} message;
+
+int main()
+{
+	key_t key;
+	int msgid;
+
+	// ftok to generate unique key
+	key = ftok("progfile", 65);
+
+	// msgget creates a message queue
+	// and returns identifier
+	msgid = msgget(key, 0666 | IPC_CREAT);
+	message.mesg_type = 1;
+
+	printf("Write Data : ");
+	fgets(message.mesg_text,MAX,stdin);
+
+	// msgsnd to send message
+	msgsnd(msgid, &message, sizeof(message), 0);
+
+	// display the message
+	printf("Data send is : %s \n", message.mesg_text);
+
+	return 0;
+}
+```
+
+Code example for receiver:
+```
+// C Program for Message Queue (Reader Process)
+#include <stdio.h>
+#include <sys/ipc.h>
+#include <sys/msg.h>
+
+// structure for message queue
+struct mesg_buffer {
+	long mesg_type;
+	char mesg_text[100];
+} message;
+
+int main()
+{
+	key_t key;
+	int msgid;
+
+	// ftok to generate unique key
+	key = ftok("progfile", 65);
+
+	// msgget creates a message queue
+	// and returns identifier
+	msgid = msgget(key, 0666 | IPC_CREAT);
+
+	// msgrcv to receive message
+	msgrcv(msgid, &message, sizeof(message), 1, 0);
+
+	// display the message
+	printf("Data Received is : %s \n",
+					message.mesg_text);
+
+	// to destroy the message queue
+	msgctl(msgid, IPC_RMID, NULL);
+
+	return 0;
+}
+```
 
 ### Shared Memory
 

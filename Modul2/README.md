@@ -720,7 +720,7 @@ int main() {
 
 Perbandingan antara Thread dengan Fork.
 
-Contoh membuat program tanpa menggunakan thread [playtanpathread.c](playtanpathread.c):
+Contoh membuat program tanpa menggunakan thread:
 
 ```c
 #include<stdio.h>
@@ -753,7 +753,7 @@ int main()
 }
 ```
 
-Contoh membuat program menggunakan thread [playthread.c](playthread.c).
+Contoh membuat program menggunakan thread.
 
 > compile dengan cara `gcc -pthread -o [output] input.c`
 
@@ -834,7 +834,7 @@ Terlihat ketika program menggunakan thread dapat menjalankan dua task secara ber
 ### Join Thread
 Join thread adalah fungsi untuk melakukan penggabungan dengan thread lain yang telah berhenti (*terminated*). Bila thread yang ingin di-join belum dihentikan, maka fungsi ini akan menunggu hingga thread yang diinginkan berstatus **`Terminated`**. Fungsi `pthread_join()` ini dapat dikatakan sebagai fungsi `wait()` pada proses, karena program (*task*) utama akan menunggu thread yang di-join-kan pada program utama tersebut. Kita tidak mengetahui program utama atau thread yang lebih dahulu menyelesaikan pekerjaannya.
 
-Contoh program C Join_Thread [thread_join.c](thread_join.c):
+Contoh program C Join_Thread:
 
 ```c
 #include <stdio.h>
@@ -911,7 +911,7 @@ Pada program pertama tidak menjalankan fungsi `print_message_function` karena se
 
 Disebut juga sebagai **Mutex**, yaitu suatu cara yang menjamin jika ada pekerjaan yang menggunakan variabel atau berkas digunakan juga oleh pekerjaan yang lain, maka pekerjaan lain tersebut akan mengeluarkan nilai dari pekerjaan sebelumnya.
 
-Contoh program Simple Mutual_Exclusion [threadmutex.c](threadmutex.c) yang mana di sini menggunakan flag `status`.
+Contoh program Simple Mutual_Exclusion yang mana di sini menggunakan flag `status`.
 
 ```c
 #include<stdio.h>
@@ -1051,7 +1051,7 @@ Returns : 0 on Success.
 -1 on error.
 ```
 
-Contoh kode dalam bahasa C (tanpa *fork*) dapat dilihat pada [pipe1.c](pipe1.c).
+Contoh kode dalam bahasa C (tanpa *fork*) dapat dilihat di bawah ini.
 
 ```c
 // C program to illustrate 
@@ -1101,7 +1101,7 @@ Diagram dari *pipe* (dengan *fork*) dapat ditunjukkan sebagai berikut.
 
 ![alt](img/pipe-fork.png)  
 
-Contoh kode dalam bahasa C (dengan *fork*) dapat dilihat pada [pipe-fork](pipe-fork.c).  
+Contoh kode dalam bahasa C (dengan *fork*) dapat dilihat di bawah ini.  
 
 ```c
 // C program to demonstrate use of fork() and pipe() 
@@ -1209,7 +1209,87 @@ Ilustrasi:
 
 Message queue menggunakan prinsip FIFO (First In First Out) tidak terbatas yang tidak dapat diakses oleh dua thread yang berbeda. Dalam melakukan write pesan, banyak tasks dapat menulis pesan ke dalam queue, tetapi hanya satu tasks yang dapat membaca pesan secara sekaligus dari sebuah queue. Pembaca akan menunggu antrian pesan sampai ada pesan yang akan diproses.
 
-Contoh program dapat diakses di [sender](sender.c) dan [receiver](receiver.c).
+Contoh program dapat diakses di [sender](playground/sender.c) dan [receiver](playground/receiver.c).
+
+Contoh code pada sender:
+```
+// C Program for Message Queue (Writer Process)
+#include <stdio.h>
+#include <sys/ipc.h>
+#include <sys/msg.h>
+#define MAX 10
+
+// structure for message queue
+struct mesg_buffer {
+	long mesg_type;
+	char mesg_text[100];
+} message;
+
+int main()
+{
+	key_t key;
+	int msgid;
+
+	// ftok to generate unique key
+	key = ftok("progfile", 65);
+
+	// msgget creates a message queue
+	// and returns identifier
+	msgid = msgget(key, 0666 | IPC_CREAT);
+	message.mesg_type = 1;
+
+	printf("Write Data : ");
+	fgets(message.mesg_text,MAX,stdin);
+
+	// msgsnd to send message
+	msgsnd(msgid, &message, sizeof(message), 0);
+
+	// display the message
+	printf("Data send is : %s \n", message.mesg_text);
+
+	return 0;
+}
+```
+
+Contoh code pada receiver:
+```
+// C Program for Message Queue (Reader Process)
+#include <stdio.h>
+#include <sys/ipc.h>
+#include <sys/msg.h>
+
+// structure for message queue
+struct mesg_buffer {
+	long mesg_type;
+	char mesg_text[100];
+} message;
+
+int main()
+{
+	key_t key;
+	int msgid;
+
+	// ftok to generate unique key
+	key = ftok("progfile", 65);
+
+	// msgget creates a message queue
+	// and returns identifier
+	msgid = msgget(key, 0666 | IPC_CREAT);
+
+	// msgrcv to receive message
+	msgrcv(msgid, &message, sizeof(message), 1, 0);
+
+	// display the message
+	printf("Data Received is : %s \n",
+					message.mesg_text);
+
+	// to destroy the message queue
+	msgctl(msgid, IPC_RMID, NULL);
+
+	return 0;
+}
+
+```
 
 ### Shared Memory
 
