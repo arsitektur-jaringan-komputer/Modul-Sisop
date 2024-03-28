@@ -58,7 +58,7 @@
 
 Have you ever opened multiple applications on your laptop? If yes, then you have implemented `process`. Even though we're actively using one application, other applications still exist in the background as processes waiting for their turn.
 
-[open-apps-on-laptop](https://www.google.com/url?sa%3Di%26url%3Dhttps%3A%2F%2Fedu.gcfglobal.org%2Fen%2Fwindows10%2Ftips-for-managing-multiple-windows%2F1%2F%26psig%3DAOvVaw39n0qAnQAbpPhMgQE1Zlkj%26ust%3D1711552610019000%26source%3Dimages%26cd%3Dvfe%26opi%3D89978449%26ved%3D0CBIQjRxqFwoTCPiFuryckoUDFQAAAAAdAAAAABAJ)
+[open-apps-on-laptop](img/many-apps-on-laptop.jpeg)
 
 A process can be defined as a program being executed by the operating system. When a program is executed by the OS, it is assigned a Process ID (PID), which serves as the identifier of that process. In UNIX-based systems, you can view the processes being executed by the OS by invoking the `ps` shell command. For further information on the `ps` command, you can refer to the `man ps` command.
 `
@@ -66,13 +66,13 @@ A process can be defined as a program being executed by the operating system. Wh
 
 Threads are the basic units of execution that can perform specific tasks within a process. These threads work together within a process to accomplish tasks simultaneously. They share resources and the same context as the main process in which they are running.
 
-[many-tabs-opened-at-once](https://www.google.com/url?sa%3Di%26url%3Dhttps%3A%2F%2Fwww.makeuseof.com%2Fchrome-extensions-to-manage-and-sort-open-tabs%2F%26psig%3DAOvVaw2m6fNfdZ6xuM4q4-cBhUr9%26ust%3D1711560906349000%26source%3Dimages%26cd%3Dvfe%26opi%3D89978449%26ved%3D0CBIQjRxqFwoTCMCtrLC7koUDFQAAAAAdAAAAABAJ)
+[many-tabs-opened-at-once](img/tabs-opened-at-once.png)
 
 An example of a thread is when we open a web browser, typically we open multiple tabs simultaneously. Each tab or window may be running as a different thread within a single main process of the web browser application.
 
 ### Definition of Multiprocess and Multithread
 
-[multiprocess-multithread](https://www.google.com/url?sa%3Di%26url%3Dhttps%3A%2F%2Fmedium.com%2F%40noueruzzaman%2Ftug-of-war-multiprocessing-vs-multithreading-55341c1f2103%26psig%3DAOvVaw2JBVSefstuO62j1CFEGtob%26ust%3D1711561903509000%26source%3Dimages%26cd%3Dvfe%26opi%3D89978449%26ved%3D0CBIQjRxqFwoTCNjG7Iu_koUDFQAAAAAdAAAAABAY)
+[multiprocess-multithread](img/multiprocess-multithread.png)
 
 1. Multiprocess
 Multiprocess is an approach where the operating system can run multiple processes concurrently.

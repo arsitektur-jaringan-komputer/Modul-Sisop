@@ -58,7 +58,7 @@
 
 Pernahkah kalian membuka banyak aplikasi dalam laptop? Jika iya, maka kalian telah mengimplementasikan `proses`. Meskipun, kita sedang membuka satu aplikasi, tetapi aplikasi yang lain masih ada di latar belakang sebagai proses yang menunggu giliran.
 
-[open-apps-on-laptop](https://www.google.com/url?sa%3Di%26url%3Dhttps%3A%2F%2Fedu.gcfglobal.org%2Fen%2Fwindows10%2Ftips-for-managing-multiple-windows%2F1%2F%26psig%3DAOvVaw39n0qAnQAbpPhMgQE1Zlkj%26ust%3D1711552610019000%26source%3Dimages%26cd%3Dvfe%26opi%3D89978449%26ved%3D0CBIQjRxqFwoTCPiFuryckoUDFQAAAAAdAAAAABAJ)
+[open-apps-on-laptop](img/many-apps-on-laptop.jpeg)
 
 Proses sendiri dapat didefinisikan sebagai program yang sedang dieksekusi oleh OS. Ketika suatu program tersebut dieksekusi oleh OS, proses tersebut memiliki PID (Process ID) yang merupakan identifier dari suatu proses. Pada UNIX, untuk melihat proses yang dieksekusi oleh OS dengan memanggil perintah shell `ps`. Untuk melihat lebih lanjut mengenai perintah `ps` dapat membuka `man ps`.
 
@@ -66,34 +66,40 @@ Proses sendiri dapat didefinisikan sebagai program yang sedang dieksekusi oleh O
 
 Thread adalah unit dasar dari eksekusi yang dapat melakukan tugas-tugas tertentu di dalam sebuah proses. Thread-thread ini bekerja bersama-sama di dalam sebuah proses untuk menyelesaikan pekerjaan secara bersamaan. Mereka berbagi sumber daya dan konteks yang sama dengan proses utama di mana mereka berjalan.
 
-[many-tabs-opened-at-once](https://www.google.com/url?sa%3Di%26url%3Dhttps%3A%2F%2Fwww.makeuseof.com%2Fchrome-extensions-to-manage-and-sort-open-tabs%2F%26psig%3DAOvVaw2m6fNfdZ6xuM4q4-cBhUr9%26ust%3D1711560906349000%26source%3Dimages%26cd%3Dvfe%26opi%3D89978449%26ved%3D0CBIQjRxqFwoTCMCtrLC7koUDFQAAAAAdAAAAABAJ)
+[many-tabs-opened-at-once](img/tabs-opened-at-once.png)
 
 Contoh dari thread adalah saat kita membuka browser, umumnya kita akan membuka banyak tab secara bersamaan. Masing-masing tab atau jendela tersebut mungkin akan dijalankan sebagai thread yang berbeda dalam satu proses utama dari aplikasi web browser.
 
 ### Pengertian Multiprocess dan Multithread
 
-[multiprocess-multithread](https://www.google.com/url?sa%3Di%26url%3Dhttps%3A%2F%2Fmedium.com%2F%40noueruzzaman%2Ftug-of-war-multiprocessing-vs-multithreading-55341c1f2103%26psig%3DAOvVaw2JBVSefstuO62j1CFEGtob%26ust%3D1711561903509000%26source%3Dimages%26cd%3Dvfe%26opi%3D89978449%26ved%3D0CBIQjRxqFwoTCNjG7Iu_koUDFQAAAAAdAAAAABAY)
+[multiprocess-multithread](img/multiprocess-multithread.png)
 
 1. Multiprocess
+
 Multiproses adalah pendekatan di mana sistem operasi dapat menjalankan beberapa proses secara bersamaan.
 
 Karakteristik:
+
 - Memiliki memori yang terpisah dan sumber daya yang terisolasi
 - Proses-proses ini tidak berbagi memori atau variabel antara satu sama lain, kecuali jika ada mekanisme khusus seperti shared memory.
 - Jika satu proses mengalami kegagalan atau crash, proses lainnya biasanya tidak terpengaruh.
 
 Contoh kasus:
+
 Saat membuka beberapa aplikasi dalam satu waktu, jika terdapat satu aplikasi yang bermasalah/crash, maka aplikasi lain tidak akan terpengaruh
 
 2. Multithread
+
 Multithreading adalah pendekatan di mana sebuah proses dapat memiliki beberapa thread yang berjalan secara bersamaan di dalamnya.
 
 Karakteristik:
+
 - Thread-thread dalam satu proses berbagi memori dan sumber daya. Mereka dapat saling berkomunikasi dengan mudah dan berbagi variabel.
 - Thread-thread dapat melakukan tugas-tugas yang berbeda secara bersamaan dalam satu proses, meningkatkan efisiensi dan responsifitas.
 - Jika satu thread mengalami kegagalan atau crash, hal itu dapat mempengaruhi keseluruhan proses dan thread-thread lainnya.
 
 Contoh kasus:
+
 Misalnya, sebuah server web perlu mampu menangani banyak permintaan HTTP dari klien secara bersamaan tanpa menghambat kinerja atau waktu tanggapan. Dibutuhkan multithreading untuk menangani setiap permintaan klien secara terpisah. Setiap kali server menerima permintaan baru, ia akan membuat thread baru untuk menangani permintaan tersebut.
 
 ## Proses
