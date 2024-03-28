@@ -64,8 +64,6 @@ Have you ever opened multiple applications on your laptop? If yes, then you have
 
 A process can be defined as a program being executed by the operating system. When a program is executed by the OS, it is assigned a Process ID (PID), which serves as the identifier of that process. In UNIX-based systems, you can view the processes being executed by the OS by invoking the `ps` shell command. For further information on the `ps` command, you can refer to the `man ps` command.
 
-</br></br>
-
 ### Definition of Thread
 
 Threads are the basic units of execution that can perform specific tasks within a process. These threads work together within a process to accomplish tasks simultaneously. They share resources and the same context as the main process in which they are running.
@@ -73,8 +71,6 @@ Threads are the basic units of execution that can perform specific tasks within 
 ![many-tabs-opened-at-once](img/tabs-opened-at-once.png)
 
 An example of a thread is when we open a web browser, typically we open multiple tabs simultaneously. Each tab or window may be running as a different thread within a single main process of the web browser application.
-
-</br></br>
 
 ### Definition of Multiprocess and Multithread
 
@@ -106,8 +102,6 @@ For instance, a web server needs to be able to handle multiple HTTP requests fro
 
 ## Process
 
-</br>
-
 ### Types of PID
 
 #### User ID (UID)
@@ -121,8 +115,6 @@ A unique number of a running process to identify a process. In a C program, you 
 #### Parent PID (PPID)
 
 Every process has its own identifier, and also after the process creates another process. This newly formed process has an identifier which is the ID of its creator (parent). In a C program, you can call the function `pid_t getppid(void);`.
-
-</br>
 
 ### See the Running Process
 
@@ -150,8 +142,6 @@ We can also view running processes in a tree-like structure, making it easy to i
 
 ![show pstree](img/pstree.jpg)
 
-</br>
-
 ### Stop the Process
 
 To stop (_terminate_) a running process, run the shell command `` kill [options] <pid> ``. Usually to force stop a process you can use the command `` kill -9 <pid> ``. The number _9_ is the Signal code to terminate a process.
@@ -175,8 +165,6 @@ By default when using the `` kill <pid> `` shell command, it will use ``SIGSTOP`
 When using `Ctrl + C` to terminate a program, it sends the `SIGINT` signal, which causes the process to be permanently stopped by the system.
 
 However, when using `Ctrl + Z` to suspend a program, the system sends the `SIGTSTP` signal, which means pausing the process, and it can be resumed using the `fg` or `bg` command.
-
-</br>
 
 ### Making a Process
 
@@ -295,8 +283,6 @@ int main () {
 }
 ```
 
-</br>
-
 ### Running Processes in the Background
 
 By using `&` at the end of a command, we can run a program in the background, allowing us to do other things while other processes are running.
@@ -312,8 +298,6 @@ And this is if we run it in the foreground:
 ![show foreground](img/foreground.jpg)
 
 In this scenario, the process will execute in the foreground, making it visible on your screen.
-
-</br>
 
 ### **Running programs concurrently**
 
@@ -481,8 +465,6 @@ Output:
 Shell script ran
 ```
 
-</br>
-
 ### Types of Processes
 
 #### **Zombie Process**
@@ -497,13 +479,10 @@ Orphan Process is a process on the computer where the parent process has finishe
 
 Daemon Process is a process that runs in the background because it does not have a controlling terminal. In the Windows operating system it is usually better known as a service. Daemon is a process that is designed so that the process does not get intervention from a user.
 
-</br>
-
 ### Definition of Daemon
 Daemon is a program that runs in the background continuously without direct interaction with an active user.
 
 <!-- Sebuah daemon dapat berhenti karena beberapa hal. -->
-</br>
 
 ### Daemon Creation Steps
 There are several steps to creating a daemon:
@@ -584,8 +563,6 @@ while (1) {
 
 ## Thread
 
-</br>
-
 ### Multiprocess Vs Multithread
 
 ![multivsmulti](multiprocessing_multithreading.gif)
@@ -600,8 +577,6 @@ No | Multiprocess | Multithread
 5 | most child process is interruptible / killable | multithreading is not interruptible / killable
 
 - An example of using Multi Processing is in the Chrome browser system. When we open or create a new tab, the system also creates a new process for the needs of that new tab. Meanwhile, an example implementation of Multi Threading is in a game system where a process can handle various needs simultaneously. For instance, a game can render multiple objects simultaneously, speeding up the process.
-
-</br>
 
 ### Creating Threads
 
@@ -826,7 +801,6 @@ int main(void)
 **Conclusion**:
 It is evident that when a program utilizes threads, it can execute two tasks simultaneously and consume less CPU compared to creating a new process.
 
-</br>
 
 
 ### Join Thread
@@ -907,7 +881,6 @@ The first program does not run the `print_message_function` function because bef
   ```
  The function will pause the job until the `rval_ptr` pointer state of the` pthread_exit () `function returns its value.
 
-</br>
 
 ### Mutual Exclusion
 Also known as ** Mutex **, which is a way to ensure that if a job that uses variables or files is also used by another job, the other job will output the value of the previous job.
@@ -1034,8 +1007,6 @@ Since we don't know which *thread* executes a variable or resource in the progra
 ## IPC (Interprocess Communication)
 ### IPC
 IPC (*Interprocess Communication*) is a method to exchange data between one process and another, either on the same computer or remote computers connected through a network.
-
-</br>
 
 ### Pipes
 Pipes are a sequential method of communication between interrelated processes. The weakness of pipes is that they are only for interconnected, sequential processes.
@@ -1212,8 +1183,6 @@ int main()
 
 ```
 
-</br>
-
 ### Message Queues
 Is a communication between processes where the process creates an internal linked-list at the address of the Operating System kernel. The message is referred to as *queue* while the identifier is called *queue* ID. *Queue* ID is used as a *key* to indicate which message will be sent and the destination of the message.
 
@@ -1223,8 +1192,6 @@ Illustration:
 A message queue that follows the FIFO (First In First Out) principle is unbounded and cannot be accessed by two different threads simultaneously. When writing messages, multiple tasks can write messages to the queue, but only one task can read messages at a time from a queue. The reader will wait for message queues until there are messages to be processed.
 
 Example of program can be accessed at [sender](sender.c) and [receiver](receiver.c).
-
-</br>
 
 ### Shared Memory
 

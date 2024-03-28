@@ -64,8 +64,6 @@ Pernahkah kalian membuka banyak aplikasi dalam laptop? Jika iya, maka kalian tel
 
 Proses sendiri dapat didefinisikan sebagai program yang sedang dieksekusi oleh OS. Ketika suatu program tersebut dieksekusi oleh OS, proses tersebut memiliki PID (Process ID) yang merupakan identifier dari suatu proses. Pada UNIX, untuk melihat proses yang dieksekusi oleh OS dengan memanggil perintah shell `ps`. Untuk melihat lebih lanjut mengenai perintah `ps` dapat membuka `man ps`.
 
-</br></br>
-
 ### Pengertian Thread
 
 Thread adalah unit dasar dari eksekusi yang dapat melakukan tugas-tugas tertentu di dalam sebuah proses. Thread-thread ini bekerja bersama-sama di dalam sebuah proses untuk menyelesaikan pekerjaan secara bersamaan. Mereka berbagi sumber daya dan konteks yang sama dengan proses utama di mana mereka berjalan.
@@ -73,8 +71,6 @@ Thread adalah unit dasar dari eksekusi yang dapat melakukan tugas-tugas tertentu
 ![many-tabs-opened-at-once](img/tabs-opened-at-once.png)
 
 Contoh dari thread adalah saat kita membuka browser, umumnya kita akan membuka banyak tab secara bersamaan. Masing-masing tab atau jendela tersebut mungkin akan dijalankan sebagai thread yang berbeda dalam satu proses utama dari aplikasi web browser.
-
-</br></br>
 
 ### Pengertian Multiprocess dan Multithread
 
@@ -113,8 +109,6 @@ Misalnya, sebuah server web perlu mampu menangani banyak permintaan HTTP dari kl
 
 ## Proses
 
-</br>
-
 ### Macam-Macam PID
 
 #### User ID (UID)
@@ -128,8 +122,6 @@ Angka unik dari suatu proses yang sedang berjalan untuk mengidentifikasi suatu p
 #### Parent PID (PPID)
 
 Setiap proses memiliki identifier tersendiri dan juga setelah proses tersebut membuat proses lainnya. Proses yang terbentuk ini memiliki identifier berupa ID dari pembuatnya (parent). Pada program C, dapat memanggil fungsi `pid_t getppid(void); `.
-
-</br>
 
 ### Melihat Proses Berjalan
 
@@ -158,8 +150,6 @@ Kita juga dapat melihat proses yang berjalan dalam bentuk tree, sehingga kita de
 
 ![show pstree](img/pstree.jpg)
 
-</br>
-
 ### Menghentikan Proses
 
 Untuk menghentikan (_terminate_) proses yang berjalan, jalankan perintah shell `kill [options] <pid>`. Biasanya untuk menghentikan paksa suatu proses dapat menggunakan perintah `kill -9 <pid>`. Angka _9_ adalah kode Signal untuk terminate suatu process.
@@ -183,8 +173,6 @@ Secara default ketika menggunakan perintah shell `kill <pid>`, akan menggunakan 
 Dan jika kita mengguanakan `Ctrl + C` untuk menghentikkan suatu program , saat itu akan dikirmakan signal `SIGINT` yang mana proses akan dihentikan secara permanen oleh sistem.
 
 Sedangkan jika kita menggunakan `Ctrl + Z` untuk menhentikan suatu program , saat itu sistem akan mengirimkan signal `SIGSTP` yang artinya menjeda proses tersebut dan dapat dijalankan kembali dengan menggunakan perintah `fg` atau `bg`.
-
-</br>
 
 ### Membuat Proses
 
@@ -308,8 +296,6 @@ int main () {
 }
 ```
 
-</br>
-
 ### **Menjalankan Proses di latar belakang**
 
 Dengan menggunakan `&` diakhir command kita dapat menjalankan program di latar belakang sehingga kita dapat melakukan hal lain sembari proses lain berjalan.
@@ -325,8 +311,6 @@ Dan ini jika kita menjalankannya di foreground:
 ![show foreground](img/foreground.jpg)
 
 Jika seperti ini maka proses akan berjalan secara foreground sehingga akan muncul di layar kalian.
-
-</br>
 
 ### **Menjalankan Proses Secara Bersamaan**
 
@@ -499,8 +483,6 @@ Output:
 Shell script dipanggil
 ```
 
-</br>
-
 ### Jenis-Jenis Proses
 
 #### **Zombie Process**
@@ -515,15 +497,11 @@ Orphan Process adalah sebuah proses yang ada dalam komputer dimana parent proces
 
 Daemon Process adalah sebuah proses yang bekerja pada background karena proses ini tidak memiliki terminal pengontrol. Dalam sistem operasi Windows biasanya lebih dikenal dengan sebutan service. Daemon adalah sebuah proses yang didesain supaya proses tersebut tidak mendapatkan intervensi dari user.
 
-</br>
-
 ### Pengertian Daemon
 
 Daemon adalah suatu program yang berjalan di background secara terus menerus tanpa adanya interaksi secara langsung dengan user yang sedang aktif.
 
 <!-- Sebuah daemon dapat berhenti karena beberapa hal. -->
-
-</br>
 
 ### Langkah Pembuatan Daemon
 
@@ -630,8 +608,6 @@ Nomor | Multiprocess | Multithread
 5 |process sebagian besar bersifat interruptible / killable | threading lebih susah untuk dikill atau diinterrup karena sebuah thread ada dalam sebuah proses sehingga jika ingin menginterrup thread harus melalui prosesnya (yang dikill prosesnya , otomatis thread akan juga terinterrup)
 
 - Contoh Penggunaan `Multi Processing` adalah pada sistem browser chrome, ketika kita membuka atau membuat tab baru maka sistem juga akan membuat process baru untuk kebutuhan tab baru tersebut sedangkan contoh implementasi `Multi Threading` adalah pada sistem sebuah game dimana sebuah proses dapat menangani berbagai kebutuhan secara bersamaan contohnya sebuah game dapat melakukan rendering beberapa objek bersamaan sehingga proses akan lebih cepat.
-
-</br>
 
 ### Pembuatan Thread
 
@@ -855,8 +831,6 @@ int main(void)
 **Kesimpulan** :
 Terlihat ketika program menggunakan thread dapat menjalankan dua task secara bersamaan dan konsumsi cpu lebih kecil jika dibanding dengan create suaru proses baru.
 
-</br>
-
 ### Join Thread
 Join thread adalah fungsi untuk melakukan penggabungan dengan thread lain yang telah berhenti (*terminated*). Bila thread yang ingin di-join belum dihentikan, maka fungsi ini akan menunggu hingga thread yang diinginkan berstatus **`Terminated`**. Fungsi `pthread_join()` ini dapat dikatakan sebagai fungsi `wait()` pada proses, karena program (*task*) utama akan menunggu thread yang di-join-kan pada program utama tersebut. Kita tidak mengetahui program utama atau thread yang lebih dahulu menyelesaikan pekerjaannya.
 
@@ -932,8 +906,6 @@ Pada program pertama tidak menjalankan fungsi `print_message_function` karena se
   ```
   Fungsi akan menunda pekerjaan sampai status pointer `rval_ptr` dari fungsi `pthread_exit()` mengembalikan nilainya.
   </details>
-
-</br>
 
 ### Mutual Exclusion
 
@@ -1047,8 +1019,6 @@ Karena kita tidak mengetahui _thread_ mana yang lebih dahulu mengeksekusi sebuah
 ## IPC (Interprocess Communication)
 ### IPC
 IPC (*Interprocess Communication*) adalah cara atau mekanisme pertukaran data antara satu proses dengan proses lain, baik pada komputer yang sama atau komputer jarak jauh yang terhubung melalui suatu jaringan.
-
-</br>
 
 ### Pipes
 
@@ -1229,8 +1199,6 @@ int main()
 } 
 ```
 
-</br>
-
 ### Message Queues
 
 Message queue merupakan suatu mekanisme *interprocess communication (IPC)* yang memungkinkan suatu proses untuk melakukan pertukaran data berupa pesan diantara dua proses. Mekanisme ini memungkinkan proses untuk berkomunikasi secara asinkron dengan mengirim pesan satu sama lain. Pesan yang dikirim akan disimpan ke dalam suatu antrian, menunggu untuk diproses, kemudian dihapus setelah proses selesai berjalan.
@@ -1242,8 +1210,6 @@ Ilustrasi:
 Message queue menggunakan prinsip FIFO (First In First Out) tidak terbatas yang tidak dapat diakses oleh dua thread yang berbeda. Dalam melakukan write pesan, banyak tasks dapat menulis pesan ke dalam queue, tetapi hanya satu tasks yang dapat membaca pesan secara sekaligus dari sebuah queue. Pembaca akan menunggu antrian pesan sampai ada pesan yang akan diproses.
 
 Contoh program dapat diakses di [sender](sender.c) dan [receiver](receiver.c).
-
-</br>
 
 ### Shared Memory
 
