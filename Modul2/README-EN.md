@@ -6,45 +6,26 @@
 2. Able to distinguish the differences between processes and threads
 3. Able to create programs with multiprocessing and multithreading
 
-## Prerequisites
-
-1. Install Linux OS (Ubuntu preferred)
-2. Have basic understanding of Linux OS
-
 ## Module Content
 
 - [i. Learning Outcomes](#learning-outcomes)
-- [ii. Prerequisites](#prerequisites)
-- [iii. Module Content](#module-content)
-- [1. Pendahuluan](#pendahuluan)
-  - [1.1 Pengertian Proses](#pengertian-proses)
-  - [1.2 Pengertian Thread](#pengertian-thread)
-  - [1.3 Pengertian Multiprocess dan Multithread](#pengertian-multiprocess-dan-multithread)
-- [2. Proses](#proses)
-  - [2.1 Macam-Macam PID](#2-macam-macam-pid)
-    - [2.1.1 User ID (UID)](#21-user-id-uid)
-    - [2.1.2 Process ID (PID)](#22-process-id-pid)
-    - [2.1.3 Parent PID (PPID)](#23-parent-pid-ppid)
-  - [2.2 Melihat Proses Berjalan](#3-melihat-proses-berjalan)
-  - [2.3 Menghentikan Proses](#4-menghentikan-proses)
-  - [2.4 Membuat Proses](#5-membuat-proses)
-    - [2.4.1 fork](#fork)
-    - [2.4.2 exec](#exec)
-  - [2.5 Menjalankan Proses di Latar Belakang](#menjalankan-proses-di-latar-belakang)
-  - [2.6 Menjalankan Proses Secara Bersamaan](#menjalankan-proses-secara-bersamaan)
-    - [2.6.1 wait x fork x exec](#wait-x-fork-x-exec)
-    - [2.6.2 system](#system)
-  - [2.7 Jenis-Jenis Proses](#6-jenis-jenis-proses)
-    - [2.7.1 Zombie Process](#zombie-process)
-    - [2.7.2 Orphan Process](#orphan-process)
-    - [2.7.3 Daemon Process](#daemon-process)
-  - [2.8 Daemon](#daemon)
-    - [2.8.1 Pengertian Daemon](#1-pengertian-daemon)
-    - [2.8.2 Langkah Pembuatan Daemon](#2-langkah-pembuatan-daemon)
-    - [2.8.3 Implementasi Daemon](#3-implementasi-daemon)
+- [ii. Module Content](#module-content)
+- [1. Introduction](#introduction)
+  - [1.1 Definition of Process](#definition-of-process)
+  - [1.2 Definition of Thread](#definition-of-thread)
+  - [1.3 Definition of Multiprocess and Multithread](#definition-of-multiprocess-and-multithread)
+- [2. Process](#process)
+  - [2.1 Types of PID](#types-of-pid)
+  - [2.2 See Running Process](#see-the-running-process)
+  - [2.3 Stopping a Process](#stop-the-process)
+  - [2.4 Making a Process](#making-a-process)
+  - [2.5 Running Process in The Background](#running-processes-in-the-background)
+  - [2.6 Running Programs Concurrently](#running-programs-concurrently)
+  - [2.7 Types of Processes](#types-of-processes)
+  - [2.8 Daemon Process](#daemon-process)
 - [3. Thread](#thread)
   - [3.1 Perbedaan Multithread dan Multiprocess](#multiprocess-vs-multithread)
-  - [3.2 Pembuatan Thread](#pembuatan-thread)
+  - [3.2 Creating Threads](#creating-threads)
   - [3.3 Join Thread](#join-thread)
   - [3.4 Mutual Exclusion](#mutual-exclusion)
 - [4. IPC](#ipc-interprocess-communication)
@@ -77,9 +58,10 @@ An example of a thread is when we open a web browser, typically we open multiple
 ![multiprocess-multithread](img/multiprocess-multithread.png)
 
 1. Multiprocess
-Multiprocess is an approach where the operating system can run multiple processes concurrently.
+   Multiprocess is an approach where the operating system can run multiple processes concurrently.
 
 Characteristics:
+
 - It has separate memory and isolated resources.
 - These processes do not share memory or variables among each other, unless there is a special mechanism such as shared memory.
 - If one process encounters a failure or crash, the other processes are usually unaffected.
@@ -88,9 +70,10 @@ Example scenario:
 When opening several applications simultaneously, if one application encounters a problem/crash, the other applications will not be affected.
 
 2. Multithread
-Multithreading is an approach where a process can have multiple threads running concurrently within it.
+   Multithreading is an approach where a process can have multiple threads running concurrently within it.
 
 Characteristics:
+
 - Threads within a process share memory and resources. They can easily communicate with each other and share variables.
 - Threads can perform different tasks simultaneously within a single process, improving efficiency and responsiveness.
 - If one thread encounters a failure or crash, it can affect the entire process and other threads.
@@ -118,7 +101,7 @@ Every process has its own identifier, and also after the process creates another
 
 ### See the Running Process
 
-To see the processes currently running on the OS, you can use ```ps -ef``` to see the details.
+To see the processes currently running on the OS, you can use `ps -ef` to see the details.
 
 ![show ps](img/showps.png)
 
@@ -129,14 +112,15 @@ Alternatively, for a clearer and more detailed view, you can use the command `ps
 The difference is that when using just `ps`, you will only see processes from the current user, whereas with `ps aux`, you will see all running processes, even those from other users.
 
 Explanation:
-  * **UID**: the user who runs the program
-  * **PID**: process ID
-  * **PPID**: parent PID, if there is no parent, it will be 0
-  * **C**: CPU Util. (%)
-  * **STIME**: Time when the process started
-  * **TTY**: Terminal associated with the process. If there is none, it means it's a background process
-  * **TIME**: the length of the process running
-  * **CMD**: command that executes the process
+
+- **UID**: the user who runs the program
+- **PID**: process ID
+- **PPID**: parent PID, if there is no parent, it will be 0
+- **C**: CPU Util. (%)
+- **STIME**: Time when the process started
+- **TTY**: Terminal associated with the process. If there is none, it means it's a background process
+- **TIME**: the length of the process running
+- **CMD**: command that executes the process
 
 We can also view running processes in a tree-like structure, making it easy to identify which ones are child processes and their respective parent processes. This can be done using the `pstree` command.
 
@@ -144,7 +128,7 @@ We can also view running processes in a tree-like structure, making it easy to i
 
 ### Stop the Process
 
-To stop (_terminate_) a running process, run the shell command `` kill [options] <pid> ``. Usually to force stop a process you can use the command `` kill -9 <pid> ``. The number _9_ is the Signal code to terminate a process.
+To stop (_terminate_) a running process, run the shell command `kill [options] <pid>`. Usually to force stop a process you can use the command `kill -9 <pid>`. The number _9_ is the Signal code to terminate a process.
 
 In addition to using the `kill` command, we can also use the `pkill` command. The difference in usage is that when using pkill, you include the name of the process directly after it, like so: `pkill [options] <process name>`.
 
@@ -152,15 +136,15 @@ You can view the PID and process name using `jobs -l` or `ps aux`.
 
 #### Types of Signal
 
-| Signal name | Signal value  | Effect       |
-| ------------|:-------------:| -------------|
-| SIGHUP      | 1             | Hangup         |
-| SIGINT      | 2             | Interrupt from keyboard  |
-| SIGKILL     | 9             | Kill signal   |
-| SIGTERM     | 15            | Termination signal
-| SIGSTOP     | 17,19,23      | Stop the process
+| Signal name | Signal value | Effect                  |
+| ----------- | :----------: | ----------------------- |
+| SIGHUP      |      1       | Hangup                  |
+| SIGINT      |      2       | Interrupt from keyboard |
+| SIGKILL     |      9       | Kill signal             |
+| SIGTERM     |      15      | Termination signal      |
+| SIGSTOP     |   17,19,23   | Stop the process        |
 
-By default when using the `` kill <pid> `` shell command, it will use ``SIGSTOP`` which will terminate the process but still can be resumed.
+By default when using the `kill <pid>` shell command, it will use `SIGSTOP` which will terminate the process but still can be resumed.
 
 When using `Ctrl + C` to terminate a program, it sends the `SIGINT` signal, which causes the process to be permanently stopped by the system.
 
@@ -169,6 +153,7 @@ However, when using `Ctrl + Z` to suspend a program, the system sends the `SIGTS
 ### Making a Process
 
 #### **fork**
+
 `fork` is a _system call_ function in C to perform _spawning process_. After calling the function, there will be a new process which is the _child process_, the function will return a value of 0 in the _child process_ but return the _PID_ of the newly spawned _child process_ in the _parent process_
 
 Try the program below by compiling it with `gcc try.c -o try` and executing it with `./try`
@@ -210,6 +195,7 @@ int main(){
 ```
 
 Result:
+
 ```c
 This will be called twice
 
@@ -299,10 +285,9 @@ And this is if we run it in the foreground:
 
 In this scenario, the process will execute in the foreground, making it visible on your screen.
 
-### **Running programs concurrently**
+### Running Programs Concurrently
 
-By combining ```fork``` and ```exec``, we can run 2 or more _tasks_ concurrently. An example is backing up different logs at the same time.
-
+By combining `fork` and ``exec`, we can run 2 or more _tasks_ concurrently. An example is backing up different logs at the same time.
 
 ```c
 #include <stdlib.h>
@@ -319,7 +304,7 @@ int main() {
   sprintf(destination, "/home/%s/", username);
 
   if (child_id < 0) {
-    exit(EXIT_FAILURE); // Jika gagal membuat proses baru, program akan berhenti
+    exit(EXIT_FAILURE);
   }
 
   if (child_id == 0) {
@@ -337,6 +322,7 @@ int main() {
 ```
 
 Visualization:
+
 ```c
 +--------+
 | pid=7  |
@@ -345,7 +331,7 @@ Visualization:
 +--------+
     |
     | calls fork
-    V                         
+    V
 +--------+                     +--------+
 | pid=7  |    forks            | pid=22 |
 | ppid=4 | ------------------> | ppid=7 |
@@ -423,7 +409,7 @@ int main() {
   child_id = fork();
 
   if (child_id < 0) {
-    exit(EXIT_FAILURE); // Jika gagal membuat proses baru, program akan berhenti
+    exit(EXIT_FAILURE);
   }
 
   if (child_id == 0) {
@@ -439,6 +425,7 @@ int main() {
   }
 }
 ```
+
 In the example above, the `wait` function is used to wait for the child process to finish its task, which is creating a folder. After it is terminated, the parent process will resume its execution to create the `fileku` file within the `folderku` folder.
 
 #### **system**
@@ -446,6 +433,7 @@ In the example above, the `wait` function is used to wait for the child process 
 `system` is a function to call shell commands directly from a C program. For example, when you want to call a script in a C program.` system (ls)` will produce the same output when calling it in a shell script with `ls`.
 
 File examplebash.sh:
+
 ```sh
 #!/bin/bash
 
@@ -453,6 +441,7 @@ echo "Shell script ran"
 ```
 
 File system.c:
+
 ```c
 #include <stdlib.h>
 
@@ -465,6 +454,7 @@ int main() {
 ```
 
 Output:
+
 ```
 Shell script ran
 ```
@@ -484,13 +474,15 @@ Orphan Process is a process on the computer where the parent process has finishe
 Daemon Process is a process that runs in the background because it does not have a controlling terminal. In the Windows operating system it is usually better known as a service. Daemon is a process that is designed so that the process does not get intervention from a user.
 
 ### Definition of Daemon
+
 Daemon is a program that runs in the background continuously without direct interaction with an active user.
 
-<!-- Sebuah daemon dapat berhenti karena beberapa hal. -->
-
 ### Daemon Creation Steps
+
 There are several steps to creating a daemon:
+
 #### Fork the Parent Process and turn off the Parent Process
+
 The first step is to create a parent process and generate the child process by `fork()`, then kill the parent process so that the operating system thinks the process is complete.
 
 ```c
@@ -512,15 +504,17 @@ if (pid > 0) {
 ```
 
 #### Changing File Mode with `umask`
+
 Each file and directory has a _permissions_ that regulate who can read, write, and delete on the file or the directory.
 
-Using `umask` we can set a  _permission_ from a file when it is created. Here we use  `umask(0)` so that we get full access of a file when a daemon created it.
+Using `umask` we can set a _permission_ from a file when it is created. Here we use `umask(0)` so that we get full access of a file when a daemon created it.
 
 ```c
 umask(0);
 ```
 
 #### Creating Unique Session ID (SID)
+
 A Child Process must have an SID in order to run. Without an SID, the Child Process whose Parent has been `kill`-ed will become an Orphan Process.
 
 To get an SID we can use the command `setsid()`. This command has the same _return type_ as `fork()`.
@@ -533,6 +527,7 @@ if (sid < 0) {
 ```
 
 #### Changing Working Directory
+
 A working directory must be changed to a directory that is sure to exist. To be safe, we will change it to the root (/) directory because it is a guaranteed directory on all Linux distributions.
 
 To change the Working Directory, we can use the command `chdir()`.
@@ -544,6 +539,7 @@ if ((chdir("/")) < 0) {
 ```
 
 #### Closing the Standard File Descriptor
+
 A daemon cannot use the terminal. Therefore we must close the standard file descriptors (STDIN, STDOUT, STDERR).
 
 ```c
@@ -553,6 +549,7 @@ close(STDERR_FILENO);
 ```
 
 #### Creating the Main Loop
+
 This is the main loop where we write the gist of our program. Don't forget to give the command `sleep()` so that the loop runs at an interval.
 
 ```c
@@ -569,7 +566,7 @@ while (1) {
 
 ### Multiprocess Vs Multithread
 
-![multivsmulti](multiprocessing_multithreading.gif)
+![multivsmulti](img/multiprocessing_multithreading.gif)
 
 The differences between multiprocess and multithread
 No | Multiprocess | Multithread
@@ -593,8 +590,6 @@ int pthread_create(pthread_t *restrict tidp,
                    const pthread_attr_t *restrict attr,
                    void *(*start_rtn)(void *),
                    void *restrict arg);
-
-/* Jika berhasil mengembalikan nilai 0, jika error mengembalikan nilai 1 */
 ```
 
 Explanation of the syntax:
@@ -739,10 +734,10 @@ Example of creating a program that utilizes thread.
 #include<sys/types.h>
 #include<sys/wait.h>
 
-pthread_t tid[3]; //inisialisasi array untuk menampung thread dalam kasus ini ada 2 thread
+pthread_t tid[3];
 pid_t child;
 
-int length=5; //inisialisasi jumlah untuk looping
+int length=5;
 void* playandcount(void *arg)
 {
 	char *argv1[] = {"clear", NULL};
@@ -750,14 +745,14 @@ void* playandcount(void *arg)
 	unsigned long i=0;
 	pthread_t id=pthread_self();
 	int iter;
-	if(pthread_equal(id,tid[0])) //thread untuk clear layar
+	if(pthread_equal(id,tid[0]))
 	{
 		child = fork();
 		if (child==0) {
 		    execv("/usr/bin/clear", argv1);
 	    	}
 	}
-	else if(pthread_equal(id,tid[1])) // thread menampilkan counter
+	else if(pthread_equal(id,tid[1]))
 	{
         for(iter=0;iter<6;iter++)
 		{
@@ -766,7 +761,7 @@ void* playandcount(void *arg)
 			sleep(1);
 		}
 	}
-	else if(pthread_equal(id,tid[2])) // thread menampilkan gambar
+	else if(pthread_equal(id,tid[2]))
 	{
         child = fork();
         if (child==0) {
@@ -781,10 +776,10 @@ int main(void)
 {
 	int i=0;
 	int err;
-	while(i<3) // loop sejumlah thread
+	while(i<3)
 	{
-		err=pthread_create(&(tid[i]),NULL,&playandcount,NULL); //membuat thread
-		if(err!=0) //cek error
+		err=pthread_create(&(tid[i]),NULL,&playandcount,NULL);
+		if(err!=0)
 		{
 			printf("\n can't create thread : [%s]",strerror(err));
 		}
@@ -804,38 +799,37 @@ int main(void)
 **Conclusion**:
 It is evident that when a program utilizes threads, it can execute two tasks simultaneously and consume less CPU compared to creating a new process.
 
-
-
 ### Join Thread
-Join thread is a function to join other threads that have stopped (*terminated*). If the thread that you want to join has not been stopped, this function will wait until the desired thread has a status of **`Terminated`**. The `pthread_join ()` function can be said to be the `wait ()` function of the process, because the main program (*task*) will wait for the thread to be joined in the main program. We do not know wether the 
+
+Join thread is a function to join other threads that have stopped (_terminated_). If the thread that you want to join has not been stopped, this function will wait until the desired thread has a status of **`Terminated`**. The `pthread_join ()` function can be said to be the `wait ()` function of the process, because the main program (_task_) will wait for the thread to be joined in the main program. We do not know wether the
 
 Example C program Join_Thread:
 
 ```c
 #include <stdio.h>
 #include <stdlib.h>
-#include <pthread.h> //library thread
+#include <pthread.h>
 
 void *print_message_function( void *ptr );
 
 int main()
 {
-    pthread_t thread1, thread2;//initial initialization
+    pthread_t thread1, thread2;
 
     const char *message1 = "Thread 1";
     const char *message2 = "Thread 2";
     int  iret1, iret2;
 
-    iret1 = pthread_create( &thread1, NULL, print_message_function, (void*) message1); //making the first thread
-    if(iret1) //if error
+    iret1 = pthread_create( &thread1, NULL, print_message_function, (void*) message1);
+    if(iret1)
     {
         fprintf(stderr,"Error - pthread_create() return code: %d\n",iret1);
         exit(EXIT_FAILURE);
     }
 
 
-    iret2 = pthread_create( &thread2, NULL, print_message_function, (void*) message2);//making the second thread
-    if(iret2)//if it fails
+    iret2 = pthread_create( &thread2, NULL, print_message_function, (void*) message2);
+    if(iret2)
     {
         fprintf(stderr,"Error - pthread_create() return code: %d\n",iret2);
         exit(EXIT_FAILURE);
@@ -864,17 +858,20 @@ void *print_message_function( void *ptr )
 ```
 
 Explanation :
-- In the above program, if we *comment* the line `pthread_join`, the result will not show the words **Thread 1** and **Thread 2**.
+
+- In the above program, if we _comment_ the line `pthread_join`, the result will not show the words **Thread 1** and **Thread 2**.
 - If the `pthread_join` function call is uncommented, then the program we create will display the words **Thread 1** and **Thread 2**.
 
 **Conclusion** :
-The first program does not run the `print_message_function` function because before the second thread is scheduled, the main program (possibly) has finished executing so it doesn't run the default function on the thread. In the second experiment, the `pthread_join ()` function is used to make the main program wait for the thread to *join* until the target thread has finished executing, with this function the main program is suspended until the target thread has finished executing.
+The first program does not run the `print_message_function` function because before the second thread is scheduled, the main program (possibly) has finished executing so it doesn't run the default function on the thread. In the second experiment, the `pthread_join ()` function is used to make the main program wait for the thread to _join_ until the target thread has finished executing, with this function the main program is suspended until the target thread has finished executing.
+
 - Function for thread termination
 
   ```c
   #include <pthread.h>
   void pthread_exit(void *rval_ptr);
   ```
+
   The `rval_ptr` argument is a pointer that can be accessed by the `pthread_join ()` function in order to know the status of the thread
 
 - Function to join thread
@@ -882,10 +879,10 @@ The first program does not run the `print_message_function` function because bef
   int pthread_join(pthread_t thread, void **rval_ptr);
   /* If successful returns value 0, if error returns value 1 */
   ```
- The function will pause the job until the `rval_ptr` pointer state of the` pthread_exit () `function returns its value.
-
+  The function will pause the job until the `rval_ptr` pointer state of the`pthread_exit ()`function returns its value.
 
 ### Mutual Exclusion
+
 Also known as ** Mutex **, which is a way to ensure that if a job that uses variables or files is also used by another job, the other job will output the value of the previous job.
 
 Example of Simple Mutual_Exclusion program:
@@ -939,6 +936,7 @@ int main(void)
 ```
 
 Explanation :
+
 - There are 2 threads running with different functions.
 - The resources (variables) that both threads use to execute their jobs **are the same**.
 - The `status` variable is a simple example of controlling the running of a thread.
@@ -953,11 +951,9 @@ Additionally, we also have the `pthread_mutex` function provided by the `pthread
 #include <unistd.h>
 pthread_t tid[2];
 int counter;
-// lock: Variabel mutex yang digunakan untuk mengatur akses terhadap variabel counter.
 pthread_mutex_t lock;
 void* trythis(void* arg)
 {
-    //pthread_mutex_lock() digunakan untuk mengunci mutex lock, sehingga menghindari akses bersama pada variabel counter.
     pthread_mutex_lock(&lock);
     unsigned long i = 0;
     counter += 1;
@@ -965,7 +961,6 @@ void* trythis(void* arg)
     for (i = 0; i < (0xFFFFFFFF); i++)
         ;
     printf("\n Job %d has finished\n", counter);
-    //pthread_mutex_unlock() digunakan untuk membuka kunci mutex lock agar memungkinkan akses dari thread-thread lain.
     pthread_mutex_unlock(&lock);
     return NULL;
 }
@@ -1003,26 +998,31 @@ Job 2 has finished
 ```
 
 **Conclusion** :
-Since we don't know which *thread* executes a variable or resource in the program first, the purpose of **Mutex** is to keep the resources of a thread from being used by other threads before it finishes its work.
+Since we don't know which _thread_ executes a variable or resource in the program first, the purpose of **Mutex** is to keep the resources of a thread from being used by other threads before it finishes its work.
 
 </br></br>
 
 ## IPC (Interprocess Communication)
+
 ### IPC
-IPC (*Interprocess Communication*) is a method to exchange data between one process and another, either on the same computer or remote computers connected through a network.
+
+IPC (_Interprocess Communication_) is a method to exchange data between one process and another, either on the same computer or remote computers connected through a network.
 
 ### Pipes
+
 Pipes are a sequential method of communication between interrelated processes. The weakness of pipes is that they are only for interconnected, sequential processes.
 There are two types of pipes:
+
 - unnamed pipe: Communication between parent and child processes.
-- named pipes: Commonly referred to as FIFO, used for communication that runs independently. **Can only be used if both processes are using the same *filesystem***
+- named pipes: Commonly referred to as FIFO, used for communication that runs independently. **Can only be used if both processes are using the same _filesystem_**
 
 ```
 $ ls | less
 ```
+
 Diagram :
 
-![alt](img/pipe.png "Diagram Pipe")  
+![alt](img/pipe.png "Diagram Pipe")
 
 The `pseudocode` for using a `pipe` without `fork` can be demonstrated as follows:
 
@@ -1036,7 +1036,8 @@ fd[1] will be the fd for the write end of pipe.
 Returns : 0 on Success.
 -1 on error.
 ```
-Example of code using C (without *fork*) can be found at:  
+
+Example of code using C (without _fork_) can be found at:
 
 ```c
 // C program to illustrate
@@ -1058,35 +1059,35 @@ int main()
 	if (pipe(p) < 0)
 		exit(1);
 
-	/* continued */
-	/* write pipe */
 
 	write(p[1], msg1, MSGSIZE);
 	write(p[1], msg2, MSGSIZE);
 	write(p[1], msg3, MSGSIZE);
 
 	for (i = 0; i < 3; i++) {
-		/* read pipe */
 		read(p[0], inbuf, MSGSIZE);
 		printf("%s\n", inbuf);
 	}
 	return 0;
 }
 
-```  
-Output :  
+```
+
+Output :
+
 ```
 hello, world #1
 hello, world #2
 hello, world #3
-```  
+```
 
-Pipe with fork  
+Pipe with fork
 
 Diagram :  
-![alt](img/pipe-fork.png)  
+![alt](img/pipe-fork.png)
 
-Example :   
+Example :
+
 ```c
 // C program to demonstrate use of fork() and pipe()
 #include<stdio.h>
@@ -1185,7 +1186,8 @@ int main()
 ```
 
 ### Message Queues
-Is a communication between processes where the process creates an internal linked-list at the address of the Operating System kernel. The message is referred to as *queue* while the identifier is called *queue* ID. *Queue* ID is used as a *key* to indicate which message will be sent and the destination of the message.
+
+Is a communication between processes where the process creates an internal linked-list at the address of the Operating System kernel. The message is referred to as _queue_ while the identifier is called _queue_ ID. _Queue_ ID is used as a _key_ to indicate which message will be sent and the destination of the message.
 
 Illustration:
 ![ilustrasi-message-queue](https://static.javatpoint.com/operating-system/images/ipc-using-message-queues.png)
@@ -1195,7 +1197,8 @@ A message queue that follows the FIFO (First In First Out) principle is unbounde
 Example of program can be accessed at [sender](playground/sender.c) and [receiver](playground/receiver.c).
 
 Code example for sender:
-```
+
+```c
 // C Program for Message Queue (Writer Process)
 #include <stdio.h>
 #include <sys/ipc.h>
@@ -1235,7 +1238,8 @@ int main()
 ```
 
 Code example for receiver:
-```
+
+```c
 // C Program for Message Queue (Reader Process)
 #include <stdio.h>
 #include <sys/ipc.h>
@@ -1282,13 +1286,14 @@ Shared memory is a mechanism for mapping a memory block's area (segments) for us
 Shared memory is the fastest IPC mechanism. An operating system maps a memory segment to an address space of several processes to perform read and write operations in that memory segment without calling functions from the operating system. Shared memory is a superior mechanism for exchanging data of very large sizes.
 
 Steps for using shared memory:
+
 1. Request a memory segment from the operating system that can be used simultaneously by a process.
 2. Associate some or all of the memory with the address space of the intended process.
 
 Illustration
 ![shared-mem](https://static.javatpoint.com/operating-system/images/ipc-through-shared-memory2.png)
 
-* Note that the memory address of a shared memory in each process may not be the same. In this case, we can use semaphores for synchronization.
+- Note that the memory address of a shared memory in each process may not be the same. In this case, we can use semaphores for synchronization.
 
 Example: [Proses 1](proses1.c) [Proses 2](proses2.c)
 
@@ -1321,6 +1326,7 @@ void main()
 ```
 
 **Process 2**
+
 ```c
 #include <stdio.h>
 #include <sys/ipc.h>
