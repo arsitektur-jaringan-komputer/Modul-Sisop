@@ -1302,8 +1302,10 @@ Ilustrasi
 
 - Sebagai catatan, alamat memory dari suatu shared memory pada masing-masing proses belum tentu sama. Dalam hal ini, kita dapat menggunakan semaphore untuk melakukan sinkronisasi.
 
+  
 Example: [Proses 1](playground/shared-memory-1.c) [Proses 2](playground/shared-memory-2.c)
 
+  
 **Proses 1**
 
 ```c
