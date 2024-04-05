@@ -1295,7 +1295,7 @@ Illustration
 
 - Note that the memory address of a shared memory in each process may not be the same. In this case, we can use semaphores for synchronization.
 
-Example: [Proses 1](proses1.c) [Proses 2](proses2.c)
+Example: [Proses 1](playground/shared-memory-1.c) [Proses 2](playground/shared-memory-2.c)
 
 **Process 1**
 
