@@ -32,6 +32,7 @@
 - [4. Docker Service Lanjutan](#docker-service-lanjutan)
   - [4.1. Docker Compose](#docker-compose)
   - [4.2. Docker Storage Management](#docker-storage-management)
+  - [4.3. Docker Mount](#docker-mount)
 - [iv. Referensi](#referensi)
 
 ## Pendahuluan
@@ -64,6 +65,8 @@ Baik virtualisasi dan kontainerisasi menggunakan isolasi sistem untuk menjalanka
 
 Salah satu teknologi untuk membuat kontainer yang berbagi sistem operasi host adalah Docker. Dengan Docker, pengembang dapat membuat kontainer yang konsisten dan portabel, yang dapat dijalankan di berbagai lingkungan komputasi, termasuk mesin lokal, server cloud, atau lingkungan pengembangan dan produksi yang berbeda. Docker memungkinkan aplikasi dan dependensinya diisolasi, sehingga aplikasi dapat dijalankan secara konsisten di berbagai lingkungan tanpa mengganggu host operating system atau aplikasi lainnya.
 
+Bayangkan kita memiliki sebuah aplikasi Node. Kita akan membutuhkan server yang menggunakan versi Node yang sama dengan aplikasi kita. Kita juga harus menginstall dependensi-dependensi yang digunakan aplikasi tersebut. Dengan demikian, aplikasi ini akan bisa berjalan di komputer kita. Namun, bayangkan jika orang lain dengan komputer yang berbeda menjalankan aplikasi kita dengan versi Node yang berbeda, bisa saja terjadi error. Dengan menggunakan Docker, kita bisa mengkontainerisasi aplikasi dan dependensinya untuk dapat dijalankan di berbagai lingkungan tanpa perlu konfigurasi ulang, sehingga dapat menghindari kasus ini terjadi.
+
 ## Arsitektur Docker
 
 ![architecture](assets/architecture.png)
@@ -88,19 +91,126 @@ Docker Registry adalah repositori yang digunakan untuk menyimpan dan berbagi Doc
 
 ![docker-service-dasar](assets/docker-service-dasar.png)
 
+### Docker Image
+
+Docker image adalah template untuk menjalankan docker container. Image ini berisi sistem operasi dan aplikasi yang sudah dikonfigurasi dengan baik serta siap digunakan. Image dapat dibangun secara manual dengan membuat Dockerfile atau dapat diunduh dari Docker Hub, yaitu repositori publik yang menyediakan banyak image yang sudah siap digunakan. 
+
+Setiap image memiliki nama dan tag untuk mengidentifikasinya secara unik. Dalam Docker Hub, nama image biasanya terdiri dari beberapa bagian, seperti nama pengguna (username), nama image, dan tag, seperti contoh username/nama_image:tag. Setelah image dibuat, bisa menggunakan perintah `docker run` untuk membuat instance dari image tersebut dalam bentuk container.
+
 ### Dockerfile
 
-### Docker Image
+Dockerfile adalah file teks yang berisi instruksi untuk membangun sebuah Docker Image. Berbagai komponen dan konfigurasi yang diperlukan untuk membuat sebuah image, seperti base image yang digunakan, perintah-perintah yang harus dijalankan, file yang harus di-copy, serta variabel lingkungan yang perlu di-set, dapat ditentukan dengan Dockerfile. 
+
+Keuntungan menggunakan Dockerfile antara lain memungkinkan pengguna untuk membuat image dengan cara yang konsisten dan terdokumentasi dengan baik, dapat mereplikasi pengaturan dan konfigurasi yang sama setiap kali membangun sebuah image meskipun lingkungannya berbeda-beda, dan memungkinkan penggunaan konsep modularitas dalam membangun image sehingga komponen-komponen image dapat diganti tanpa perlu membangun ulang seluruh image.
 
 ### Docker Container
 
+Docker Container bisa diibaratkan seperti kotak berisi program dan semua bahan yang dibutuhkan agar program tersebut bisa berjalan dengan baik. Kotak ini dijalankan secara terpisah dari komputer aslinya, sehingga program dalam kotak ini dapat berjalan dengan konsisten pada berbagai lingkungan tanpa terpengaruh oleh konfigurasi dan infrastruktur yang ada pada komputer aslinya. 
+
+Karena lingkungan di container terpisah dengan lingkungan host, maka tidak mungkin untuk menjalankan perintah di dalam container menggunakan shell host. Untuk menggunakan shell di Docker Container, dapat menggunakan perintah `docker exec [OPTIONS] <CONTAINER> <COMMAND>`:
+
+- `[OPTIONS]` adalah opsi yang dapat dipakai.
+- `[CONTAINER]` adalah nama atau ID container yang akan diakses.
+- Jika ingin mengeksekusi perintah di dalam container tanpa membuka shell container, maka dapat menambahkan `[COMMAND]` untuk command yang akan dijalankan.
+
+![docker-exec](docker-exec.jpg)
+
 ### Docker Hub
+
+Docker Hub adalah sebuah platform cloud yang menyediakan repository untuk Docker Image. Docker Hub memungkinkan pengguna untuk mengambil, menyimpan, dan mendistribusikan Docker Image dengan mudah. 
+
+Di Docker Hub, pengguna dapat mencari Docker Image yang dibuat oleh komunitas atau membuat image mereka sendiri dan membagikannya ke orang lain. Docker Hub juga memungkinkan pengguna untuk melakukan otomatisasi build dan testing image dengan menggunakan Dockerfile. Dengan Docker Hub, pengguna dapat dengan mudah mengelola Docker Image yang mereka gunakan dalam aplikasi mereka dan mengurangi waktu dan upaya dalam pengembangan, distribusi, dan deployment aplikasi.
 
 ## Docker Service Lanjutan
 
 ### Docker Compose
 
-### Docker Storage Management
+Docker Compose adalah sebuah alat atau tool untuk mengelola dan menjalankan aplikasi yang terdiri dari satu atau beberapa container. Berikut adalah beberapa hal yang dapat dilakukan Docker Compose:
+
+- Mendefinisikan, mengkonfigurasi, dan menjalankan beberapa Docker Container sekaligus dengan menggunakan file konfigurasi YAML yang sederhana.
+- Menentukan Docker Image untuk setiap Docker Container, mengatur pengaturan jaringan, menentukan volume yang dibutuhkan, dan melakukan konfigurasi lainnya dalam satu file konfigurasi.
+- Memudahkan proses pengaturan dan penyebaran aplikasi pada lingkungan produksi atau development yang berbeda dengan cara yang konsisten.
+
+Beberapa perintah penting untuk mengelola Docker Compose beserta penjelasannya yang tersedia pada `docker compose <COMMAND>`.
+
+| <COMMAND> | Deskripsi |
+| --- | --- |
+| up |	Membuat dan memulai container sesuai dengan konfigurasi di dalam file Docker Compose.	|
+| up -d | 	Sama seperti docker-compose up, tetapi menjalankan container di background (detached mode). Sehingga proses docker compose tidak ditampilkan di terminal.	|
+| down	| Menghentikan dan menghapus container yang dihasilkan oleh docker-compose up.	|
+| build	| Membuat image untuk service yang didefinisikan di dalam konfigurasi Docker Compose.	|
+| start	| Menjalankan container yang sudah dibuat.	|
+| stop	| Menghentikan container yang sedang berjalan.	|
+| restart	| Menghentikan dan menjalankan kembali container.	|
+| ps	| Menampilkan status dari container yang dijalankan oleh Docker Compose.	|
+| logs	| Menampilkan log dari service yang dijalankan oleh Docker Compose.	|
+| exec	| Menjalankan perintah di dalam container.	|
+| config	| Memvalidasi dan menampilkan konfigurasi dari Docker Compose.	|
+| kill	| Memaksa menghentikan container yang sedang berjalan.	| 
+
+Berikut adalah contoh penerapan Docker Compose untuk membuat sebuah aplikasi web yang terdiri dari tiga service, yaitu frontend, backend, dan database.
+
+```YAML
+version: '3'
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "8080:8080"
+    environment:
+      DB_HOST: database
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    environment:
+      REACT_APP_BACKEND_URL: http://backend:8080
+  database:
+    image: postgres
+    environment:
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+      POSTGRES_DB: mydb
+```
+
+Berikut adalah penjelasan dari konfigurasi diatas:
+
+| Properti | Deskripsi |
+| --- | --- |
+| `version: '3'` | Versi dari Docker Compose yang digunakan dalam konfigurasi tersebut. |
+| `services` | Komponen utama yang mendefinisikan service yang akan dijalankan. Dalam konfigurasi diatas, terdapat 3 service, yaitu frontend, backend, dan database. |
+| `backend` | Nama service yang akan dijalankan. |
+| `build: ./backend` | Menentukan direktori dimana Docker akan melakukan build image untuk service backend. |
+| `ports: - "8080:8080"` | Mendefinisikan port mapping, dimana `port 8080` pada container akan di-forward ke `port 8080` pada host. |
+| `environment: DB_HOST: database` | Mendefinisikan environment variable pada service backend, dimana `DB_HOST` akan di-set sebagai database. |
+| `frontend` | Nama service yang akan dijalankan. |
+| `build: ./frontend` | Menentukan direktori dimana Docker akan melakukan build image untuk service frontend. |
+| `ports: - "3000:3000"` | Mendefinisikan port mapping, dimana `port 3000` pada container akan di-forward ke `port 3000` pada host. |
+| `environment: REACT_APP_BACKEND_URL: http://backend:8080` | Mendefinisikan environment variable pada service frontend, dimana `REACT_APP_BACKEND_URL` akan di-set sebagai `http://backend:8080`. |
+| `database` | Nama service yang akan dijalankan. |
+| image: postgres | Mendefinisikan image yang akan digunakan untuk service database. |
+| `environment: POSTGRES_USER: myuser POSTGRES_PASSWORD: mypassword POSTGRES_DB: mydb` | Mendefinisikan environment variable pada service database, dimana `POSTGRES_USER` akan di-set sebagai `myuser`, `POSTGRES_PASSWORD` akan di-set sebagai `mypassword`, dan `POSTGRES_DB` akan di-set sebagai `mydb`. |
+
+### Docker Data Management
+
+Docker Data Management adalah sebuah konsep untuk mengelola data atau file yang ada di Docker. Ketika menjalankan sebuah aplikasi atau layanan di dalam Docker Container, data yang dihasilkan oleh aplikasi tersebut dapat disimpan dalam container itu sendiri atau dalam sebuah volume yang terpisah dari container.
+
+Dalam Docker, terdapat beberapa jenis mount atau penghubung yang digunakan untuk mengelola data, seperti volume, bind mount, dan tmpfs mount. Seorang developer dapat memilih jenis mount yang tepat sesuai dengan kebutuhan aplikasi yang dijalankan di dalam container. Selain itu, Docker juga menyediakan beberapa perintah untuk mengelola data pada Docker Volume, seperti menampilkan informasi volume, menghapus volume, dan mengatur volume driver options. Dengan menggunakan perintah-perintah ini, developer dapat mengelola data di Docker dengan mudah dan efisien.
+
+Pemahaman tentang Docker Data Management sangat penting untuk memastikan data yang dihasilkan oleh aplikasi yang dijalankan di dalam container tetap terjaga dan tidak hilang saat container dihapus atau dimatikan.
+
+### Docker Mount
+
+![docker-mount](docker-mounts.jpg)
+
+Terdapat beberapa jenis Docker Mount sebagai berikut:
+
+- **Volume**
+  Docker Volume adalah fitur pada Docker yang memungkinkan developer untuk mengelola data yang dibutuhkan oleh container secara terpisah dari container itu sendiri. Docker Volume memungkinkan container untuk berbagi data dengan host, container lain, atau dengan layanan penyimpanan data yang disediakan oleh penyedia layanan cloud.
+- **Bind Mount**
+  Bind mount adalah tipe mount di Docker yang memungkinkan suatu file atau direktori di mesin host digunakan oleh Docker Container.
+- **tmpfs Mount**
+  tmpfs mount adalah salah satu jenis mount pada Docker yang memungkinkan untuk menyimpan data secara sementara di dalam memory RAM pada host.
 
 ## Referensi
 
