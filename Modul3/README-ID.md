@@ -1,4 +1,4 @@
-# Modul 1 - Pengenalan Linux
+# Modul 3 - Docker
 
 ## Capaian
 
@@ -25,8 +25,8 @@
   - [2.3. Docker Objects](#docker-objects)
   - [2.4. Docker Registry](#docker-registry)
 - [3. Docker Service Dasar](#docker-service-dasar)
-  - [3.1. Docker Image](#docker-image)
-  - [3.2. Dockerfile](#dockerfile)
+  - [3.1. Dockerfile](#dockerfile)
+  - [3.2. Docker Image](#docker-image) 
   - [3.3. Docker Container](#docker-container)
   - [3.4. Docker Hub](#docker-hub)
 - [4. Docker Service Lanjutan](#docker-service-lanjutan)
@@ -91,27 +91,41 @@ Docker Registry adalah repositori yang digunakan untuk menyimpan dan berbagi Doc
 
 ![docker-service-dasar](assets/docker-service-dasar.png)
 
-### Docker Image
-
-Docker image adalah template untuk menjalankan docker container. Image ini berisi sistem operasi dan aplikasi yang sudah dikonfigurasi dengan baik serta siap digunakan. Image dapat dibangun secara manual dengan membuat Dockerfile atau dapat diunduh dari Docker Hub, yaitu repositori publik yang menyediakan banyak image yang sudah siap digunakan. 
-
-Setiap image memiliki nama dan tag untuk mengidentifikasinya secara unik. Dalam Docker Hub, nama image biasanya terdiri dari beberapa bagian, seperti nama pengguna (username), nama image, dan tag, seperti contoh username/nama_image:tag. Setelah image dibuat, bisa menggunakan perintah `docker run` untuk membuat instance dari image tersebut dalam bentuk container.
-
 ### Dockerfile
 
 Dockerfile adalah file teks yang berisi instruksi untuk membangun sebuah Docker Image. Berbagai komponen dan konfigurasi yang diperlukan untuk membuat sebuah image, seperti base image yang digunakan, perintah-perintah yang harus dijalankan, file yang harus di-copy, serta variabel lingkungan yang perlu di-set, dapat ditentukan dengan Dockerfile. 
 
 Keuntungan menggunakan Dockerfile antara lain memungkinkan pengguna untuk membuat image dengan cara yang konsisten dan terdokumentasi dengan baik, dapat mereplikasi pengaturan dan konfigurasi yang sama setiap kali membangun sebuah image meskipun lingkungannya berbeda-beda, dan memungkinkan penggunaan konsep modularitas dalam membangun image sehingga komponen-komponen image dapat diganti tanpa perlu membangun ulang seluruh image.
 
+Untuk mem-build Dockerfile menjadi Docker Image, kalian bisa menggunakan command berikut di direktori berisi Dockerfile.
+
+```
+docker build -t <nama-image>
+```
+
+### Docker Image
+
+Docker image adalah template untuk menjalankan docker container. Image ini berisi sistem operasi dan aplikasi yang sudah dikonfigurasi dengan baik serta siap digunakan. Image dapat dibangun secara manual dengan membuat Dockerfile atau dapat diunduh dari Docker Hub, yaitu repositori publik yang menyediakan banyak image yang sudah siap digunakan. 
+
+Setiap image memiliki nama dan tag untuk mengidentifikasinya secara unik. Dalam Docker Hub, nama image biasanya terdiri dari beberapa bagian, seperti nama pengguna (username), nama image, dan tag, seperti contoh username/nama_image:tag. Setelah image dibuat, bisa menggunakan perintah berikut untuk membuat instance dari image tersebut dalam bentuk container.
+
+```
+docker run <nama-image>
+```
+
 ### Docker Container
 
 Docker Container bisa diibaratkan seperti kotak berisi program dan semua bahan yang dibutuhkan agar program tersebut bisa berjalan dengan baik. Kotak ini dijalankan secara terpisah dari komputer aslinya, sehingga program dalam kotak ini dapat berjalan dengan konsisten pada berbagai lingkungan tanpa terpengaruh oleh konfigurasi dan infrastruktur yang ada pada komputer aslinya. 
 
-Karena lingkungan di container terpisah dengan lingkungan host, maka tidak mungkin untuk menjalankan perintah di dalam container menggunakan shell host. Untuk menggunakan shell di Docker Container, dapat menggunakan perintah `docker exec [OPTIONS] <CONTAINER> <COMMAND>`:
+Karena lingkungan di container terpisah dengan lingkungan host, maka tidak mungkin untuk menjalankan perintah di dalam container menggunakan shell host. Untuk menggunakan shell di Docker Container, dapat menggunakan perintah berikut.
+
+```
+docker exec [OPTIONS] <CONTAINER> <COMMAND>
+```
 
 - `[OPTIONS]` adalah opsi yang dapat dipakai.
-- `[CONTAINER]` adalah nama atau ID container yang akan diakses.
-- Jika ingin mengeksekusi perintah di dalam container tanpa membuka shell container, maka dapat menambahkan `[COMMAND]` untuk command yang akan dijalankan.
+- `<CONTAINER>` adalah nama atau ID container yang akan diakses.
+- Jika ingin mengeksekusi perintah di dalam container tanpa membuka shell container, maka dapat menambahkan `<COMMAND>` untuk command yang akan dijalankan.
 
 ![docker-exec](docker-exec.jpg)
 
