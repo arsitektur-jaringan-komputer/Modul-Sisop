@@ -348,7 +348,7 @@ Understanding Docker Data Management is very important to ensure that the data g
 
 ### Docker Mount
 
-![docker-mount](assets/docker-mounts.jpg)
+![docker-mount](assets/docker-mounts.png)
 
 There are several types of Docker Mounts as follows:
 

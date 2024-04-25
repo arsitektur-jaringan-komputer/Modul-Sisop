@@ -348,7 +348,7 @@ Pemahaman tentang Docker Data Management sangat penting untuk memastikan data ya
 
 ### Docker Mount
 
-![docker-mount](assets/docker-mounts.jpg)
+![docker-mount](assets/docker-mounts.png)
 
 Terdapat beberapa jenis Docker Mount sebagai berikut:
 
