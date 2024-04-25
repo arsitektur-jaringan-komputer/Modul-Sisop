@@ -102,31 +102,164 @@ To build a Dockerfile into a Docker Image, you can use the following command in 
 docker build -t <image-name>
 ```
 
+#### Dockerfile Commands
+
+Here are some important commands and their explanations that can be implemented in Dockerfile.
+
+| Command Description
+| ------------ | ------------ |
+| `FROM` | Specifies the base image that will be used for the build. |
+| `COPY` | Copies files or folders from the host into the image. |
+| `ADD` | Copies a file or folder from the host into the image, can also be used to download files from a URL and extract them into the image. |
+| `RUN` | Executes commands on the current layer and creates a new image. |
+| `CMD` | Specifies the default commands that will be run when the container is started. |
+| `ENTRYPOINT` | Specifies the command to be executed when the container is started, can also be overwritten by the command when the container is run. |
+| `ENV` | Specifies the environment variable inside the container. |
+| `EXPOSE` | Specifies the port to be exposed from the container to the host. |
+| `VOLUME` | Specifies the directory that will be mounted as a volume in the container. |
+
+#### Dockerfile Example
+
+We will create a [simple Node application](https://cagrihankara.medium.com/your-first-simple-docker-project-a-step-by-step-guide-for-beginners-c1e7554a6d0f). First, create a new directory and add the app.js and Dockerfile files. 
+
+app.js is a simple Node application that will display "Hello, Docker World!" when accessed. Here is what app.js contains.
+
+```
+const http = require('http');
+
+const server = http.createServer((req, res) => {
+  res.writeHead(200, { 'Content-Type': 'text/plain' });
+  res.end('Hello, Docker World!\n');
+});
+
+const port = process.env.PORT || 3000;
+server.listen(port, () => {
+  console.log(`Server running on http://localhost:${port}`);
+});
+```
+
+Here are the contents of the Dockerfile that will set up the Node.js environment in the container, copy the app.js code and its dependencies, and determine how to run the application.
+
+```
+# Use the official Node.js image from the Docker Hub
+FROM node:14
+
+# Set the working directory in the container
+WORKDIR /usr/src/app
+
+# Copy package.json and package-lock.json to the container
+COPY package*.json ./
+
+# Install application dependencies
+RUN npm install
+
+# Copy the rest of the application source code to the container
+COPY . .
+
+# Expose the port your application will run on
+EXPOSE 3000
+
+# Define the command to run your application
+CMD ["node", "app.js"]
+```
+
+From this Dockerfile, build a Docker Image named simple-docker-app using the `docker build -t simple-docker-app` command.
+
 ### Docker Image
 
 A docker image is a template for running a docker container. This image contains an operating system and applications that are well configured and ready to use. Images can be built manually by creating a Dockerfile or can be downloaded from Docker Hub, a public repository that provides many ready-to-use images. 
 
-Each image has a name and tags to uniquely identify it. In Docker Hub, the image name usually consists of several parts, such as username, image name, and tag, for example username/name_image:tag. After the image is created, you can use the following command to create an instance of the image in the form of a container.
+Docker images are immutable, meaning that once created, images cannot be changed directly. However, images can be created anew by modifying the previous image and giving it a different name. Each image has a name and tags to uniquely identify it. In Docker Hub, the image name usually consists of several parts, such as username, image name, and tag, such as username/name_image:tag. After the image is created, you can use the following command to create an instance of the image in the form of a container.
 
 ```
-docker run <image-name>
+docker run [OPTIONS] IMAGE[:TAG|@DIGEST] [COMMAND] [ARG...]
 ```
+
+OPTIONS is used for additional configuration for the container, such as naming the container with `--name`. IMAGE is the name of the Image that will be used as the container. TAG is the version of the Image, and defaults to latest if not defined. COMMAND and ARG... are used to specify the commands and arguments that the container will run when it is freshly started.
+
+For example, to run the Docker Image from the Dockerfile we created earlier, we can use the command `docker run -p 3000:3000 simple-docker-app`, -p 3000:3000 is an option to map port 3000 on the container to port 3000 on our host machine, so that the application in this container can be accessed in our web browser by visiting the port 3000 address on our host machine.
+
+#### Docker Image Commands
+
+Here are some important commands and their explanations available in **`docker image <COMMAND>`**.
+
+| <COMMAND> | Description
+| --------- | --------- |
+| `build` | This command is used to create a Docker image from a Dockerfile. |
+| `history` | Displays the history of changes to an image. |
+| `import` | Import an image from a file. The file must contain an image that was previously exported with the **`docker save`** command.
+| `inspect` | View details of an image. |
+| `load` | Load an image from a saved archive. |
+| `ls` | Display a list of downloaded images. |
+| `prune` | Delete unused images. |
+| `pull` | Download an image from Docker Hub or other registry. |
+| `push` | Uploads an image to Docker Hub or other registry. |
+| `rename` | Change the name of a downloaded image. |
+| `rm` | Delete a downloaded image. |
+| `save` | Saves an image into an archive that can be downloaded using the **`docker load`** command |
+| `tag` | Tag an image. |
 
 ### Docker Container
 
-Docker Container can be likened to a box containing a program and all the materials needed for the program to run properly. This box is run separately from the original computer, so the program in this box can run consistently in various environments without being affected by the configuration and infrastructure that exists on the original computer. 
+![docker-container](assets/docker-container.png)
 
-Since the container environment is separate from the host environment, it is not possible to run commands in the container using the host shell. To use the shell in Docker Container, you can use the following command.
+Docker Container can be likened to a box containing a program and all the materials needed for the program to run properly. This box is run separately from the original computer, so that the program in this box can run consistently in various environments without being affected by the configuration and infrastructure that exists on the original computer. 
+
+#### Docker Container Commands
+
+Here are some important commands and their explanations that are available to manage containers in Docker.
+
+| Commands | Description
+| --------- | --------- |
+| `attach` | Executes a command on the running container. This command will log the user into the container's terminal session. |
+| `commit` | Creates a new image of the changes made to the running container. |
+| `cp` | Copies files or directories between the host file system and the file system in the container. |
+| `create` | Creates a new container, but does not run it. |
+| `diff` | Indicates changes to the file system of a running container. |
+| `exec` | Executes a command on the running container. |
+| `export` | Exports a container into a tar file. |
+| `inspect` | View details of a container. |
+| `kill` | Forcefully stop a running container. |
+| `logs` | View the logs of a container. |
+| `ls` | Display a list of running containers. |
+| `pause` | Pause a running container. |
+| `port` | Displays the ports opened by a container. |
+| `prune` | Delete containers that are not running. |
+| `rename` | Change the name of a running container. |
+| `restart` | Restarts a running container. |
+| `rm` | Delete a running container. |
+| `run` | Creates a new container and runs it. |
+| `start` | Runs a container that has already been created. |
+| `stats` | Display CPU, memory, and network information of a running container. |
+| `stop` | Stop a running container. |
+| `top` | Display the currently running process in a container. |
+| `unpause` | Resumes a container that has been paused. |
+| `update` | Updates a container with a new configuration. |
+| `wait` | Wait for a container to finish executing a command before continuing. |
+
+#### Shell in Docker Container
+
+Since the container environment is separate from the host environment, it is not possible to execute commands in the container using the host shell. To use the shell in Docker Container, you can use the following command.
 
 ```
 docker exec [OPTIONS] <CONTAINER> <COMMAND>
 ```
 
-- `[OPTIONS]` are the options that can be used.
-- `<CONTAINER>` is the name or ID of the container to access.
+- docker exec is used to execute commands on containers that are already running.
+- `<CONTAINER>` is the name or ID of the container to be accessed.
 - If you want to execute commands in the container without opening the container shell, you can add `<COMMAND>` to the command to be executed.
+- `[OPTIONS]` are the options that can be used.
 
-![docker-exec](docker-exec.jpg)
+| [OPTIONS] | Description
+| -------- | -------- |
+| `-d`,`-detach` | Executes the command inside the container in detached mode, so the container runs in the background. |
+| `-e`,`--env list` | Set environment variables on the container. |
+| `-i`,`--interactive` | Execute commands in interactive mode on the container. |
+| `-t`,`--tty` | Allocate a pseudo-TTY (TeleTYpewriter) to the container. |
+| `-u`,`--user string` | Specifies the user or UID (user ID) that will be used to execute commands in the container. |
+| `-w`,`--workdir string` | Sets the working directory in the container |
+
+![docker-exec](assets/docker-exec.jpg)
 
 ### Docker Hub
 
@@ -215,7 +348,7 @@ Understanding Docker Data Management is very important to ensure that the data g
 
 ### Docker Mount
 
-![docker-mount](docker-mounts.jpg)
+![docker-mount](assets/docker-mounts.jpg)
 
 There are several types of Docker Mounts as follows:
 

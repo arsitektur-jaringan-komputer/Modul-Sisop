@@ -16,7 +16,7 @@
 - [ii. Prasyarat](#prasyarat)
 - [iii. Daftar Isi](#daftar-isi)
 - [1. Pendahuluan](#pendahuluan)
-  - [1.1. Mengapa Perlu Isolasi Proses?](#mengapa-perlu-isolasi-proses?)
+  - [1.1. Mengapa Perlu Isolasi Proses?](#mengapa-perlu-isolasi-proses)
   - [1.2. Perbedaan Kontainerisasi dan Virtualisasi](#perbedaan-kontainerisasi-dan-virtualisasi)
   - [1.3. Pengertian Docker](#pengertian-docker)
 - [2. Arsitektur Docker](#arsitektur-docker)
@@ -37,7 +37,7 @@
 
 ## Pendahuluan
 
-### Mengapa Perlu Isolasi Proses?
+### Mengapa Perlu Isolasi Proses
 
 Pernahkah kamu mengompilasi program sambil mendengarkan musik MP3 di laptopmu? Kamu mungkin berasumsi programmu dan pemutar MP3 tidak akan berinteraksi. Namun, pada kenyataannya, keduanya mungkin berjalan pada prosesor yang persis sama. Jadi, bagaimana sistem memastikan bahwa program yang kamu kompilasi tidak pernah menimpa program pemutar MP3-mu? Mengapa program-program ini tidak saling memengaruhi?
 
@@ -103,19 +103,142 @@ Untuk mem-build Dockerfile menjadi Docker Image, kalian bisa menggunakan command
 docker build -t <nama-image>
 ```
 
+#### Perintah Dockerfile
+
+Berikut adalah beberapa perintah penting beserta penjelasannya yang bisa diimplementasikan pada Dockerfile.
+
+| Perintah | Deskripsi |
+| ------------ | ------------ |
+| `FROM` | Menentukan base image yang akan digunakan untuk build. |
+| `COPY` | Menyalin file atau folder dari host ke dalam image. |
+| `ADD` | Menyalin file atau folder dari host ke dalam image, bisa juga digunakan untuk men-download file dari URL dan mengekstraknya ke dalam image. |
+| `RUN` | Menjalankan perintah pada layer yang sedang dibangun dan membuat image baru. |
+| `CMD` | Menentukan perintah default yang akan dijalankan saat container di-start. |
+| `ENTRYPOINT` | Menentukan perintah yang akan dijalankan saat container di-start, dapat juga di-overwrite oleh perintah saat container di-run. |
+| `ENV` | Menentukan environment variable di dalam container. |
+| `EXPOSE` | Menentukan port yang akan di-expose dari container ke host. |
+| `VOLUME` | Menentukan direktori yang akan di-mount sebagai volume di dalam container. |
+
+#### Contoh Dockerfile
+
+Kita akan membuat [aplikasi Node sederhana](https://cagrihankara.medium.com/your-first-simple-docker-project-a-step-by-step-guide-for-beginners-c1e7554a6d0f). Pertama, buat direktori baru dan tambahkan file app.js dan Dockerfile. 
+
+app.js adalah aplikasi Node sederhana yang akan menampilkan "Hello, Docker World!" ketika diakses. Berikut adalah isi app.js.
+
+```
+const http = require('http');
+
+const server = http.createServer((req, res) => {
+  res.writeHead(200, { 'Content-Type': 'text/plain' });
+  res.end('Hello, Docker World!\n');
+});
+
+const port = process.env.PORT || 3000;
+server.listen(port, () => {
+  console.log(`Server running on http://localhost:${port}`);
+});
+```
+
+Berikut adalah isi dari Dockerfile yang akan menyiapkan lingkungan Node.js di dalam container, menyalin kode app.js serta dependensinya, serta menentukan cara menjalankan aplikasi.
+
+```
+# Use the official Node.js image from the Docker Hub
+FROM node:14
+
+# Set the working directory in the container
+WORKDIR /usr/src/app
+
+# Copy package.json and package-lock.json to the container
+COPY package*.json ./
+
+# Install application dependencies
+RUN npm install
+
+# Copy the rest of the application source code to the container
+COPY . .
+
+# Expose the port your application will run on
+EXPOSE 3000
+
+# Define the command to run your application
+CMD ["node", "app.js"]
+```
+
+Dari Dockerfile ini, build Docker Image bernama simple-docker-app menggunakan command `docker build -t simple-docker-app`.
+
 ### Docker Image
 
 Docker image adalah template untuk menjalankan docker container. Image ini berisi sistem operasi dan aplikasi yang sudah dikonfigurasi dengan baik serta siap digunakan. Image dapat dibangun secara manual dengan membuat Dockerfile atau dapat diunduh dari Docker Hub, yaitu repositori publik yang menyediakan banyak image yang sudah siap digunakan. 
 
-Setiap image memiliki nama dan tag untuk mengidentifikasinya secara unik. Dalam Docker Hub, nama image biasanya terdiri dari beberapa bagian, seperti nama pengguna (username), nama image, dan tag, seperti contoh username/nama_image:tag. Setelah image dibuat, bisa menggunakan perintah berikut untuk membuat instance dari image tersebut dalam bentuk container.
+Docker Image bersifat immutables, artinya setelah dibuat, image tidak bisa diubah secara langsung. Namun, image dapat dibuat baru dengan melakukan modifikasi pada image sebelumnya dan memberikan nama yang berbeda. Setiap image memiliki nama dan tag untuk mengidentifikasinya secara unik. Dalam Docker Hub, nama image biasanya terdiri dari beberapa bagian, seperti nama pengguna (username), nama image, dan tag, seperti contoh username/nama_image:tag. Setelah image dibuat, bisa menggunakan perintah berikut untuk membuat instance dari image tersebut dalam bentuk container.
 
 ```
-docker run <nama-image>
+docker run [OPTIONS] IMAGE[:TAG|@DIGEST] [COMMAND] [ARG...]
 ```
+
+OPTIONS biasa digunakan untuk konfigurasi tambahan untuk kontainer, misalnya memberi nama kontainer dengan `--name`. IMAGE adalah nama Image yang akan dijadikan kontainer. TAG adalah versi dari Image, dan memiliki default latest jika tidak didefinisikan. COMMAND dan ARG... digunakan untuk menentukan perintah dan argumen yang akan dijalankan kontainer saat baru di-start.
+
+Misalkan untuk run Docker Image dari Dockerfile yang kita buat sebelumnya, kita bisa menggunakan command `docker run -p 3000:3000 simple-docker-app`, -p 3000:3000 adalah opsi untuk mapping port 3000 pada kontainer ke port 3000 di mesin host kita, sehingga aplikasi dalam kontainer ini dapat diakses di browser web kita dengan mengunjungi alamat port 3000 pada mesin host kita.
+
+#### Perintah Docker Image
+
+Berikut adalah beberapa perintah penting beserta penjelasannya yang tersedia pada **`docker image <COMMAND>`**.
+
+| <COMMAND>  | Deskripsi |
+| --------- | --------- |
+| `build` |  Perintah ini digunakan untuk membuat sebuah image Docker dari Dockerfile. |
+| `history` | Menampilkan riwayat perubahan pada sebuah image. |
+| `import` | Mengimpor sebuah image dari sebuah file. File tersebut harus berisi image yang telah diekspor sebelumnya dengan perintah **`docker save`** |
+| `inspect` | Melihat detail dari sebuah image. |
+| `load` | Memuat sebuah image dari sebuah arsip yang telah disimpan. |
+| `ls` | Menampilkan daftar image yang telah terunduh. |
+| `prune` | Menghapus image yang tidak terpakai. |
+| `pull` | Mengunduh sebuah image dari Docker Hub atau registry lainnya. |
+| `push` | Mengunggah sebuah image ke Docker Hub atau registry lainnya. |
+| `rename` | Mengubah nama dari sebuah image yang telah terunduh. |
+| `rm` | Menghapus sebuah image yang telah terunduh. |
+| `save` | Menyimpan sebuah image ke dalam sebuah arsip yang dapat diunduh dengan menggunakan perintah **`docker load`** |
+| `tag` | Memberikan sebuah tag pada sebuah image. |
 
 ### Docker Container
 
+![docker-container](assets/docker-container.png)
+
 Docker Container bisa diibaratkan seperti kotak berisi program dan semua bahan yang dibutuhkan agar program tersebut bisa berjalan dengan baik. Kotak ini dijalankan secara terpisah dari komputer aslinya, sehingga program dalam kotak ini dapat berjalan dengan konsisten pada berbagai lingkungan tanpa terpengaruh oleh konfigurasi dan infrastruktur yang ada pada komputer aslinya. 
+
+#### Perintah Docker Container
+
+Berikut adalah beberapa perintah penting beserta penjelasannya yang tersedia untuk memanage container pada Docker.
+
+| Perintah  | Deskripsi |
+| --------- | --------- |
+| `attach` | Menjalankan perintah pada container yang sedang berjalan. Perintah ini akan memasukkan pengguna ke dalam sesi terminal container. |
+| `commit` | Membuat sebuah image baru dari perubahan yang dilakukan pada container yang sedang berjalan. |
+| `cp` | Menyalin file atau direktori antara file sistem host dan file sistem dalam container. |
+| `create` | Membuat sebuah container baru, tetapi tidak menjalankannya. |
+| `diff` | Menunjukkan perubahan pada file sistem container yang sedang berjalan. |
+| `exec` | Menjalankan sebuah perintah pada container yang sedang berjalan. |
+| `export` | Mengekspor sebuah container ke dalam file tar. |
+| `inspect` | Melihat detail dari sebuah container. |
+| `kill` | Menghentikan sebuah container yang sedang berjalan secara paksa. |
+| `logs` | Melihat log dari sebuah container. |
+| `ls` | Menampilkan daftar container yang sedang berjalan. |
+| `pause` | Menjeda sebuah container yang sedang berjalan. |
+| `port` | Menampilkan port yang dibuka oleh sebuah container. |
+| `prune` | Menghapus container yang tidak sedang berjalan. |
+| `rename` | Mengubah nama dari sebuah container yang sedang berjalan. |
+| `restart` | Menghidupkan kembali sebuah container yang sedang berjalan. |
+| `rm` | Menghapus sebuah container yang sedang berjalan. |
+| `run` | Membuat sebuah container baru dan menjalankannya. |
+| `start` | Menjalankan sebuah container yang telah dibuat. |
+| `stats` | Menampilkan informasi CPU, memori, dan jaringan dari sebuah container yang sedang berjalan. |
+| `stop` | Menghentikan sebuah container yang sedang berjalan. |
+| `top` | Menampilkan proses yang sedang berjalan di dalam sebuah container. |
+| `unpause` | Meneruskan sebuah container yang telah dijeda. |
+| `update` | Memperbarui sebuah container dengan konfigurasi baru. |
+| `wait` | Menunggu container selesai menjalankan sebuah perintah sebelum melanjutkan. |
+
+#### Shell di Docker Container
 
 Karena lingkungan di container terpisah dengan lingkungan host, maka tidak mungkin untuk menjalankan perintah di dalam container menggunakan shell host. Untuk menggunakan shell di Docker Container, dapat menggunakan perintah berikut.
 
@@ -123,11 +246,21 @@ Karena lingkungan di container terpisah dengan lingkungan host, maka tidak mungk
 docker exec [OPTIONS] <CONTAINER> <COMMAND>
 ```
 
-- `[OPTIONS]` adalah opsi yang dapat dipakai.
+- docker exec digunakan untuk mengeksekusi perintah pada container yang sudah berjalan.
 - `<CONTAINER>` adalah nama atau ID container yang akan diakses.
 - Jika ingin mengeksekusi perintah di dalam container tanpa membuka shell container, maka dapat menambahkan `<COMMAND>` untuk command yang akan dijalankan.
+- `[OPTIONS]` adalah opsi yang dapat dipakai.
 
-![docker-exec](docker-exec.jpg)
+| [OPTIONS] | Deskripsi |
+| -------- | -------- |
+| `-d`,`--detach` | Menjalankan perintah di dalam container dalam (detached mode), sehingga container berjalan di latar belakang. |
+| `-e`,`--env list` | Mengatur variabel lingkungan (environment variables) pada container. |
+| `-i`,`--interactive` | Menjalankan perintah dalam mode interaktif pada container. |
+| `-t`,`--tty` | Mengalokasikan pseudo-TTY (TeleTYpewriter) pada container. |
+| `-u`,`--user string` | Menentukan pengguna atau UID (user ID) yang akan digunakan untuk menjalankan perintah di dalam container. |
+| `-w`,`--workdir string` | Mengatur direktori kerja di dalam container |
+
+![docker-exec](assets/docker-exec.jpg)
 
 ### Docker Hub
 
@@ -215,7 +348,7 @@ Pemahaman tentang Docker Data Management sangat penting untuk memastikan data ya
 
 ### Docker Mount
 
-![docker-mount](docker-mounts.jpg)
+![docker-mount](assets/docker-mounts.jpg)
 
 Terdapat beberapa jenis Docker Mount sebagai berikut:
 
