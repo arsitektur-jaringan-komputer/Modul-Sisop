@@ -1,0 +1,13 @@
+volumes:
+  php_www:
+
+services:
+  php:
+    image: localhost/p04_php
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - php_www:/var/www
+    ports:
+      - "8080:80"
