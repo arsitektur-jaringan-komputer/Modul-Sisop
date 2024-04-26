@@ -28,7 +28,8 @@
   - [3.1. Dockerfile](#dockerfile)
   - [3.2. Docker Image](#docker-image) 
   - [3.3. Docker Container](#docker-container)
-  - [3.4. Docker Hub](#docker-hub)
+  - [3.4. Contoh Dockerfile](#contoh-dockerfile)
+  - [3.5. Docker Hub](#docker-hub)
 - [4. Docker Service Lanjutan](#docker-service-lanjutan)
   - [4.1. Docker Compose](#docker-compose)
   - [4.2. Docker Storage Management](#docker-storage-management)
@@ -99,7 +100,7 @@ Keuntungan menggunakan Dockerfile antara lain memungkinkan pengguna untuk membua
 
 Untuk mem-build Dockerfile menjadi Docker Image, kalian bisa menggunakan command berikut di direktori berisi Dockerfile.
 
-```
+```shell
 docker build -t <nama-image>
 ```
 
@@ -119,66 +120,17 @@ Berikut adalah beberapa perintah penting beserta penjelasannya yang bisa diimple
 | `EXPOSE` | Menentukan port yang akan di-expose dari container ke host. |
 | `VOLUME` | Menentukan direktori yang akan di-mount sebagai volume di dalam container. |
 
-#### Contoh Dockerfile
-
-Kita akan membuat [aplikasi Node sederhana](https://cagrihankara.medium.com/your-first-simple-docker-project-a-step-by-step-guide-for-beginners-c1e7554a6d0f). Pertama, buat direktori baru dan tambahkan file app.js dan Dockerfile. 
-
-app.js adalah aplikasi Node sederhana yang akan menampilkan "Hello, Docker World!" ketika diakses. Berikut adalah isi app.js.
-
-```
-const http = require('http');
-
-const server = http.createServer((req, res) => {
-  res.writeHead(200, { 'Content-Type': 'text/plain' });
-  res.end('Hello, Docker World!\n');
-});
-
-const port = process.env.PORT || 3000;
-server.listen(port, () => {
-  console.log(`Server running on http://localhost:${port}`);
-});
-```
-
-Berikut adalah isi dari Dockerfile yang akan menyiapkan lingkungan Node.js di dalam container, menyalin kode app.js serta dependensinya, serta menentukan cara menjalankan aplikasi.
-
-```
-# Use the official Node.js image from the Docker Hub
-FROM node:14
-
-# Set the working directory in the container
-WORKDIR /usr/src/app
-
-# Copy package.json and package-lock.json to the container
-COPY package*.json ./
-
-# Install application dependencies
-RUN npm install
-
-# Copy the rest of the application source code to the container
-COPY . .
-
-# Expose the port your application will run on
-EXPOSE 3000
-
-# Define the command to run your application
-CMD ["node", "app.js"]
-```
-
-Dari Dockerfile ini, build Docker Image bernama simple-docker-app menggunakan command `docker build -t simple-docker-app`.
-
 ### Docker Image
 
 Docker image adalah template untuk menjalankan docker container. Image ini berisi sistem operasi dan aplikasi yang sudah dikonfigurasi dengan baik serta siap digunakan. Image dapat dibangun secara manual dengan membuat Dockerfile atau dapat diunduh dari Docker Hub, yaitu repositori publik yang menyediakan banyak image yang sudah siap digunakan. 
 
 Docker Image bersifat immutables, artinya setelah dibuat, image tidak bisa diubah secara langsung. Namun, image dapat dibuat baru dengan melakukan modifikasi pada image sebelumnya dan memberikan nama yang berbeda. Setiap image memiliki nama dan tag untuk mengidentifikasinya secara unik. Dalam Docker Hub, nama image biasanya terdiri dari beberapa bagian, seperti nama pengguna (username), nama image, dan tag, seperti contoh username/nama_image:tag. Setelah image dibuat, bisa menggunakan perintah berikut untuk membuat instance dari image tersebut dalam bentuk container.
 
-```
+```shell
 docker run [OPTIONS] IMAGE[:TAG|@DIGEST] [COMMAND] [ARG...]
 ```
 
 OPTIONS biasa digunakan untuk konfigurasi tambahan untuk kontainer, misalnya memberi nama kontainer dengan `--name`. IMAGE adalah nama Image yang akan dijadikan kontainer. TAG adalah versi dari Image, dan memiliki default latest jika tidak didefinisikan. COMMAND dan ARG... digunakan untuk menentukan perintah dan argumen yang akan dijalankan kontainer saat baru di-start.
-
-Misalkan untuk run Docker Image dari Dockerfile yang kita buat sebelumnya, kita bisa menggunakan command `docker run -p 3000:3000 simple-docker-app`, -p 3000:3000 adalah opsi untuk mapping port 3000 pada kontainer ke port 3000 di mesin host kita, sehingga aplikasi dalam kontainer ini dapat diakses di browser web kita dengan mengunjungi alamat port 3000 pada mesin host kita.
 
 #### Perintah Docker Image
 
@@ -242,7 +194,7 @@ Berikut adalah beberapa perintah penting beserta penjelasannya yang tersedia unt
 
 Karena lingkungan di container terpisah dengan lingkungan host, maka tidak mungkin untuk menjalankan perintah di dalam container menggunakan shell host. Untuk menggunakan shell di Docker Container, dapat menggunakan perintah berikut.
 
-```
+```shell
 docker exec [OPTIONS] <CONTAINER> <COMMAND>
 ```
 
@@ -261,6 +213,56 @@ docker exec [OPTIONS] <CONTAINER> <COMMAND>
 | `-w`,`--workdir string` | Mengatur direktori kerja di dalam container |
 
 ![docker-exec](assets/docker-exec.jpg)
+
+#### Contoh Dockerfile
+
+Pada sub materi ini, akan diberikan contoh implementasi Dockerfile untuk sebuah web server Nginx. Nginx adalah sebuah web server yang dapat digunakan sebagai reverse proxy, load balancer, mail proxy, dan HTTP cache, yang bekerja dengan cara memproses request yang masuk dari client dan mengirimkan response berupa file HTML atau data lainnya.
+
+Berikut adalah isi dari Dockerfile. Dockerfile ini akan membuat sebuah image untuk mendeploy aplikasi **`index.html`** dengan menggunakan Nginx.
+
+```docker
+FROM nginx
+
+RUN apt-get update && apt-get upgrade -y
+
+COPY index.html /usr/share/nginx/html
+
+EXPOSE 8080
+
+CMD ["nginx", "-g", "daemon off;"]
+```
+
+Dalam Dockerfile di atas, langkah-langkah yang dilakukan adalah sebagai berikut:
+
+- **`FROM nginx`**: Mengambil image nginx sebagai base image untuk membangun image baru. Base image ini akan menjadi dasar atau fondasi bagi image yang dibuat.
+- **`RUN apt-get update && apt-get upgrade -y`**: Menjalankan perintah **`update`** dan **`upgrade`** pada container menggunakan package manager **`apt-get`**. Perintah ini akan melakukan update pada package list dan melakukan upgrade terhadap package yang ada.
+- **`COPY index.html /usr/share/nginx/html`**: Menyalin file **`index.html`** dari direktori build context (di mana Dockerfile berada) ke dalam direktori **`/usr/share/nginx/html`** di dalam container. File **`index.html`** ini akan digunakan oleh web server Nginx untuk ditampilkan pada halaman web.
+- **`EXPOSE 8080`**: Mengizinkan port 8080 untuk digunakan oleh container. Meskipun port ini diizinkan, kita masih perlu melakukan binding port pada saat menjalankan container.
+- **`CMD ["nginx", "-g", "daemon off;"]`**: Menjalankan perintah nginx di dalam container, dengan argumen **`-g "daemon off;"`**. Argumen ini akan menyalakan Nginx pada mode foreground sehingga kita dapat melihat log Nginx pada console. Perintah ini akan menjadi perintah default yang dijalankan ketika container berjalan jika tidak diberikan perintah lain pada saat menjalankan container.
+
+Untuk menjalankan Dockerfile ini hingga menjadi kontainer, lakukan langkah-langkah berikut.
+
+1. Untuk dapat menjalankan Nginx di local, install dan start nginx dengan perintah berikut:
+
+```shell
+sudo apt install nginx
+sudo systemctl start nginx
+```
+![nginx-conf](assets/start-nginx.jpg)
+
+2. Buat direktori baru , dalam direktori tersebut buat Dockerfile dan **`index.html`** dengan struktur folder sesuaikan dengan [ini](./playground/nginx-app/). 
+
+3. Dalam direktori tersebut, jalankan command **`docker build -t <nama image>`** untuk membuat image baru dari Dockerfile yang sudah ada. Isi nama image sesuai dengan yang diinginkan.
+
+![Docker-build](assets/docker-build.jpg)
+
+4. Lalu cek pada **`docker image ls`** , apakah image yang dibuild sudah tersedia.
+![Docker image ls](assets/docker-ls.jpg)
+
+5. Selanjutnya image yang sudah ada dapat digunakan, dengan command **`docker run -d -p 8080:80 <nama image>`** untuk menjalankan sebuah container dari image tersebut. Cek dengan **`docker ps`** apakah container sudah berjalan.
+![Docker-run](assets/run-container.jpg)
+
+6. Kunjungi hasil running container pada **`localhost:8080`** maka akan muncul tampilan website 'Welcome to Nginx'.
 
 ### Docker Hub
 
