@@ -1,6 +1,6 @@
 # Module 3 - Docker
 
-## Outcomes
+## Learning Outcomes
 
 1. Understand containerization and how it differs from virtualization
 2. Understand the basic architecture of docker
@@ -8,15 +8,15 @@
 
 ## Prerequisite
 
-1. Installing docker, you can follow this [module] (https://github.com/arsitektur-jaringan-komputer/Pelatihan-Docker/tree/master/0.%20Prasyarat)
+1. Installing docker, you can follow this [module](https://github.com/arsitektur-jaringan-komputer/Pelatihan-Docker/tree/master/0.%20Prasyarat)
 
 ## Table of Contents
 
-- [i. Outcome](#outcomes)
+- [i. Learning Outcomes](#learning-outcomes)
 - [ii. Prerequisite](#prerequisite)
 - [iii. Table of Contents](#table-of-contents)
 - [1. Introduction](#introduction)
-  - [1.1. Why We Need Process Isolation](#why-we-need-process-isolation?)
+  - [1.1. Why We Need Process Isolation](#why-we-need-process-isolation)
   - [1.2. Difference between Containerization and Virtualization](#difference-between-containerization-and-virtualization)
   - [1.3. Definition of Docker](#definition-of-docker)
 - [2. Docker Architecture](#docker-architecture)
