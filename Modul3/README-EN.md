@@ -28,7 +28,8 @@
   - [3.1. Dockerfile](#dockerfile)
   - [3.2. Docker Image](#docker-image)
   - [3.3. Docker Container](#docker-container)
-  - [3.4. Docker Hub](#docker-hub)
+  - [3.4. Dockerfile Example](#dockerfile-example)
+  - [3.5. Docker Hub](#docker-hub)
 - [4. Advanced Docker Service](#docker-service-advanced)
   - [4.1. Docker Compose](#docker-compose)
   - [4.2. Docker Data Management](#docker-data-management)
@@ -118,53 +119,6 @@ Here are some important commands and their explanations that can be implemented 
 | `EXPOSE` | Specifies the port to be exposed from the container to the host. |
 | `VOLUME` | Specifies the directory that will be mounted as a volume in the container. |
 
-#### Dockerfile Example
-
-We will create a [simple Node application](https://cagrihankara.medium.com/your-first-simple-docker-project-a-step-by-step-guide-for-beginners-c1e7554a6d0f). First, create a new directory and add the app.js and Dockerfile files. 
-
-app.js is a simple Node application that will display "Hello, Docker World!" when accessed. Here is what app.js contains.
-
-```
-const http = require('http');
-
-const server = http.createServer((req, res) => {
-  res.writeHead(200, { 'Content-Type': 'text/plain' });
-  res.end('Hello, Docker World!\n');
-});
-
-const port = process.env.PORT || 3000;
-server.listen(port, () => {
-  console.log(`Server running on http://localhost:${port}`);
-});
-```
-
-Here are the contents of the Dockerfile that will set up the Node.js environment in the container, copy the app.js code and its dependencies, and determine how to run the application.
-
-```
-# Use the official Node.js image from the Docker Hub
-FROM node:14
-
-# Set the working directory in the container
-WORKDIR /usr/src/app
-
-# Copy package.json and package-lock.json to the container
-COPY package*.json ./
-
-# Install application dependencies
-RUN npm install
-
-# Copy the rest of the application source code to the container
-COPY . .
-
-# Expose the port your application will run on
-EXPOSE 3000
-
-# Define the command to run your application
-CMD ["node", "app.js"]
-```
-
-From this Dockerfile, build a Docker Image named simple-docker-app using the `docker build -t simple-docker-app` command.
-
 ### Docker Image
 
 A docker image is a template for running a docker container. This image contains an operating system and applications that are well configured and ready to use. Images can be built manually by creating a Dockerfile or can be downloaded from Docker Hub, a public repository that provides many ready-to-use images. 
@@ -176,8 +130,6 @@ docker run [OPTIONS] IMAGE[:TAG|@DIGEST] [COMMAND] [ARG...]
 ```
 
 OPTIONS is used for additional configuration for the container, such as naming the container with `--name`. IMAGE is the name of the Image that will be used as the container. TAG is the version of the Image, and defaults to latest if not defined. COMMAND and ARG... are used to specify the commands and arguments that the container will run when it is freshly started.
-
-For example, to run the Docker Image from the Dockerfile we created earlier, we can use the command `docker run -p 3000:3000 simple-docker-app`, -p 3000:3000 is an option to map port 3000 on the container to port 3000 on our host machine, so that the application in this container can be accessed in our web browser by visiting the port 3000 address on our host machine.
 
 #### Docker Image Commands
 
@@ -260,6 +212,56 @@ docker exec [OPTIONS] <CONTAINER> <COMMAND>
 | `-w`,`--workdir string` | Sets the working directory in the container |
 
 ![docker-exec](assets/docker-exec.jpg)
+
+#### Dockerfile Example
+
+In this sub-material, an example of Dockerfile implementation for an Nginx web server will be given. Nginx is a web server that can be used as a reverse proxy, load balancer, mail proxy, and HTTP cache, which works by processing incoming requests from clients and sending responses in the form of HTML files or other data.
+
+Here are the contents of the Dockerfile. This Dockerfile will create an image to deploy the **`index.html`** application using Nginx.
+
+``docker
+FROM nginx
+
+RUN apt-get update && apt-get upgrade -y
+
+COPY index.html /usr/share/nginx/html
+
+EXPOSE 8080
+
+CMD ["nginx", "-g", "daemon off;"]
+```
+
+In the Dockerfile above, the steps are as follows:
+
+- **`FROM nginx`**: Takes the nginx image as the base image to build a new image. This base image will be the foundation for the image created.
+- **`RUN apt-get update && apt-get upgrade -y`**: Run the **`update`** and **`upgrade`** commands on the container using the **`apt-get`** package manager. This command will update the package list and upgrade the existing package.
+- **`COPY index.html /usr/share/nginx/html`**: Copies the **`index.html`** file from the build context directory (where the Dockerfile is located) into the **`/usr/share/nginx/html`** directory inside the container. This **`index.html`** file will be used by the Nginx web server to display on the web page.
+- **`EXPOSE 8080`**: Allows port 8080 to be used by the container. Although this port is allowed, we still need to perform port binding when running the container.
+- **`CMD ["nginx", "-g", "daemon off;"]`**: Runs the nginx command inside the container, with the argument **`-g "daemon off;"`**. This argument will turn on Nginx in foreground mode so that we can see Nginx logs in the console. This command will be the default command that is run when the container runs if no other command is given at the time of running the container.
+
+To run this Dockerfile to become a container, do the following steps.
+
+1. To run Nginx on local, install and start nginx with the following command:
+
+``shell
+sudo apt install nginx
+sudo systemctl start nginx
+```
+![nginx-conf](assets/start-nginx.jpg)
+
+2. Create a new directory, in that directory create a Dockerfile and **`index.html`** with a folder structure according to [this](./playground/nginx-app/). 
+
+3. In that directory, run the **`docker build -t <image name>`** command to create a new image from an existing Dockerfile. Fill in the image name as desired.
+
+![Docker-build](assets/docker-build.jpg)
+
+4. Then check on **`docker image ls`**, whether the image that was built is already available.
+![Docker image ls](assets/docker-ls.jpg)
+
+5. Then the existing image can be used, with the **`docker run -d -p 8080:80 <image name>`** command to run a container from the image. Check with **`docker ps`** if the container is running.
+![Docker-run](assets/run-container.jpg)
+
+6. Visit the result of the running container on **`localhost:8080`** then the 'Welcome to Nginx' website will appear.
 
 ### Docker Hub
 
