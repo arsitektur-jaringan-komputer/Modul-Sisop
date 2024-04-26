@@ -100,7 +100,7 @@ Keuntungan menggunakan Dockerfile antara lain memungkinkan pengguna untuk membua
 
 Untuk mem-build Dockerfile menjadi Docker Image, kalian bisa menggunakan command berikut di direktori berisi Dockerfile.
 
-```
+```shell
 docker build -t <nama-image>
 ```
 
@@ -126,7 +126,7 @@ Docker image adalah template untuk menjalankan docker container. Image ini beris
 
 Docker Image bersifat immutables, artinya setelah dibuat, image tidak bisa diubah secara langsung. Namun, image dapat dibuat baru dengan melakukan modifikasi pada image sebelumnya dan memberikan nama yang berbeda. Setiap image memiliki nama dan tag untuk mengidentifikasinya secara unik. Dalam Docker Hub, nama image biasanya terdiri dari beberapa bagian, seperti nama pengguna (username), nama image, dan tag, seperti contoh username/nama_image:tag. Setelah image dibuat, bisa menggunakan perintah berikut untuk membuat instance dari image tersebut dalam bentuk container.
 
-```
+```shell
 docker run [OPTIONS] IMAGE[:TAG|@DIGEST] [COMMAND] [ARG...]
 ```
 
@@ -194,7 +194,7 @@ Berikut adalah beberapa perintah penting beserta penjelasannya yang tersedia unt
 
 Karena lingkungan di container terpisah dengan lingkungan host, maka tidak mungkin untuk menjalankan perintah di dalam container menggunakan shell host. Untuk menggunakan shell di Docker Container, dapat menggunakan perintah berikut.
 
-```
+```shell
 docker exec [OPTIONS] <CONTAINER> <COMMAND>
 ```
 
@@ -250,7 +250,7 @@ sudo systemctl start nginx
 ```
 ![nginx-conf](assets/start-nginx.jpg)
 
-2. Buat direktori baru , dalam direktori tersebut buat Dockerfile dan **`index.html`** dengan struktur folder sesuaikan dengan [ini](https://github.com/arsitektur-jaringan-komputer/Pelatihan-Docker/tree/master/2.%20Docker%20Service%20Dasar/custom-nginx-image). 
+2. Buat direktori baru , dalam direktori tersebut buat Dockerfile dan **`index.html`** dengan struktur folder sesuaikan dengan [ini](./playground/nginx-app/). 
 
 3. Dalam direktori tersebut, jalankan command **`docker build -t <nama image>`** untuk membuat image baru dari Dockerfile yang sudah ada. Isi nama image sesuai dengan yang diinginkan.
 
