@@ -107,7 +107,7 @@ docker build -t <image-name>
 
 Here are some important commands and their explanations that can be implemented in Dockerfile.
 
-| Command Description
+| Command | Description |
 | ------------ | ------------ |
 | `FROM` | Specifies the base image that will be used for the build. |
 | `COPY` | Copies files or folders from the host into the image. |
@@ -219,7 +219,7 @@ In this sub-material, an example of Dockerfile implementation for an Nginx web s
 
 Here are the contents of the Dockerfile. This Dockerfile will create an image to deploy the **`index.html`** application using Nginx.
 
-``docker
+```docker
 FROM nginx
 
 RUN apt-get update && apt-get upgrade -y
@@ -243,7 +243,7 @@ To run this Dockerfile to become a container, do the following steps.
 
 1. To run Nginx on local, install and start nginx with the following command:
 
-``shell
+```shell
 sudo apt install nginx
 sudo systemctl start nginx
 ```
