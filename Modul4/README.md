@@ -1,4 +1,4 @@
-# Module 4 - FUSE and Kernel
+# Module 4 - FUSE and Operating System
 
 ### [Modul Indonesia](README-ID.md)
 
