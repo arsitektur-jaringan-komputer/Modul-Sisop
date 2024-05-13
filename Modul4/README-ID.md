@@ -693,7 +693,7 @@ Untuk membuat sistem operasi sederhana, kita memerlukan beberapa tools yang akan
   sudo apt install bin86
   ```
 
-- **(Opsional) make**: Make adalah _build automation tool_ yang digunakan untuk mempermudah proses kompilasi kode. Make dapat diunduh menggunakan perintah berikut.
+- **make**: Make adalah _build automation tool_ yang digunakan untuk mempermudah proses kompilasi kode. Make dapat diunduh menggunakan perintah berikut.
 
   ```bash
   sudo apt install make
@@ -714,7 +714,7 @@ dd if=/dev/zero of=floppy.img bs=512 count=2880
 
 ### Bootloader Sederhana
 
-Sebelum masuk ke pembuatan bootloader yang memanggil kernel, kita akan membuat bootloader sederhana yang hanya menampilkan pesan ke layar. Berikut adalah kode bootloader sederhana.
+Sebelum masuk ke pembuatan bootloader yang memanggil kernel, kita akan membuat bootloader sederhana yang hanya menampilkan layar hitam. Berikut adalah kode bootloader sederhana.
 
 ```asm
 ; simple-bootloader.asm
@@ -749,7 +749,7 @@ dd if=simple-bootloader.bin of=floppy.img bs=512 count=1 conv=notrunc
 ```
 
 - `count=1`: Menulis sebanyak 1 blok (sesuai ukuran MBR 512 bytes).
-- `conv=notrunc` `(convert=notruncate)`: Menulis ke `floppy.img` tanpa menghapus data yang sudah ada.
+- `conv=notrunc` `(convert = notruncate)`: Menulis ke `floppy.img` tanpa menghapus data yang sudah ada.
 
 ### Menjalankan Bootloader Sederhana
 
@@ -777,7 +777,7 @@ Setelah membuat bootloader, kita akan membuat kernel yang nanti akan dipanggil o
 ; kernel.asm
 global _putInMemory
 
-; void putInMemory (int segment, int address, char character)
+; void putInMemory(int segment, int address, char character)
 _putInMemory:
 	push bp
 	mov bp,sp
@@ -1038,7 +1038,6 @@ Catatan:
 7. [https://developer.ibm.com/technologies/linux/tutorials/l-virtual-filesystem-switch/](https://developer.ibm.com/technologies/linux/tutorials/l-virtual-filesystem-switch/)
 8. [https://wiki.osdev.org/Introduction](https://wiki.osdev.org/Introduction)
 9. [https://medium.com/@ibshafique/the-linux-boot-process-180fb07af452](https://medium.com/@ibshafique/the-linux-boot-process-180fb07af452)
-
-```
-
-```
+10. [https://en.wikipedia.org/wiki/BIOS_interrupt_call](https://en.wikipedia.org/wiki/BIOS_interrupt_call)
+11. [https://en.wikipedia.org/wiki/DOS_API](https://en.wikipedia.org/wiki/DOS_API)
+12. [https://wiki.osdev.org/Text_mode](https://wiki.osdev.org/Text_mode)
