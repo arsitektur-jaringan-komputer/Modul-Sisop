@@ -8,7 +8,7 @@
 
 ### [Modul 3 - Docker](/Modul3/README-ID.md)
 
-### [Modul 4 - FUSE](/Modul4/README.md)
+### [Modul 4 - FUSE dan Sistem Operasi](/Modul4/README-ID.md)
 
 ## IUP Class
 
@@ -18,4 +18,4 @@
 
 ### [Module 3 - Docker](/Modul3/README-EN.md)
 
-### [Module 4 - FUSE](/Modul4/README-English.md)
+### [Module 4 - FUSE and Operating System](/Modul4/README-EN.md)
