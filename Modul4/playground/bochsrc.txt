@@ -1,0 +1,11 @@
+romimage: file=$BXSHARE/BIOS-bochs-latest
+cpu: count=1, ips=10000000, reset_on_triple_fault=1
+megs: 32
+vgaromimage: file=$BXSHARE/VGABIOS-lgpl-latest
+vga: extension=vbe
+floppya: 1_44=floppy.img, status=inserted
+boot:floppy
+floppy_bootsig_check: disabled=0
+vga: update_freq=10
+mouse: enabled=0
+pci: enabled=1, chipset=i440fx
