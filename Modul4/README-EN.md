@@ -6,22 +6,22 @@
 2. Can create a simple FUSE program
 3. Understand the steps of creating an operating system
 
-## List of Content
+## Table of Contents
 
 - [i. Learning Outcomes](#learning-outcomes)
 - [ii. Table of Contents](#table-of-contents)
 - [1. File System](#file-system)
-  - [1.1. Types of File System](#1-types-of-file-system)
-  - [1.2. Virtual File System](#2-virtual-file-system)
-  - [1.3. Dentry](#3-dentry)
-  - [1.4. Superblock](#4-superblock)
-  - [1.5. Inode](#5-inode)
+  - [1.1. Types of File System](#types-of-file-system)
+  - [1.2. Virtual File System](#virtual-file-system)
+  - [1.3. Dentry](#dentry)
+  - [1.4. Superblock](#superblock)
+  - [1.5. Inode](#inode)
 - [2. File System in Userspace](#file-system-in-userspace)
   - [2.1. Definition of FUSE](#definition-of-fuse)
-  - [2.2. FUSE Installation](#1-fuse-installation)
-  - [2.3. How FUSE Works](#2-how-fuse-works)
-  - [2.4. Making a FUSE Program](#3-making-a-fuse-program)
-  - [2.5. Unmount FUSE](#4-unmount-fuse)
+  - [2.2. FUSE Installation](#fuse-installation)
+  - [2.3. How FUSE Works](#how-fuse-works)
+  - [2.4. Making a FUSE Program](#making-a-fuse-program)
+  - [2.5. Unmount FUSE](#unmount-fuse)
 - [3. Operating System](#operating-system)
   - [3.1 What is Operating System?](#what-is-operating-system)
   - [3.2 What is Kernel?](#what-is-kernel)
@@ -623,7 +623,7 @@ To create a simple operating system, we need some tools that will be used. Here 
 
 - **Bochs**: Bochs is an x86 emulator used to run the created operating system. Bochs can be run on various operating systems, such as Windows, MacOS, and Linux.
 
-  Bochs can be downloaded on the [official bochs website](https://bochs.sourceforge.io/) or on the [following] github release(https://github.com/bochs-emu/Bochs/releases/tag/REL_2_8_FINAL). Adjust to the operating system you are using. **It is highly recommended to download the latest version of bochs through the website, not using apt.**
+  Bochs can be downloaded on the [official bochs website](https://bochs.sourceforge.io/) or on the [following](https://github.com/bochs-emu/Bochs/releases/tag/REL_2_8_FINAL) github release. Adjust to the operating system you are using. **It is highly recommended to download the latest version of bochs through the website, not using apt.**
 
 - **NASM**: NASM is an assembler used to convert assembly code into binary code. NASM can be downloaded at [official NASM website](https://www.nasm.us/) or can use the following command.
 
