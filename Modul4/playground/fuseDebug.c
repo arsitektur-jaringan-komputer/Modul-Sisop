@@ -8,10 +8,11 @@
 #include <errno.h>
 #include <sys/time.h>
 
+// MOUNTING COMMAND: ./[output] -f [/path/to/directory]
+
 static  const  char *dirpath = "/home/[user]/Documents";
 
-static  int  xmp_getattr(const char *path, struct stat *stbuf)
-{
+static  int  xmp_getattr(const char *path, struct stat *stbuf){
     int res;
     char fpath[1000];
 
@@ -24,10 +25,7 @@ static  int  xmp_getattr(const char *path, struct stat *stbuf)
     return 0;
 }
 
-
-
-static int xmp_readdir(const char *path, void *buf, fuse_fill_dir_t filler, off_t offset, struct fuse_file_info *fi)
-{
+static int xmp_readdir(const char *path, void *buf, fuse_fill_dir_t filler, off_t offset, struct fuse_file_info *fi){
     char fpath[1000];
 
     if(strcmp(path,"/") == 0)
@@ -64,10 +62,7 @@ static int xmp_readdir(const char *path, void *buf, fuse_fill_dir_t filler, off_
     return 0;
 }
 
-
-
-static int xmp_read(const char *path, char *buf, size_t size, off_t offset, struct fuse_file_info *fi)
-{
+static int xmp_read(const char *path, char *buf, size_t size, off_t offset, struct fuse_file_info *fi){
     char fpath[1000];
     if(strcmp(path,"/") == 0)
     {
@@ -95,18 +90,13 @@ static int xmp_read(const char *path, char *buf, size_t size, off_t offset, stru
     return res;
 }
 
-
-
 static struct fuse_operations xmp_oper = {
     .getattr = xmp_getattr,
     .readdir = xmp_readdir,
     .read = xmp_read,
 };
 
-
-
-int  main(int  argc, char *argv[])
-{
+int  main(int  argc, char *argv[]){
     umask(0);
 
     return fuse_main(argc, argv, &xmp_oper, NULL);
