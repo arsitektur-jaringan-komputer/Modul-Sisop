@@ -448,11 +448,27 @@ $ ./[output] [direktori tujuan]
 
 Setelah program dijalankan, masuklah kedalam direktori tujuan tersebut. Isi dari direktori tersebut adalah list folder yang sama seperti yang ada di dalam `root` atau `/`.
 
+### Unmount FUSE
+
+Unmount command digunakan untuk "unmount" sebuah filesystem yang telah ter-mount, lalu juga menginformasikan ke sistem untuk menyelesaikan semua operasi read dan write yang masih tertunda agar bisa di-detach (dilepaskan) dengan aman.
+
+Untuk melakukan **unmount** FUSE, jalankan command di bawah ini:
+
+```
+sudo umount [direktori tujuan]
+atau
+fusermount -u [direktori tujuan]
+```
+
 ### Tips
 
+1. Debugging Fuse
+   
 Salah satu cara debugging yang bisa dilakukan saat memprogram fuse adalah dengan menggunakan `printf` dan menjalankan program dengan cara `./[output] -f [direktori tujuan]`. Dimana `-f` disini berarti menjaga program agar tetap berjalan di foreground sehingga bisa menggunakan `printf`.
 
-Sesuai dengan penjelasan di awal di mana FUSE dapat memodifikasi _file system_ di _userspace_ tanpa perlu mengubah kode yang ada pada kernel, di sini kita coba memodifikasi kode FUSE tadi agar FUSE tersebut menampilkan apa yang ada di dalam folder `/home/[user]/Documents`.
+2. Modifying Parameters value
+   
+Sesuai dengan penjelasan di awal di mana FUSE dapat memodifikasi _file system_ di _userspace_ tanpa perlu mengubah kode yang ada pada kernel, di sini kita coba memodifikasi kode FUSE tadi agar folder yang di mount hanya berisi `/home/[user]/Documents` sebagai root folder.
 
 Ubah kode FUSE tadi seperti yang ada dibawah ini:
 
@@ -572,17 +588,11 @@ int  main(int  argc, char *argv[])
 }
 ```
 
-### Unmount FUSE
+Hal ini terjadi karena parameter `const char *path` merupakan pointer variable yang menunjuk ke value path yang digunakan user, sehingga ketika kita mengubah value dari path, maka posisi user akan berubah juga.
 
-Unmount command digunakan untuk "unmount" sebuah filesystem yang telah ter-mount, lalu juga menginformasikan ke sistem untuk menyelesaikan semua operasi read dan write yang masih tertunda agar bisa di-detach (dilepaskan) dengan aman.
+3. PERINGATAN
 
-Untuk melakukan **unmount** FUSE, jalankan command di bawah ini:
-
-```
-sudo umount [direktori tujuan]
-atau
-fusermount -u [direktori tujuan]
-```
+Berbeda dengan Docker container, file yang berada di dalam folder mount fuse merupakan file yang sama pada filesystem host, jika kita mengubah/menghapus/menambahkan file/folder pada fuse hal itu juga terjadi pada host.
 
 ## Sistem Operasi
 
