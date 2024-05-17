@@ -618,11 +618,13 @@ Here is an illustration of the Linux operating system booting process.
 
 ### Interrupts
 
-Interrupts are mechanisms used by the CPU to notify that an event has occurred. The event can come from hardware or from software. Interrupts are used to stop the execution of the running program and run the interrupt handler corresponding to the event.
+Interrupts are mechanisms used by the CPU to notify that an event has occurred. Interrupts are used to stop the execution of the running program and run the interrupt handler corresponding to the event.
 
 An interrupt handler or interrupt service routine (ISR) is analogous to an event listener in event-driven programming, which is commonly used in high-level programming languages such as JavaScript. The ISR is an event handler for interrupts that occur. Each interrupt has an associated code that indicates the event that occurred. This code is called the interrupt vector. The instruction for interrupt on x86 is `int n` where `n` is the vector of interrupts. The interrupt vector can be written in hexadecimal notation (0x00 - 0xFF) or vector notation (00h - FFh).
 
-The implementation of interrupts that will be used in the practicum is service int 21h which is used to perform a software interrupt in the DOS kernel. By calling `int 21h` using certain parameters (such as AH and AL), we can perform various input output accesses on the DOS operating system.
+More information about interrupts can be found in [here](https://en.wikipedia.org/wiki/BIOS_interrupt_call).
+
+The implementation of interrupts that will be used in the practicum is service `int 21h` which is used to perform a software interrupt in the DOS kernel. By calling `int 21h` using certain parameters (such as AH and AL), we can perform various input output accesses on the DOS operating system.
 
 ## Simple OS Development
 
@@ -791,9 +793,13 @@ void main() {
 
 - `0xB8000` is the memory address for the video memory of the VGA. This address is used to display characters at the top left of the screen at position `(0, 0)`.
 
-- Since `0xB8000` cannot fit in 16 bits (4 bytes), we split the address into 2 parts, segment and address. Segment is `0xB000` and address is `0x8000`. The operation that the `_putInMemory` function will perform on the assembly is to combine the two addresses into a valid memory address.
+- Since `0xB8000` cannot fit in 16 bits (2 bytes), we split the address into 2 parts, segment and address. Segment is `0xB000` and address is `0x8000`. The operation that the `_putInMemory` function will perform on the assembly is to combine the two addresses into a valid memory address.
 
-- There are 2 bytes for each character to be displayed. The first byte is the character to be displayed, while the second byte is the color of the character.
+- Offset for the character is `0x8000 + i * 2` and for the color is `0x8001 + i * 2`. This offset is used to display the character and color on the screen.
+
+- Usually, the offset for the character on `(x,y)` is `0x8000 + (y * 80 + x) * 2`.
+
+- While the offset for the color on `(x,y)` is `0x8001 + (y * 80 + x) * 2`.
 
 - `while (1)`: _Infinite loop_ so that the program does not stop after displaying the character.
 
@@ -812,14 +818,14 @@ bcc -ansi -c kernel.c -o kernel.o
 After creating the assembly kernel and C kernel, we will combine the two _object files_ into an executable. Here is the command used.
 
 ```bash
-ld86 -o kernel.bin -d kernel-asm.o kernel.o
+ld86 -o kernel.bin -d kernel.o kernel-asm.o
 ```
 
 - `-o kernel`: Saves the result of linking into the `kernel` file.
 
 - `-d`: Removes the header from the output file which result in the order of function declarations need to be sequential.
 
-- `kernel-asm.o kernel.o`: Object file that will be merged.
+- `kernel.o kernel-asm.o`: Object file that will be merged.
 
 ### Extending Bootloader
 
@@ -857,7 +863,7 @@ bootloader:
   mov ss, ax
 
   ; set up stack pointer
-  mov ax, 0xFFFF
+  mov ax, 0xFFF0
   mov sp, ax
   mov bp, ax
 
@@ -884,6 +890,8 @@ dd if=/dev/zero of=floppy.img bs=512 count=2880
 dd if=bootloader.bin of=floppy.img bs=512 count=1 conv=notrunc
 dd if=kernel.bin of=floppy.img bs=512 seek=1 count=15 conv=notrunc
 ```
+
+- `seek=1`: Skip 1 block (according to MBR size 512 bytes).
 
 ### Running Simple OS
 
