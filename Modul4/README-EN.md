@@ -403,11 +403,27 @@ $ ./[output] [destination directory]
 
 After you execute the program, enter the destination directory. The content of that directory is similar to what is listed on the `root` or `/` directory.
 
+### Unmount FUSE
+
+Unmount command is used to "unmount" a file system that has been mounted, also inform any delayed read or write operation so that the file system can be detached safely.
+
+To **unmount** FUSE, run the following command:
+
+```
+sudo umount [destination directory]
+or
+fusermount -u [destination directory]
+```
+
 ### Tips
+
+1. Debugging Fuse
 
 One way of how to debug when programming fuse is using `printf` dan running the program by using the following command : `./[output] -f [destination directory]`. Where `-f` will keep the program running in the foreground so you can see what the `printf` output.
 
-In accordance to the explanation in the beggining where FUSE can modify the _file system_ in _userspace_ without modifying anything on the kernel code base, here we can modify the FUSE code such that we show the content of `/home/[user]/Documents`.
+2. Modifying parameters value
+
+In accordance to the explanation in the beggining where FUSE can modify the _file system_ in _userspace_ without modifying anything on the kernel code base, here we can modify the FUSE code such that the content of folder that we mount is `/home/[user]/Documents`.
 
 Change your FUSE code to the following code:
 **NOTE : change [user] to your user account**
@@ -521,18 +537,11 @@ int  main(int  argc, char *argv[])
     return fuse_main(argc, argv, &xmp_oper, NULL);
 }
 ```
+This can happen because `const char *path` is a pointer variable that points to the path value that the user is currently using, so by changing the value of path the position of the user will move accordingly
 
-### Unmount FUSE
+3. WARNING
 
-Unmount command is used to "unmount" a file system that has been mounted, also inform any delayed read or write operation so that the file system can be detached safely.
-
-To **unmount** FUSE, run the following command:
-
-```
-sudo umount [destination directory]
-or
-fusermount -u [destination directory]
-```
+FUSE is fundamentally different from Docker container, files inside of fuse mount directory is the same files in the host filesystem, so if we edit/delete/add file/folder inside of fuse it will also affect the files on the host.
 
 ## Operating System
 
