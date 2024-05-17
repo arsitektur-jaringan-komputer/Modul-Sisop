@@ -669,11 +669,13 @@ Berikut adalah ilustrasi dari proses booting sistem operasi linux.
 
 ### Pengertian Interrupts
 
-Interrupts adalah mekanisme yang digunakan oleh CPU untuk memberitahu bahwa ada _event_ yang terjadi. _Event_ tersebut bisa berasal dari perangkat keras (_hardware_) atau dari perangkat lunak (_software_). Interrupts digunakan untuk menghentikan eksekusi program yang sedang berjalan dan menjalankan _interrupt handler_ yang sesuai dengan _event_ yang terjadi.
+Interrupts adalah mekanisme yang digunakan oleh CPU untuk memberitahu bahwa ada _event_ yang terjadi. Interrupts digunakan untuk menghentikan eksekusi program yang sedang berjalan dan menjalankan _interrupt handler_ yang sesuai dengan _event_ yang terjadi.
 
 _Interrupt handler_ atau _Interrupt Service Routine_ (ISR) dapat dianalogikan dengan _event listener_ pada _event-driven programming_ yang umumnya digunakan pada bahasa pemrograman _high-level_ seperti javascript. ISR adalah _event handler_ untuk interrupts yang terjadi. Setiap interrupt memiliki kode terkait yang menandakan _event_ yang terjadi. Kode ini disebut dengan _interrupt vector_. Instruksi untuk interrupt pada x86 adalah `int n` dimana `n` adalah vector dari interrupt. Vector interrupt dapat dituliskan dalam notasi heksadesimal (0x00 - 0xFF) atau notasi vector (00h - FFh).
 
-Impelementasi interrupts yang akan digunakan pada praktikum adalah service int 21h yang digunakan untuk melakukan _software interrupt_ pada kernel DOS. Dengan melakukan pemanggilan `int 21h` menggunakan parameter tertentu (seperti AH dan AL), kita dapat melakukan berbagai akses input output pada sistem operasi DOS.
+Penjelasan lebih lanjut mengenai interrupts dapat dilihat [di sini](https://en.wikipedia.org/wiki/BIOS_interrupt_call).
+
+Impelementasi interrupts yang akan digunakan pada praktikum adalah service `int 21h` yang digunakan untuk melakukan _interrupt_ pada kernel DOS. Dengan melakukan pemanggilan `int 21h` menggunakan parameter tertentu (seperti AH dan AL), kita dapat melakukan berbagai akses input output pada sistem operasi DOS.
 
 ## Pembuatan Sistem Operasi Sederhana
 
@@ -842,9 +844,13 @@ void main() {
 
 - `0xB8000` adalah alamat memory untuk video memory pada VGA. Alamat ini digunakan untuk menampilkan karakter pada kiri atas layar pada posisi `(0, 0)`.
 
-- Karena `0xB8000` tidak dapat ditampung dalam 16 bit (4 bytes), maka kita membagi alamat tersebut menjadi 2 bagian, yaitu segment dan address. Segment adalah `0xB000` dan address adalah `0x8000`. Operasi yang akan dilakukan fungsi `_putInMemory` pada assembly adalah menggabungkan kedua alamat tersebut menjadi alamat memory yang valid.
+- Karena `0xB8000` tidak dapat ditampung dalam 16 bit (2 bytes), maka kita membagi alamat tersebut menjadi 2 bagian, yaitu segment dan address. Segment adalah `0xB000` dan address adalah `0x8000`. Operasi yang akan dilakukan fungsi `_putInMemory` pada assembly adalah menggabungkan kedua alamat tersebut menjadi alamat memory yang valid.
 
-- Tersedia 2 bytes untuk setiap karakter yang akan ditampilkan. Byte pertama adalah karakter yang akan ditampilkan, sedangkan byte kedua adalah warna dari karakter tersebut.
+- Offset untuk karakter adalah `0x8000 + i * 2` dan offset untuk warna adalah `0x8001 + i * 2`. Offset ini digunakan untuk menampilkan karakter dan warna pada layar.
+
+- Pada umumnya, offset karakter pada `(x,y)` adalah `0x8000 + (y * 80 + x) * 2`.
+
+- Sedangkan, offset warna pada `(x,y)` adalah `0x8001 + (y * 80 + x) * 2`.
 
 - `while (1)`: _Infinite loop_ agar program tidak berhenti setelah menampilkan karakter.
 
@@ -863,14 +869,14 @@ bcc -ansi -c kernel.c -o kernel.o
 Setelah membuat kernel assembly dan kernel C, kita akan menggabungkan kedua _object file_ tersebut menjadi sebuah _executable_. Berikut adalah perintah yang digunakan.
 
 ```bash
-ld86 -o kernel.bin -d kernel-asm.o kernel.o
+ld86 -o kernel.bin -d kernel.o kernel-asm.o
 ```
 
 - `-o kernel`: Menyimpan hasil _linking_ ke dalam file `kernel`.
 
 - `-d`: Menghapus header dari _output file_ yang mengharuskan urutan deklarasi fungsi harus urut.
 
-- `kernel-asm.o kernel.o`: _Object file_ yang akan digabungkan.
+- `kernel.o kernel-asm.o`: _Object file_ yang akan digabungkan.
 
 ### Mengubah Bootloader
 
@@ -908,7 +914,7 @@ bootloader:
   mov ss, ax
 
   ; set up stack pointer
-  mov ax, 0xFFFF
+  mov ax, 0xFFF0
   mov sp, ax
   mov bp, ax
 
@@ -935,6 +941,8 @@ dd if=/dev/zero of=floppy.img bs=512 count=2880
 dd if=bootloader.bin of=floppy.img bs=512 count=1 conv=notrunc
 dd if=kernel.bin of=floppy.img bs=512 seek=1 count=15 conv=notrunc
 ```
+
+- `seek=1`: Menulis pada blok ke-1 (setelah MBR).
 
 ### Menjalankan Sistem Operasi Sederhana
 
