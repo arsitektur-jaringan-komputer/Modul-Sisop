@@ -21,14 +21,14 @@
 - [1. Pendahuluan](#pendahuluan)
   - [1.1 Pengertian Booting](#pengertian-booting)
 - [2. Kernel Linux](#kernel-linux)
-  - [2.1 Pengertian Kernel Linux](#kernel-linux)
-  - [2.2 Mempersiapkan Kernel Linux](#memperoleh-kernel-linux)
+  - [2.1 Pengertian Kernel Linux](#pengertian-kernel-linux)
+  - [2.2 Mempersiapkan Kernel Linux](#mempersiapkan-kernel-linux)
 - [3. Membuat Root Filesystem](#membuat-root-filesystem)
   - [3.1 Pengertian Root Filesystem](#pengertian-root-filesystem)
   - [3.2 Single User vs Multi User](#single-user-vs-multi-user)
   - [3.3 Single User](#single-user)
   - [3.4 Multi User](#multi-user)
-- [4. Mengemulasikan Sistem Operasi dengan QEMU](#mengemulasikan-sistem-operasi-dengan-qemu)
+- [4. Emulasi dengan Qemu](#emulasi-dengan-qemu)
   - [4.1 Pengertian QEMU](#pengertian-qemu)
   - [4.2 Langkah-Langkah Emulasi dengan QEMU](#langkah-langkah-emulasi-dengan-qemu)
   - [4.3 Pengujian di Dalam Shell](#pengujian-di-dalam-shell)
@@ -37,6 +37,10 @@
 - [6. Emulasi Menjalankan File ISO](#emulasi-menjalankan-file-iso)
 
 ## Pendahuluan
+
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/4d84c749-9966-485f-9ff4-338979238621" width="800" />
+</div>
 
 Bayangkan kamu sedang ingin menyalakan sebuah mobil. Saat kamu memutar kunci atau menekan tombol start, mesin mulai menyala, sistem elektronik aktif, dan dalam beberapa detik mobil siap digunakan. Tapi pernahkah kamu berpikir, apa saja yang sebenarnya terjadi sebelum mobil itu benar-benar siap jalan?
 
@@ -47,6 +51,10 @@ Hal yang sama terjadi saat kamu menyalakan komputer atau laptop. Ketika kamu men
 **Booting** adalah proses yang terjadi sejak komputer dinyalakan hingga sistem operasi sepenuhnya aktif dan siap digunakan. Ini adalah tahap awal yang sangat krusial dalam kehidupan sebuah sistem operasi, karena tanpa proses booting yang berhasil, tidak ada aplikasi yang bisa dijalankan.
 
 #### Tahapan Booting secara Umum
+
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/26e6edb8-e517-437a-909d-a92ee4bdad5a" width="600" />
+</div>
 
 Proses booting bisa dibagi menjadi beberapa tahap utama:
 
@@ -85,7 +93,7 @@ Setiap tahap dalam proses booting memiliki tanggung jawab penting:
 
 Kegagalan di salah satu tahap ini bisa menyebabkan sistem **gagal boot**, tidak bisa masuk ke sistem operasi, atau bahkan menyebabkan _crash_. Oleh karena itu, memahami bagaimana proses booting bekerja sangat penting, terutama saat mengembangkan sistem operasi atau melakukan troubleshooting.
 
-Salah satu bagian yang paling vital dalam proses ini adalah **kernel**. Kernel bertindak sebagai jembatan antara perangkat keras dan perangkat lunak — ia mengatur komunikasi antara prosesor, memori, perangkat input/output, dan program-program yang berjalan. Dalam sistem berbasis Linux, kernel ini disebut sebagai **Kernel Linux**.
+Salah satu bagian yang paling vital dalam proses ini adalah **kernel**. Kernel bertindak sebagai jembatan antara perangkat keras dan perangkat lunak, ia mengatur komunikasi antara prosesor, memori, perangkat input/output, dan program-program yang berjalan. Dalam sistem berbasis Linux, kernel ini disebut sebagai **Kernel Linux**.
 
 Karena perannya yang sentral, proses booting akan sangat bergantung pada apakah kernel bisa dimuat dan dijalankan dengan baik. Maka dari itu, di bab selanjutnya, kamu akan belajar bagaimana mempersiapkan kernel Linux sebagai fondasi awal dari sistem operasi sederhana yang akan kamu bangun dan emulasikan sendiri.
 
@@ -93,9 +101,13 @@ Karena perannya yang sentral, proses booting akan sangat bergantung pada apakah 
 
 ### Pengertian Kernel Linux
 
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/0cc4b446-64fd-4f41-b9e2-65c3886b1259" width="400" />
+</div>
+
 Kernel Linux adalah inti dari sistem operasi Linux. Ia mengatur interaksi antara perangkat keras dan perangkat lunak, serta menangani tugas-tugas penting seperti manajemen memori, proses, sistem file, dan perangkat input/output. Kernel inilah yang pertama kali dijalankan setelah bootloader memuatnya ke dalam memori.
 
-Salah satu keunggulan kernel Linux adalah **sifatnya yang open-source dan modular**. Siapa saja bisa melihat, memodifikasi, dan mengompilasi ulang kernel sesuai kebutuhan. Ini membuatnya ideal untuk keperluan pembelajaran, eksperimen, dan pengembangan sistem operasi yang disesuaikan — seperti yang akan kita lakukan dalam modul ini.
+Salah satu keunggulan kernel Linux adalah **sifatnya yang open-source dan modular**. Siapa saja bisa melihat, memodifikasi, dan mengompilasi ulang kernel sesuai kebutuhan. Ini membuatnya ideal untuk keperluan pembelajaran, eksperimen, dan pengembangan sistem operasi yang disesuaikan seperti yang akan kita lakukan dalam modul ini.
 
 Dalam praktiknya, kita tidak perlu menulis kernel dari nol. Kita cukup mengambil **kode sumber kernel Linux resmi**, lalu menyusunnya (compile) menjadi file biner `bzImage` yang bisa dieksekusi oleh bootloader dan dieksekusi oleh QEMU. Proses penyusunan kernel ini membutuhkan beberapa dependensi sistem serta konfigurasi awal untuk menentukan fitur-fitur yang akan dimasukkan ke dalam kernel hasil build.
 
@@ -204,6 +216,10 @@ Langkah-langkah yang perlu dilakukan antara lain mengupdate dan menginstall soft
 ## Membuat Root Filesystem
 
 ### Pengertian Root Filesystem
+
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/8c57f20e-f95e-45f4-a4d3-7a5b357324c5" width="800" />
+</div>
 
 Bayangkan sistem operasi seperti sebuah rumah. Maka **root filesystem** adalah _pondasi dan kerangka dasar rumah tersebut_. Semua ruangan (direktori seperti `/bin`, `/etc`, `/dev`, dll) dibangun di atas rootfs ini, dan semua aktivitas penghuni (aplikasi dan layanan) bergantung padanya agar rumah bisa berfungsi dengan baik. Tanpa rootfs, rumah itu seperti ada bangunan tapi tanpa jalan masuk, alat, atau aturan.
 
@@ -444,6 +460,10 @@ Dengan langkah-langkah di atas, kita telah berhasil membuat root filesystem dala
 
 Setelah sistem berhasil dijalankan dalam mode **single user**, tahap selanjutnya adalah membangun sistem dalam mode **multi user** menggunakan **initramfs**. Pada mode ini, lebih dari satu pengguna dapat login dan menggunakan sistem secara bersamaan, sehingga cocok untuk penggunaan umum yang membutuhkan manajemen akun dan akses.
 
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/6d76c080-a33f-4695-9a7c-691181f17d84" width="400" />
+</div>
+
 Untuk mendukung multi user, kita akan menyusun root file system yang lebih lengkap. Kita menggunakan **BusyBox** sebagai penyedia utilitas dasar Linux, dan **initramfs** sebagai sistem file root yang dimuat ke memori saat booting. Berbeda dengan single user yang hanya menyediakan shell langsung untuk root, mode ini memerlukan proses login di terminal, sehingga dibutuhkan file seperti `/etc/passwd`, `/etc/group`, dan layanan seperti `getty`.
 
 #### Langkah-Langkah Pembuatan Root File System dengan Multi User
@@ -634,7 +654,7 @@ Setelah menjalankan perintah di atas, QEMU akan mulai melakukan proses booting. 
 
 ### Pengujian di Dalam Shell
 
-Setelah sistem berhasil boot melalui QEMU, kamu akan melihat tampilan shell atau prompt login—tergantung apakah kamu menggunakan mode **single user** atau **multi user**.
+Setelah sistem berhasil boot melalui QEMU, kamu akan melihat tampilan shell atau prompt login tergantung apakah kamu menggunakan mode **single user** atau **multi user**.
 
 #### **Single User**
 
