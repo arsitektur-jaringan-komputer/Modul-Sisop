@@ -705,7 +705,7 @@ Hal yang perlu diuji:
 - Hak akses pengguna sesuai (tidak bisa akses direktori root tanpa izin)
 - Bisa berpindah direktori dan menjalankan perintah dasar
 
-#### Mengulang Proses Booting
+### Mengulang Proses Booting
 
 Jika kamu ingin **mengulang proses booting** sistem yang telah kamu emulasikan dengan QEMU, kamu perlu menghentikan proses QEMU terlebih dahulu, lalu menjalankannya kembali seperti sebelumnya.
 
